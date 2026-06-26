@@ -3,6 +3,7 @@ package com.crosspaste.listener
 import com.crosspaste.app.DesktopAppLaunchState
 import com.crosspaste.notification.MessageType
 import com.crosspaste.notification.NotificationManager
+import com.crosspaste.platform.macos.MacAppUtils
 import com.crosspaste.utils.getSystemProperty
 import com.github.kwhat.jnativehook.GlobalScreen
 import com.github.kwhat.jnativehook.NativeHookException
@@ -27,6 +28,10 @@ class DesktopGlobalListener(
     override fun start() {
         if (systemProperty.get("globalListener", false.toString()).toBoolean()) {
             runCatching {
+                val isMacos = systemProperty.get("os.name").contains("Mac", ignoreCase = true)
+                appLaunchState.accessibilityPermissions =
+                    appLaunchState.accessibilityPermissions ||
+                    (isMacos && MacAppUtils.checkAccessibilityPermissions())
                 if (appLaunchState.accessibilityPermissions && !isRegistered()) {
                     GlobalScreen.registerNativeHook()
                     GlobalScreen.addNativeKeyListener(shortcutKeysListener)

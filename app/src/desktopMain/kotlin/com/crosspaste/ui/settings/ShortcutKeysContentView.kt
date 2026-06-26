@@ -34,6 +34,7 @@ import com.crosspaste.listener.DesktopShortcutKeys.Companion.TOGGLE_PASTEBOARD_M
 import com.crosspaste.listener.KeyboardKey
 import com.crosspaste.listener.ShortcutKeys
 import com.crosspaste.platform.Platform
+import com.crosspaste.platform.macos.api.MacosApi
 import com.crosspaste.ui.base.KeyboardView
 import com.crosspaste.ui.base.SectionHeader
 import com.crosspaste.ui.theme.AppUISize.medium
@@ -48,7 +49,11 @@ fun ShortcutKeysContentView() {
     var showGrantAccessibilityDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        if (platform.isMacos() && !appLaunchState.accessibilityPermissions) {
+        if (
+            platform.isMacos() &&
+            !appLaunchState.accessibilityPermissions &&
+            !MacosApi.INSTANCE.checkAccessibilityPermissions()
+        ) {
             showGrantAccessibilityDialog = true
         }
     }

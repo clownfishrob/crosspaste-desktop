@@ -49,6 +49,7 @@ import com.crosspaste.app.DesktopAppWindowManager
 import com.crosspaste.config.DesktopConfigManager
 import com.crosspaste.i18n.GlobalCopywriter
 import com.crosspaste.platform.Platform
+import com.crosspaste.platform.macos.api.MacosApi
 import com.crosspaste.platform.windows.api.Dwmapi
 import com.crosspaste.ui.DesktopContext.MainWindowContext
 import com.crosspaste.ui.base.GeneralIconButton
@@ -207,7 +208,12 @@ fun MainWindow(windowIcon: Painter?) {
 
             MainWindowContext(mainWindowInfo) {
                 CrossPasteMainWindowContent()
-                if (config.showGrantAccessibility && !appLaunchState.accessibilityPermissions) {
+                if (
+                    isMacos &&
+                    config.showGrantAccessibility &&
+                    !appLaunchState.accessibilityPermissions &&
+                    !MacosApi.INSTANCE.checkAccessibilityPermissions()
+                ) {
                     GrantAccessibilityDialog {
                         configManager.updateConfig("showGrantAccessibility", false)
                     }
