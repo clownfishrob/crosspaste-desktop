@@ -33,6 +33,7 @@ output*/
 /.dev-context/
 /code-review/
 /ai/
+/.pasteflow-dev/
 /.claude/skills/ui-ux-pro-max/
 /docs/superpowers/
 web/dist/
