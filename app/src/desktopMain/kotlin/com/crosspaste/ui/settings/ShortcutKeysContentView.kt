@@ -39,6 +39,7 @@ import com.crosspaste.ui.base.KeyboardView
 import com.crosspaste.ui.base.SectionHeader
 import com.crosspaste.ui.theme.AppUISize.medium
 import com.crosspaste.ui.theme.AppUISize.tiny
+import com.github.kwhat.jnativehook.GlobalScreen
 import org.koin.compose.koinInject
 
 @Composable
@@ -52,7 +53,8 @@ fun ShortcutKeysContentView() {
         if (
             platform.isMacos() &&
             !appLaunchState.accessibilityPermissions &&
-            !MacosApi.INSTANCE.checkAccessibilityPermissions()
+            !MacosApi.INSTANCE.checkAccessibilityPermissions() &&
+            !GlobalScreen.isNativeHookRegistered()
         ) {
             showGrantAccessibilityDialog = true
         }

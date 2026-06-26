@@ -32,10 +32,12 @@ class DesktopGlobalListener(
                 appLaunchState.accessibilityPermissions =
                     appLaunchState.accessibilityPermissions ||
                     (isMacos && MacAppUtils.checkAccessibilityPermissions())
-                if (appLaunchState.accessibilityPermissions && !isRegistered()) {
-                    GlobalScreen.registerNativeHook()
-                    GlobalScreen.addNativeKeyListener(shortcutKeysListener)
-                    GlobalScreen.addNativeMouseListener(mouseListener)
+                if (appLaunchState.accessibilityPermissions) {
+                    if (!isRegistered()) {
+                        GlobalScreen.registerNativeHook()
+                        GlobalScreen.addNativeKeyListener(shortcutKeysListener)
+                        GlobalScreen.addNativeMouseListener(mouseListener)
+                    }
                 } else {
                     grantAccessibilityPermissions()
                 }

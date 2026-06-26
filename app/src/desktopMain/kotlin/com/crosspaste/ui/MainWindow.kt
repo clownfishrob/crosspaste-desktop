@@ -59,6 +59,7 @@ import com.crosspaste.ui.theme.AppUISize.large2X
 import com.crosspaste.ui.theme.AppUISize.medium
 import com.crosspaste.ui.theme.AppUISize.tiny2XRoundedCornerShape
 import com.crosspaste.ui.theme.AppUISize.xxLarge
+import com.github.kwhat.jnativehook.GlobalScreen
 import com.sun.jna.Memory
 import com.sun.jna.Native
 import com.sun.jna.platform.win32.WinDef
@@ -212,7 +213,8 @@ fun MainWindow(windowIcon: Painter?) {
                     isMacos &&
                     config.showGrantAccessibility &&
                     !appLaunchState.accessibilityPermissions &&
-                    !MacosApi.INSTANCE.checkAccessibilityPermissions()
+                    !MacosApi.INSTANCE.checkAccessibilityPermissions() &&
+                    !GlobalScreen.isNativeHookRegistered()
                 ) {
                     GrantAccessibilityDialog {
                         configManager.updateConfig("showGrantAccessibility", false)
