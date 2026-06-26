@@ -43,23 +43,19 @@ import com.composables.icons.materialsymbols.MaterialSymbols
 import com.composables.icons.materialsymbols.rounded.Close
 import com.composables.icons.materialsymbols.rounded.Push_pin
 import com.composables.icons.materialsymbols.roundedfilled.Push_pin
-import com.crosspaste.app.DesktopAppLaunchState
 import com.crosspaste.app.DesktopAppSize
 import com.crosspaste.app.DesktopAppWindowManager
 import com.crosspaste.config.DesktopConfigManager
 import com.crosspaste.i18n.GlobalCopywriter
 import com.crosspaste.platform.Platform
-import com.crosspaste.platform.macos.api.MacosApi
 import com.crosspaste.platform.windows.api.Dwmapi
 import com.crosspaste.ui.DesktopContext.MainWindowContext
 import com.crosspaste.ui.base.GeneralIconButton
-import com.crosspaste.ui.settings.GrantAccessibilityDialog
 import com.crosspaste.ui.theme.AppUIColors
 import com.crosspaste.ui.theme.AppUISize.large2X
 import com.crosspaste.ui.theme.AppUISize.medium
 import com.crosspaste.ui.theme.AppUISize.tiny2XRoundedCornerShape
 import com.crosspaste.ui.theme.AppUISize.xxLarge
-import com.github.kwhat.jnativehook.GlobalScreen
 import com.sun.jna.Memory
 import com.sun.jna.Native
 import com.sun.jna.platform.win32.WinDef
@@ -73,7 +69,6 @@ private val CLOSE_BUTTON_WIDTH = 48.dp
 
 @Composable
 fun MainWindow(windowIcon: Painter?) {
-    val appLaunchState = koinInject<DesktopAppLaunchState>()
     val appSize = koinInject<DesktopAppSize>()
     val appWindowManager = koinInject<DesktopAppWindowManager>()
     val configManager = koinInject<DesktopConfigManager>()
@@ -209,17 +204,6 @@ fun MainWindow(windowIcon: Painter?) {
 
             MainWindowContext(mainWindowInfo) {
                 CrossPasteMainWindowContent()
-                if (
-                    isMacos &&
-                    config.showGrantAccessibility &&
-                    !appLaunchState.accessibilityPermissions &&
-                    !MacosApi.INSTANCE.checkAccessibilityPermissions() &&
-                    !GlobalScreen.isNativeHookRegistered()
-                ) {
-                    GrantAccessibilityDialog {
-                        configManager.updateConfig("showGrantAccessibility", false)
-                    }
-                }
             }
         }
     }
