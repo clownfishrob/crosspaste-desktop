@@ -262,10 +262,9 @@ class DesktopUISupport(
     }
 
     override fun jumpPrivacyAccessibility() {
-        if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-            Desktop
-                .getDesktop()
-                .browse(URI("x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility"))
-        }
+        ProcessBuilder(
+            "open",
+            "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility",
+        ).start()
     }
 }
