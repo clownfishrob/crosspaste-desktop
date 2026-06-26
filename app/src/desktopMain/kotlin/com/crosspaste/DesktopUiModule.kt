@@ -89,7 +89,7 @@ fun desktopUiModule(): Module =
         single<DesktopScreenProvider> { DesktopScreenProvider(get(), get(), get(), get(), get(), get()) }
         single<DeviceScopeFactory> { DesktopDeviceScopeFactory() }
         single<GlobalCopywriter> { DesktopGlobalCopywriter(get(), lazy { get() }, get()) }
-        single<MenuHelper> { MenuHelper(get(), get(), get(), get(), get(), get()) }
+        single<MenuHelper> { MenuHelper(get(), get(), get(), get(), get()) }
         single<NavigationManager> { get<DesktopScreenProvider>() }
         single<ScreenProvider> { get<DesktopScreenProvider>() }
         single<SmartImageDisplayStrategy> { SmartImageDisplayStrategy() }

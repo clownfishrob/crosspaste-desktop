@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.window.FrameWindowScope
 import androidx.compose.ui.window.MenuBar
-import com.crosspaste.app.AppUpdateService
 import com.crosspaste.app.DesktopAppWindowManager
 import com.crosspaste.app.ExitMode
 import com.crosspaste.app.WindowTrigger
@@ -14,7 +13,6 @@ import org.koin.compose.koinInject
 
 @Composable
 fun FrameWindowScope.DesktopMenuBar() {
-    val appUpdateService = koinInject<AppUpdateService>()
     val appWindowManager = koinInject<DesktopAppWindowManager>()
     val copywriter = koinInject<GlobalCopywriter>()
     val navigateManage = koinInject<NavigationManager>()
@@ -77,10 +75,6 @@ fun FrameWindowScope.DesktopMenuBar() {
                     appWindowManager.showMainWindow(WindowTrigger.MENU)
                 }
             }
-            Item(copywriter.getText("check_for_updates")) {
-                appUpdateService.tryTriggerUpdate()
-            }
-            Separator()
             Item(copywriter.getText("quit")) {
                 applicationExit(ExitMode.EXIT)
             }

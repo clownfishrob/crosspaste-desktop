@@ -3,6 +3,8 @@
 ## PasteFlow Dev MVP follow-up
 
 - Update the Share settings page for the PasteFlow Dev product direction.
+- Re-enable the Share menu once the PasteFlow Dev share flow and copy are ready.
+- Re-enable Check for updates once update metadata and release delivery are owned by PasteFlow Dev.
 - Reset the Change Log content so it no longer carries inappropriate CrossPaste history.
 - Change the About page copy, branding, links, and metadata for PasteFlow Dev.
 - Update remaining CrossPaste references across the settings experience and supporting copy.

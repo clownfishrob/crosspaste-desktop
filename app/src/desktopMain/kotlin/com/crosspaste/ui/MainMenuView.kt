@@ -39,9 +39,7 @@ import com.composables.icons.materialsymbols.rounded.Exit_to_app
 import com.composables.icons.materialsymbols.rounded.Extension
 import com.composables.icons.materialsymbols.rounded.Info
 import com.composables.icons.materialsymbols.rounded.Keyboard
-import com.composables.icons.materialsymbols.rounded.Refresh
 import com.composables.icons.materialsymbols.rounded.Settings
-import com.composables.icons.materialsymbols.rounded.Share
 import com.composables.icons.materialsymbols.rounded.Upload
 import com.composables.icons.materialsymbols.rounded.Vpn_key
 import com.composables.icons.materialsymbols.rounded.Warning
@@ -95,7 +93,6 @@ fun MainMenuView() {
                 MainMenuItem("import", Import, MaterialSymbols.Rounded.Download),
                 MainMenuItem("export", Export, MaterialSymbols.Rounded.Upload),
                 MainMenuItem("shortcut_keys", ShortcutKeys, MaterialSymbols.Rounded.Keyboard),
-                MainMenuItem("share", Share, MaterialSymbols.Rounded.Share),
                 MainMenuItem("about", About, MaterialSymbols.Rounded.Info),
             )
         }
@@ -207,18 +204,6 @@ fun MainMenuView() {
                 onClick = { navigateManage.navigateAndClearStack(ChangeLog) },
                 compact = true,
                 showBadge = showChangelogBadge,
-            )
-
-            MainMenuItemView(
-                title = "check_for_updates",
-                icon = MaterialSymbols.Rounded.Refresh,
-                selected = false,
-                // Single entry point for every channel (same as the tray's check):
-                // portable-zip re-arms the update dialog (or reports "no new version"),
-                // others delegate to Store / Conveyor / browser. Avoids a "fake check"
-                // that only navigated without any feedback.
-                onClick = { appUpdateService.tryTriggerUpdate() },
-                compact = true,
             )
 
             MainMenuItemView(
