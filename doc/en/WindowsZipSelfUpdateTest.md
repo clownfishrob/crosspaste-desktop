@@ -1,5 +1,9 @@
 # Testing the Windows portable-zip self-update (no release needed)
 
+> PasteFlow Dev note: update delivery is currently hidden in the app and this
+> document is retained as legacy upstream implementation context. Revalidate and
+> rebrand this flow before re-enabling user-facing update controls.
+
 The portable-zip updater downloads a new build, verifies it, and on confirmation
 hands off to a batch script that replaces the install directory and relaunches.
 The download/verify/extract pipeline is covered by an automated test

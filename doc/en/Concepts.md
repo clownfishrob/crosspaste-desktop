@@ -8,7 +8,7 @@ outline: deep
 
 1. Pasteboard
 
-   For each copy operation, CrossPaste comprehensively captures the pasteboard content, not limited to a single data type.
+   For each copy operation, PasteFlow Dev comprehensively captures the pasteboard content, not limited to a single data type.
 
 2. Paste Item
 
@@ -23,17 +23,17 @@ outline: deep
 
 4. Intelligent Pasting
 
-   Based on the pasting environment, CrossPaste automatically selects the most appropriate paste item. For instance:
+   Based on the pasting environment, PasteFlow Dev automatically selects the most appropriate paste item. For instance:
 
     - When pasting an image into a text box, it intelligently uses the file name
     - When pasting into an application that supports rich text, it preserves the original format
 
 ### Design Philosophy
-CrossPaste's core design goal is to maximize the preservation of information from the original copied content and provide the most suitable data when pasting based on the context. This approach ensures the best user experience across platforms and application scenarios.
+PasteFlow Dev's core design goal is to maximize the preservation of information from the original copied content and provide the most suitable data when pasting based on the context. This approach ensures the best user experience across platforms and application scenarios.
 
 ## Priority of Paste Types
 
-The [default priority](https://github.com/CrossPaste/crosspaste-desktop/blob/main/app/src/commonMain/kotlin/com/crosspaste/db/paste/PasteType.kt) for previewing paste types is as follows:
+The [default priority](https://github.com/clownfishrob/crosspaste-desktop/blob/pasteflow-dev-mvp/core/src/commonMain/kotlin/com/crosspaste/paste/PasteType.kt) for previewing paste types is as follows:
 
 | Priority | Paste Type   |
 |----------|--------------|

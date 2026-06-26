@@ -1,127 +1,118 @@
-<div align="center">
-   <img src="doc/zh/marketing.webp" width="986px" height="641px" alt="海报" />
-   <h1>CrossPaste: 跨设备的通用粘贴板</h1>
-   <p>
-      <b>在任意设备间复制粘贴，就像在同一台设备上操作一样自然流畅</b>
-      <br />
-      <br />
-      <a href="https://github.com/CrossPaste/crosspaste-desktop/blob/main/README.md">English</a>
-       ·
-      <a href="https://crosspaste.com/en/" target="_blank">Official Website</a>
-       ·
-      <a href="https://deepwiki.com/CrossPaste/crosspaste-desktop" target="_blank">Wiki</a>
-       ·
-      <a href="https://crosspaste.com/download" target="_blank">Download</a>
-      <br />
-   </p>
+# PasteFlow Dev
 
-   [![Main CI Test](https://github.com/CrossPaste/crosspaste-desktop/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/CrossPaste/crosspaste-desktop/actions/workflows/ci.yml)
-   [![Build Release](https://github.com/CrossPaste/crosspaste-desktop/actions/workflows/build-release.yml/badge.svg)](https://github.com/CrossPaste/crosspaste-desktop/actions/workflows/build-release.yml)
-   ![Dependabot](https://img.shields.io/badge/Dependabot-enabled-2cbe4e.svg?logo=dependabot&logoColor=white)
-   [![Compose-Multiplatform](https://img.shields.io/badge/UI-Compose%20Multiplatform-3a7af2?logo=jetpackcompose&logoColor=white)](https://github.com/JetBrains/compose-multiplatform)
-   [![Sqlite](https://img.shields.io/badge/Database-Sqlite-39477F?logo=sqlite&logoColor=white)](https://www.sqlite.org/)
-   ![Kotlin](https://img.shields.io/badge/Lang-Kotlin-0095D5.svg?logo=kotlin&logoColor=white)
-   ![OS](https://img.shields.io/badge/OS-Windows%20%7C%20macOS%20%7C%20Linux-2cbe4e)
-   [![Download](https://img.shields.io/badge/Download-v2.1.4-2cbe4e?logo=download&link=https://crosspaste.com/download)](https://crosspaste.com/download)
-   [![AGPL-3.0](https://img.shields.io/badge/License-AGPL%20v3-2cbe4e.svg)](https://github.com/CrossPaste/crosspaste-desktop/blob/main/LICENSE)
-   [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/CrossPaste/crosspaste-desktop)
+PasteFlow Dev 是一个实验性的桌面剪贴板管理器，基于开源项目
+[CrossPaste](https://github.com/CrossPaste/crosspaste-desktop) 构建。
 
-   <a href="https://github.com/sponsors/CrossPaste"><img src="https://img.shields.io/badge/sponsor-30363D?style=social&logo=GitHub-Sponsors&logoColor=#white" height="30px"></a>
-   <img src="https://img.shields.io/github/stars/CrossPaste/crosspaste-desktop?style=social" height="30px">
-</div>
+当前目标是做出一个可用的 macOS MVP，并让它能与 CrossPaste 分开安装、分开运行。
 
-## ✨ 特性
+[![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](LICENSE)
+[![Kotlin](https://img.shields.io/badge/Kotlin-desktop-blue.svg)](https://kotlinlang.org/)
+[![Compose Multiplatform](https://img.shields.io/badge/UI-Compose%20Multiplatform-blue.svg)](https://www.jetbrains.com/lp/compose-multiplatform/)
 
-- **🔄 实时共享**：设备之间实时共享粘贴板内容，操作自然流畅。
-- **🖥️ 跨平台统一体验**：Mac、Windows 和 Linux 版本界面一致，操作习惯无需改变。
-- **📋 丰富的类型支持**：轻松处理多种粘贴数据类型，包括文本、颜色、URL、HTML 富文本、图片和文件。
-- **🔒 端到端加密保护**：采用非对称加密算法，全方位保障数据安全。
-- **🌐 仅局域网无服务器**: 本地存储，无服务器架构。你的数据，唯你所有。隐私保护，由你掌控。
-- **🧹 智能空间管理**：提供多样化的自动清理选项，高效管理粘贴板存储空间，无需手动干预。
-- **🔍 内置 OCR**：本地从图片中提取文字，全程离线，截图永远不会离开你的设备。
-- **🤖 MCP 服务**：通过 Model Context Protocol 把粘贴板历史暴露给 AI 助手（如 Claude 等）使用。
-- **🌍 Chrome 扩展**：让粘贴板与浏览器互通——在一台设备的网页里复制，在任意其他设备粘贴。
+## 当前 MVP 状态
 
-## 🏗 开发起步
+PasteFlow Dev 已经完成了基本的开发身份分离：
 
-1. 克隆仓库
+- 应用名称：PasteFlow Dev
+- macOS bundle identity 已与 CrossPaste 分离
+- 本地数据目录已与 CrossPaste 分离
+- 开发网络端口已与 CrossPaste 分离
+- 默认快捷键已与 CrossPaste 分离
+- Native messaging 标识已与 CrossPaste 分离
+- macOS Accessibility 权限提示已针对快捷键使用做过调整
 
-   ```bash
-   git clone https://github.com/CrossPaste/crosspaste-desktop.git
-   ```
+已在本机 macOS 验证：
 
-2. 编译并启动应用
+- 剪贴板捕获
+- 主快捷键启动
+- 搜索快捷键启动
+- 重启行为
+- macOS Accessibility 授权流程
 
-   ```bash
-   cd crosspaste-desktop
-   ./gradlew clean app:run
-   ```
+## 暂缓处理
 
-首次启动将下载 [JBR](https://github.com/JetBrains/JetBrainsRuntime) / gradle 依赖.
+以下内容会在后续 PasteFlow Dev 阶段继续整理：
 
-如果遇到如下错误:
-```log
-FAILURE: Build failed with an exception.
+- Share 页面与 Share 菜单
+- Check for updates / 发布更新通道
+- 仍继承自 CrossPaste 的旧更新文档和基础设施命名
+- 产品文案、截图和公开发布打包
+- 其他设备上的多机测试
 
-* What went wrong:
-java.net.SocketException: Connection reset
-> java.net.SocketException: Connection reset
-```
-你可能需要 vpn 来下载这些依赖
+更多后续事项见 [doc/en/Roadmap.md](doc/en/Roadmap.md)。
 
-为 gradle 配置代理，在 [gradle.properties](./gradle.properties) 内添加如下配置，并修改参数为你的代理配置:
-```properties
-systemProp.https.proxyHost=localhost
-systemProp.https.proxyPort=8080
-systemProp.https.proxyUser=userid
-systemProp.https.proxyPassword=password
-systemProp.http.nonProxyHosts=*.nonproxyrepos.com|localhost
+## 开发设置
+
+克隆此 fork：
+
+```bash
+git clone https://github.com/clownfishrob/crosspaste-desktop.git
+cd crosspaste-desktop
 ```
 
-另外关于 CrossPaste 的[技术博客](https://crosspaste.com/blog/introduction)也正在连载（大概每周一篇），如果你对开发跨平台应用感兴趣，欢迎阅读。
+运行桌面应用：
 
-### 🌍 本地构建 Chrome 扩展
+```bash
+./gradlew app:run -PappEnv=BETA
+```
 
-Chrome 扩展位于 [`web/`](./web) 目录下，通过 Gradle 构建。需要本机安装 Node.js（>= 18），首次构建时 `npmInstall` 任务会自动拉取依赖。
+运行桌面测试：
 
-1. 构建扩展
+```bash
+./gradlew :app:desktopTest -PappEnv=BETA
+```
 
-   ```bash
-   ./gradlew :web:build
-   ```
+创建 macOS 桌面应用包：
 
-   构建产物（未打包的扩展）输出到 `web/dist/`。
+```bash
+./gradlew :app:createDistributable -PappEnv=BETA
+```
 
-2. 加载到 Chrome
+生成的应用位于：
 
-   - 打开 `chrome://extensions/`
-   - 在右上角开启 **开发者模式**
-   - 点击 **加载已解压的扩展程序**，选择 `web/dist/` 目录
+```text
+app/build/compose/binaries/main/app/
+```
 
-扩展会自动发现同一台机器上运行的 CrossPaste 桌面端，并与之同步粘贴板内容。如果想快速迭代扩展代码，可以在 `web/` 目录下执行 `npm run dev` 进入 Vite 开发模式，然后在 Chrome 中点击重新加载扩展即可。扩展依赖由 `./gradlew :core:jsBrowserProductionLibraryDistribution` 生成的 Kotlin/JS `core` 库（`:web:build` 任务也会自动构建一次），修改 `core/` 源码后需要重跑这个任务，`npm run dev` 才能拿到最新产物。
+首次构建可能会下载 Gradle、Kotlin、Compose 和 JetBrains Runtime 依赖。
+建议本地开发使用 JDK 21。
 
-## 🗺️ 路线图
-CrossPaste 正在持续发展中！**v2.0** 把 Chrome 扩展作为一等公民接入了同步网络。接下来我们正在筹备：
+## macOS 本地安装
 
-- [ ] **命令行模式**：让 CrossPaste 可以在终端和 Shell 脚本中被驱动
-- [ ] **插件系统**：让社区可以为 CrossPaste 扩展自定义粘贴类型与集成能力
+创建应用包后，可以复制到用户 Applications 目录：
 
-这只是我们计划的一小部分。想了解更多细节和长期规划？查看我们的[完整路线图](doc/zh/Roadmap.md)。
+```bash
+rm -rf "$HOME/Applications/pasteflow-dev.app"
+ditto "app/build/compose/binaries/main/app/pasteflow-dev.app" "$HOME/Applications/pasteflow-dev.app"
+open -n "$HOME/Applications/pasteflow-dev.app"
+```
 
-## 🙋 常见问题
-这是当前收集的一些[常见问题](doc/zh/FQA.md)，如果你有其他问题，请创建 [issue](https://github.com/CrossPaste/crosspaste-desktop/issues/new/choose) 让我们知道。
+全局快捷键需要 macOS Accessibility 权限。请打开：
 
-## 🤝 支持项目
-- **🌟 Star 这个项目**：这是支持 CrossPaste 最简单的方法。
-- **🪲 报告错误**：在[问题追踪器](https://github.com/CrossPaste/crosspaste-desktop/issues/new/choose)上报告你发现的任何错误。
-- **📖 翻译**：帮助 CrossPaste 翻译、润色到你的[语言](https://github.com/CrossPaste/crosspaste-desktop/tree/main/app/src/desktopMain/resources/i18n)。
-- **📝 贡献**：[贡献代码](doc/zh/Contributing.md)、评论 issue，欢迎一切可以帮助到项目的贡献。
-- **💖 赞助支持**: 通过 [GitHub Sponsors](https://github.com/sponsors/CrossPaste) 在经济上支持项目，以帮助持续开发和维护。
+```text
+System Settings -> Privacy & Security -> Accessibility
+```
 
-## 📝 贡献者
-<a href="https://github.com/CrossPaste/crosspaste-desktop/graphs/contributors">
-   <img src="https://contrib.rocks/image?repo=CrossPaste/crosspaste-desktop" />
-</a>
+然后启用 `pasteflow-dev`。
 
-## 💖 赞助
-<!-- sponsors --><a href="https://github.com/liaokaime"><img src="https://wsrv.nl/?url=github.com/liaokaime.png&w=120&h=120&fit=cover&mask=circle" width="60" height="60" alt="liaokai" /></a>&nbsp;<a href="https://github.com/jaepil-choi"><img src="https://wsrv.nl/?url=github.com/jaepil-choi.png&w=120&h=120&fit=cover&mask=circle" width="60" height="60" alt="Jaepil.Choi" /></a>&nbsp;<!-- sponsors -->
+## 致谢
+
+PasteFlow Dev 是 CrossPaste 的 fork。原项目提供了跨平台剪贴板、同步、存储、UI 和扩展等核心基础。
+
+原项目：
+
+- Repository: [CrossPaste/crosspaste-desktop](https://github.com/CrossPaste/crosspaste-desktop)
+- Website: [crosspaste.com](https://crosspaste.com)
+
+## License
+
+本仓库使用 GNU Affero General Public License v3.0。
+详见 [LICENSE](LICENSE)。
+
+由于这是 AGPL-3.0 项目的 fork，衍生工作也需要继续遵守 AGPL-3.0 许可证条款。
+
+## Contact
+
+```text
+rob@ngduk.co.uk
+```

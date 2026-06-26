@@ -4,7 +4,7 @@
 
 1. 粘贴板 ( Pasteboard )
 
-   每次复制操作，CrossPaste 都会全面捕获粘贴板内容，不仅仅局限于单一数据类型。
+   每次复制操作，PasteFlow Dev 都会全面捕获粘贴板内容，不仅仅局限于单一数据类型。
 
 2. 粘贴项 ( Paste Item )
 
@@ -19,17 +19,17 @@
 
 4. 智能粘贴
 
-   根据粘贴环境，CrossPaste会自动选择最合适的粘贴项。如：
+   根据粘贴环境，PasteFlow Dev会自动选择最合适的粘贴项。如：
 
     - 在文本框中粘贴图片时，会智能选用文件名
     - 在支持富文本的应用中粘贴时，会保留原始格式
 
 ### 设计理念
-CrossPaste 的核心设计目标是最大限度地保留原始复制内容的信息，并在粘贴时根据上下文提供最合适的数据。这种方法确保了跨平台、跨应用场景下的最佳用户体验。
+PasteFlow Dev 的核心设计目标是最大限度地保留原始复制内容的信息，并在粘贴时根据上下文提供最合适的数据。这种方法确保了跨平台、跨应用场景下的最佳用户体验。
 
 ## 粘贴类型的优先级
 
-粘贴类型的预览[默认优先级](https://github.com/CrossPaste/crosspaste-desktop/blob/main/app/src/commonMain/kotlin/com/crosspaste/db/paste/PasteType.kt)如下：
+粘贴类型的预览[默认优先级](https://github.com/clownfishrob/crosspaste-desktop/blob/pasteflow-dev-mvp/core/src/commonMain/kotlin/com/crosspaste/paste/PasteType.kt)如下：
 
 | 优先级 | 粘贴类型 |
 |-----|------|

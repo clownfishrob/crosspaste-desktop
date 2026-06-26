@@ -1,7 +1,7 @@
 # Frequently Asked Questions
 
 ## 1. Unable to Find Nearby Devices
-CrossPaste uses DNS-SD (DNS Service Discovery) for service discovery, similar to how local network printing services are discovered. If service discovery isn't working correctly on your local network, there could be several reasons:
+PasteFlow Dev uses DNS-SD (DNS Service Discovery) for service discovery, similar to how local network printing services are discovered. If service discovery isn't working correctly on your local network, there could be several reasons:
 
 1. Firewall Blocking: Router or host firewalls may be blocking UDP port 5353, which is the standard port used by mDNS (multicast DNS) for service discovery. Firewalls might also be blocking multicast traffic, which DNS-SD relies on for communication.
 2. Multicast Traffic Restrictions: Some routers might disable or limit multicast traffic by default, directly affecting DNS-SD functionality. The IGMP snooping feature on some routers may prevent multicast packets from being forwarded correctly.
@@ -9,7 +9,7 @@ CrossPaste uses DNS-SD (DNS Service Discovery) for service discovery, similar to
 
 You can verify if DNS-SD is working correctly using the following methods:
 
-1. Start CrossPaste on each device.
+1. Start PasteFlow Dev on each device.
 
 2. Use command-line tools to check if the service can be discovered:
 
@@ -30,4 +30,4 @@ avahi-browse -r _crosspasteService._tcp
 ```
 
 Note: Devices that have already been added to "My Devices" or blacklisted will not appear in nearby devices.
-If the command-line tools can discover the service, but CrossPaste cannot, it may be an issue with CrossPaste itself. In this case, please submit an issue to us for further investigation.
+If the command-line tools can discover the service, but PasteFlow Dev cannot, it may be an issue with PasteFlow Dev itself. In this case, please submit an issue to us for further investigation.

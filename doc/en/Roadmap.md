@@ -5,9 +5,7 @@
 - Update the Share settings page for the PasteFlow Dev product direction.
 - Re-enable the Share menu once the PasteFlow Dev share flow and copy are ready.
 - Re-enable Check for updates once update metadata and release delivery are owned by PasteFlow Dev.
-- Reset the Change Log content so it no longer carries inappropriate CrossPaste history.
-- Change the About page copy, branding, links, and metadata for PasteFlow Dev.
-- Update remaining CrossPaste references across the settings experience and supporting copy.
+- Rebrand or replace legacy CrossPaste update infrastructure names before update controls return.
 
 Below is our current project roadmap. Rather than pinning features to specific version numbers, we group them into what has shipped and what we're working on next:
 
@@ -32,12 +30,12 @@ graph LR
 
 - **OCR** _(since v1.2.3)_ — extract text from images locally, with no network calls.
 - **MCP server** _(since v1.2.8)_ — expose pasteboard history to AI assistants via the Model Context Protocol.
-- **Chrome extension** _(since v2.0)_ — sync clipboard between the browser and any paired CrossPaste device.
+- **Chrome extension** _(since v2.0)_ — sync clipboard between the browser and any paired PasteFlow Dev device.
 
 ## Upcoming
 
-- **Command-line mode** — drive CrossPaste from your terminal and shell scripts.
-- **Plugin system** — let the community extend CrossPaste with custom paste types and integrations.
+- **Command-line mode** — drive PasteFlow Dev from your terminal and shell scripts.
+- **Plugin system** — let the community extend PasteFlow Dev with custom paste types and integrations.
 
 **Note**: This roadmap represents our current development plans and vision for the project. As development progresses, adjustments may be made based on community feedback, technological advancements, and changing priorities. We welcome community involvement and contributions! If you're interested in helping shape the future of this project, please consider joining our community and contributing to its growth.
 
