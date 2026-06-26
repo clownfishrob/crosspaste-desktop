@@ -96,6 +96,16 @@ WHERE pasteState != -1
 ORDER BY createTime DESC
 LIMIT ?;
 
+queryOldestUntaggedAboveLimit:
+SELECT id FROM PasteDataEntity
+WHERE pasteState != -1
+  AND NOT EXISTS (
+      SELECT 1 FROM PasteTagEntity
+      WHERE PasteTagEntity.pasteId = PasteDataEntity.id
+  )
+ORDER BY createTime DESC, id DESC
+LIMIT :batchSize OFFSET :historyLimit;
+
 queryByCleanTime:
 SELECT id
 FROM PasteDataEntity

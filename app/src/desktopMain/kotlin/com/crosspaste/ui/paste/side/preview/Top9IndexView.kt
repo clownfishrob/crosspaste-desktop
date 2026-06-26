@@ -14,14 +14,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import com.crosspaste.ui.theme.AppUIColors
-import com.crosspaste.ui.theme.AppUISize.large2X
 import com.crosspaste.ui.theme.AppUISize.medium
 import com.crosspaste.ui.theme.AppUISize.tiny
 import com.crosspaste.ui.theme.AppUISize.tiny4XRoundedCornerShape
+import com.crosspaste.ui.theme.AppUISize.xxLarge
 import com.crosspaste.ui.theme.DesktopAppUIFont.keyboardCharTextStyle
 
 @Composable
-fun Top9IndexView(index: Int) {
+fun QuickSlotIndexView(index: Int) {
     Row(
         modifier =
             Modifier
@@ -32,7 +32,7 @@ fun Top9IndexView(index: Int) {
         Box(
             modifier =
                 Modifier
-                    .size(large2X, medium)
+                    .size(xxLarge, medium)
                     .clip(tiny4XRoundedCornerShape)
                     .background(AppUIColors.importantColor),
             contentAlignment = Alignment.Center,

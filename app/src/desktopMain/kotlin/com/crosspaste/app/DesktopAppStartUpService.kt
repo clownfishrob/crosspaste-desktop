@@ -64,9 +64,9 @@ class MacAppStartUpService(
 
     private val logger: KLogger = KotlinLogging.logger {}
 
-    private val crosspasteBundleID = getSystemProperty().get("mac.bundleID")
+    private val bundleID = getSystemProperty().getOption("mac.bundleID") ?: DesktopAppIdentity.bundleId
 
-    private val plist = "$crosspasteBundleID.plist"
+    private val plist = "$bundleID.plist"
 
     private val filePersist = FilePersist
 
@@ -98,11 +98,11 @@ class MacAppStartUpService(
                         <plist version="1.0">
                         <dict>
                             <key>Label</key>
-                            <string>$crosspasteBundleID</string>
+                            <string>$bundleID</string>
                             <key>ProgramArguments</key>
                             <array>
                                 <string>${
-                            appPathProvider.pasteAppPath.resolve("Contents/MacOS/CrossPaste")
+                            appPathProvider.pasteAppPath.resolve("Contents/MacOS/${DesktopAppIdentity.displayName}")
                         }</string>
                                 <string>--minimize</string>
                             </array>
@@ -140,7 +140,7 @@ class WindowsAppStartUpService(
 ) : AppStartUpService {
 
     companion object {
-        const val PFN = "ShenzhenCompileFutureTech.CrossPaste_gphsk9mrjnczc"
+        const val PFN = "RobDev.PasteFlowDev_dev"
     }
 
     private val logger: KLogger = KotlinLogging.logger {}
@@ -150,9 +150,9 @@ class WindowsAppStartUpService(
     private val appExePath =
         appPathProvider.pasteAppPath
             .resolve("bin")
-            .resolve("CrossPaste.exe")
+            .resolve(DesktopAppIdentity.windowsExecutableName)
 
-    private val microsoftStartup = "explorer.exe shell:appsFolder\\$PFN!$AppName"
+    private val microsoftStartup = "explorer.exe shell:appsFolder\\$PFN!${DesktopAppIdentity.windowsRunName}"
 
     private fun getRegValue(): String =
         if (isMicrosoftStore) {
@@ -176,7 +176,7 @@ class WindowsAppStartUpService(
                 "query",
                 "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run",
                 "/v",
-                AppName,
+                DesktopAppIdentity.windowsRunName,
             )
 
         runCatching {
@@ -194,17 +194,19 @@ class WindowsAppStartUpService(
             if (result != null) {
                 val registryValue = result.substringAfter("REG_SZ").trim()
                 if (registryValue.equals(getRegValue(), ignoreCase = true)) {
-                    logger.info { "$AppName is set to start on boot with the correct path." }
+                    logger.info { "${DesktopAppIdentity.displayName} is set to start on boot with the correct path." }
                     return true
                 } else {
-                    logger.info { "$AppName is set to start on boot with the path is not current path." }
+                    logger.info {
+                        "${DesktopAppIdentity.displayName} is set to start on boot with the path is not current path."
+                    }
                     return false
                 }
             }
         }.onFailure { e ->
-            logger.error(e) { "Failed to check if $AppName is set to start on boot." }
+            logger.error(e) { "Failed to check if ${DesktopAppIdentity.displayName} is set to start on boot." }
         }
-        logger.info { "$AppName is not set to start on boot." }
+        logger.info { "${DesktopAppIdentity.displayName} is not set to start on boot." }
         return false
     }
 
@@ -217,7 +219,7 @@ class WindowsAppStartUpService(
                         "add",
                         "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run",
                         "/v",
-                        AppName,
+                        DesktopAppIdentity.windowsRunName,
                         "/d",
                         getRegValue(),
                         "/f",
@@ -251,7 +253,7 @@ class WindowsAppStartUpService(
                         "delete",
                         "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run",
                         "/v",
-                        AppName,
+                        DesktopAppIdentity.windowsRunName,
                         "/f",
                     )
 
@@ -265,7 +267,7 @@ class WindowsAppStartUpService(
                 val exitCode = process.waitFor()
 
                 if (exitCode == 0) {
-                    logger.info { "Auto startup removed successfully for $AppName" }
+                    logger.info { "Auto startup removed successfully for ${DesktopAppIdentity.displayName}" }
                 } else {
                     logger.warn { "Command exited with code $exitCode: ${command.joinToString(" ")}" }
                 }
@@ -283,14 +285,14 @@ class LinuxAppStartUpService(
 
     private val logger: KLogger = KotlinLogging.logger {}
 
-    private val desktopFile = "crosspaste.desktop"
+    private val desktopFile = DesktopAppIdentity.linuxDesktopFile
 
     private val filePersist = FilePersist
 
     private val appExePath =
         appPathProvider.pasteAppPath
             .resolve("bin")
-            .resolve("crosspaste")
+            .resolve(DesktopAppIdentity.linuxExecutableName)
 
     override fun followConfig() {
         if (configManager.getCurrentConfig().enableAutoStartUp) {
@@ -317,7 +319,7 @@ class LinuxAppStartUpService(
                         """
                         [Desktop Entry]
                         Type=Application
-                        Name=CrossPaste
+                        Name=${DesktopAppIdentity.displayName}
                         Exec=$appExePath --minimize
                         Categories=Utility
                         Terminal=false

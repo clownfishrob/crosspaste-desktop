@@ -1,5 +1,6 @@
 package com.crosspaste.paste.plugin.type
 
+import com.crosspaste.app.DesktopAppIdentity
 import com.crosspaste.paste.PasteCollector
 import com.crosspaste.paste.PasteDataFlavor
 import com.crosspaste.paste.PasteTransferable
@@ -17,6 +18,9 @@ class DesktopTextTypePlugin : TextTypePlugin {
         const val UNICODE_STRING = "Unicode String"
         const val TEXT = "text/plain"
         const val PLAIN_TEXT = "Plain Text"
+
+        fun isWithinTextLimit(text: String): Boolean =
+            text.encodeToByteArray().size.toLong() <= DesktopAppIdentity.maxTextBytes
     }
 
     override fun getPasteType(): PasteType = PasteType.TEXT_TYPE
@@ -47,7 +51,7 @@ class DesktopTextTypePlugin : TextTypePlugin {
         pasteTransferable: PasteTransferable,
         pasteCollector: PasteCollector,
     ) {
-        if (transferData is String) {
+        if (transferData is String && isWithinTextLimit(transferData)) {
             val update: (PasteItem) -> PasteItem = { pasteItem ->
                 createTextPasteItem(
                     identifiers = pasteItem.identifiers,

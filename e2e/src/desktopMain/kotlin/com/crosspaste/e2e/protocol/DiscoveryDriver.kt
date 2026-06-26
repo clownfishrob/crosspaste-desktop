@@ -18,7 +18,7 @@ import javax.jmdns.impl.util.ByteWrangler
 class DiscoveryDriver {
 
     companion object {
-        const val SERVICE_TYPE: String = "_crosspasteService._tcp.local."
+        const val SERVICE_TYPE: String = "_pasteflowDevService._tcp.local."
         private const val ACTIVE_SCAN_TIMEOUT_MS = 1500L
     }
 
@@ -42,7 +42,7 @@ class DiscoveryDriver {
 
             override fun serviceRemoved(event: ServiceEvent) {
                 val parts = event.info.name.split("@")
-                if (parts.size == 3 && parts[0] == "crosspaste") {
+                if (parts.size == 3 && parts[0] == "pasteflow-dev") {
                     resolved.remove(parts[1])
                 }
             }

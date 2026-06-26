@@ -54,6 +54,8 @@ interface PasteDao : SearchPasteData {
         pasteType: Int? = null,
     )
 
+    suspend fun markDeleteOldestUntaggedAboveLimit(limit: Int)
+
     suspend fun getActiveCount(): Long
 
     suspend fun getSize(allOrTagged: Boolean = false): Long

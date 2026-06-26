@@ -87,7 +87,7 @@ class WindowsAppRestartService(
         // Path to the application's executable file, passed to the restart script
         val exeFilePath =
             appPathProvider.pasteAppExePath
-                .resolve("CrossPaste.exe")
+                .resolve(DesktopAppIdentity.windowsExecutableName)
 
         logger.info { "Restarting app script: $scriptPath\n$exeFilePath\nwith args: $pid" }
         val command =

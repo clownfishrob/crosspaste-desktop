@@ -10,7 +10,7 @@ const ADDED_AT = Date.UTC(2026, 4, 1);
 const macDevice: MarketingDevice = {
   targetAppInstanceId: "macos-marketing",
   host: "192.168.1.10",
-  port: 13129,
+  port: 13139,
   trusted: true,
   noteName: "My Macbook",
   addedAt: ADDED_AT,
@@ -32,7 +32,7 @@ const macDevice: MarketingDevice = {
         version: "15.3.1",
       },
       hostInfoList: [{ networkPrefixLength: 24, hostAddress: "192.168.1.10" }],
-      port: 13129,
+      port: 13139,
     },
   },
 };
@@ -40,7 +40,7 @@ const macDevice: MarketingDevice = {
 const winDevice: MarketingDevice = {
   targetAppInstanceId: "windows-marketing",
   host: "192.168.1.20",
-  port: 13129,
+  port: 13139,
   trusted: true,
   noteName: "My Win",
   addedAt: ADDED_AT,
@@ -62,7 +62,7 @@ const winDevice: MarketingDevice = {
         version: "11",
       },
       hostInfoList: [{ networkPrefixLength: 24, hostAddress: "192.168.1.20" }],
-      port: 13129,
+      port: 13139,
     },
   },
 };

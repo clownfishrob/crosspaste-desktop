@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { apiGet } from "../client";
 import { SyncApiError, StandardErrorCode } from "../sync-error";
 
-const CONFIG = { host: "127.0.0.1", port: 13129, appInstanceId: "ext-1" };
+const CONFIG = { host: "127.0.0.1", port: 13139, appInstanceId: "ext-1" };
 
 function mockFetchOnce(response: {
   ok: boolean;

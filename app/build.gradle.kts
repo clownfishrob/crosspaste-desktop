@@ -18,7 +18,7 @@ versionProperties.load(
             .toFile(),
     ),
 )
-group = "com.crosspaste"
+group = "com.robdev.pasteflow.dev"
 version = versionProperties.getProperty("version")
 
 plugins {
@@ -45,6 +45,10 @@ buildscript {
 
 composeCompiler {
     stabilityConfigurationFiles.add(rootProject.layout.projectDirectory.file("compose-stability.conf"))
+}
+
+compose.resources {
+    packageOfResClass = "com.crosspaste.app.generated.resources"
 }
 
 ktlint {
@@ -319,7 +323,7 @@ private fun initJvmArgs(
         jvmArgs(
             arrayOf(
                 "-Dapple.awt.enableTemplateImages=true",
-                "-Dmac.bundleID=com.crosspaste.mac",
+                "-Dmac.bundleID=com.robdev.pasteflow.dev",
             ),
         )
     }
@@ -464,7 +468,7 @@ compose.desktop {
         nativeDistributions {
 
             appResourcesRootDir = project.layout.projectDirectory.dir("resources")
-            packageName = "crosspaste"
+            packageName = "pasteflow-dev"
             packageVersion = version.toString()
 
             // If we want to use arthas attach application in production environment,
@@ -504,10 +508,10 @@ compose.desktop {
                 targetFormats(TargetFormat.Dmg)
 
                 macOS {
-                    bundleID = "com.crosspaste.mac"
+                    bundleID = "com.robdev.pasteflow.dev"
                     appCategory = "public.app-category.utilities"
                     infoPlist {
-                        dockName = "CrossPaste"
+                        dockName = "PasteFlow Dev"
                         extraKeysRawXml = """
                         <key>LSUIElement</key>
                         <string>true</string>

@@ -77,11 +77,11 @@ abstract class DesktopAppWindowManager(
 ) : AppWindowManager() {
 
     companion object {
-        private const val MAIN_WINDOW_TITLE: String = "CrossPaste"
+        private const val MAIN_WINDOW_TITLE: String = DesktopAppIdentity.displayName
 
-        private const val SEARCH_WINDOW_TITLE = "CrossPaste Search"
+        private const val SEARCH_WINDOW_TITLE = "${DesktopAppIdentity.displayName} Search"
 
-        private const val BUBBLE_WINDOW_TITLE = "CrossPaste Editor"
+        private const val BUBBLE_WINDOW_TITLE = "${DesktopAppIdentity.displayName} Editor"
     }
 
     protected val logger: KLogger = KotlinLogging.logger {}

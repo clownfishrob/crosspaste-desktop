@@ -10,7 +10,7 @@ import com.crosspaste.ui.paste.PasteDataScope
 
 @Composable
 fun PasteDataScope.SidePreviewView(
-    showTop9: Boolean,
+    showQuickSlot: Boolean,
     index: Int,
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
@@ -28,8 +28,8 @@ fun PasteDataScope.SidePreviewView(
             }
         }
 
-        if (showTop9) {
-            Top9IndexView(index)
+        if (showQuickSlot) {
+            QuickSlotIndexView(index)
         }
     }
 }

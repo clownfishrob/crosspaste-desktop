@@ -181,7 +181,7 @@ class WindowsNativePasteboardTest {
     }
 
     @Test
-    fun `writeFilesToClipboard sets CrossPaste marker`() {
+    fun `writeFilesToClipboard sets PasteFlow Dev marker`() {
         val tempFile = File.createTempFile("native-cb-marker", ".txt")
         try {
             tempFile.writeText("marker test")
@@ -190,14 +190,14 @@ class WindowsNativePasteboardTest {
             assertTrue(seqNum >= 0)
 
             val user32 = User32.INSTANCE
-            val crossPasteFormatId = user32.RegisterClipboardFormatA("CrossPaste")
-            assertTrue(crossPasteFormatId > 0, "CrossPaste format should be registered")
+            val pasteFlowFormatId = user32.RegisterClipboardFormatA("PasteFlowDev")
+            assertTrue(pasteFlowFormatId > 0, "PasteFlow Dev format should be registered")
 
             assertTrue(user32.OpenClipboard(null), "Should be able to open clipboard")
             try {
                 assertTrue(
-                    user32.IsClipboardFormatAvailable(crossPasteFormatId),
-                    "CrossPaste marker format should be available on clipboard",
+                    user32.IsClipboardFormatAvailable(pasteFlowFormatId),
+                    "PasteFlow Dev marker format should be available on clipboard",
                 )
             } finally {
                 user32.CloseClipboard()

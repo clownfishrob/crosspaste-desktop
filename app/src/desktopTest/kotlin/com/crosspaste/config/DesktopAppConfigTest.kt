@@ -1,5 +1,6 @@
 package com.crosspaste.config
 
+import com.crosspaste.clean.CleanTime
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -17,30 +18,38 @@ class DesktopAppConfigTest {
         val config = createDefaultConfig()
         assertEquals("en", config.language)
         assertEquals("", config.font)
-        assertTrue(config.enableAutoStartUp)
+        assertFalse(config.enableAutoStartUp)
         assertFalse(config.enableDebugMode)
         assertTrue(config.isFollowSystemTheme)
         assertFalse(config.isDarkTheme)
-        assertEquals(13129, config.port)
+        assertEquals(13139, config.port)
         assertFalse(config.enableEncryptSync)
         assertTrue(config.enableExpirationCleanup)
-        assertEquals(6, config.imageCleanTimeIndex)
-        assertEquals(6, config.fileCleanTimeIndex)
+        assertEquals(CleanTime.TWO_MONTH.ordinal, config.imageCleanTimeIndex)
+        assertEquals(CleanTime.TWO_MONTH.ordinal, config.fileCleanTimeIndex)
         assertTrue(config.enableThresholdCleanup)
         assertEquals(2048L, config.maxStorage)
+        assertEquals(1000, config.maxHistoryItems)
         assertEquals(20, config.cleanupPercentage)
-        assertTrue(config.enableDiscovery)
+        assertFalse(config.enableDiscovery)
         assertEquals("[]", config.blacklist)
         assertTrue(config.enablePasteboardListening)
         assertTrue(config.showTutorial)
-        assertEquals(32L, config.maxBackupFileSize)
+        assertEquals(20L, config.maxBackupFileSize)
         assertTrue(config.enabledSyncFileSizeLimit)
-        assertEquals(512L, config.maxSyncFileSize)
+        assertEquals(20L, config.maxSyncFileSize)
         assertTrue(config.useDefaultStoragePath)
         assertEquals("", config.storagePath)
         assertTrue(config.enableSoundEffect)
         assertFalse(config.legacySoftwareCompatibility)
         assertTrue(config.pastePrimaryTypeOnly)
+        assertFalse(config.enableSyncText)
+        assertFalse(config.enableSyncUrl)
+        assertFalse(config.enableSyncHtml)
+        assertFalse(config.enableSyncRtf)
+        assertFalse(config.enableSyncImage)
+        assertFalse(config.enableSyncFile)
+        assertFalse(config.enableSyncColor)
     }
 
     @Test
@@ -73,6 +82,13 @@ class DesktopAppConfigTest {
     }
 
     @Test
+    fun `copy with int key updates maxHistoryItems`() {
+        val config: AppConfig = createDefaultConfig()
+        val updated = config.copy("maxHistoryItems", 500)
+        assertEquals(500, updated.maxHistoryItems)
+    }
+
+    @Test
     fun `copy with unknown key does not change config`() {
         val config: AppConfig = createDefaultConfig()
         val updated = config.copy("unknownKey", "unknownValue")
@@ -84,20 +100,20 @@ class DesktopAppConfigTest {
     @Test
     fun `copy updates all sync content type controls`() {
         val config: AppConfig = createDefaultConfig()
-        var updated = config.copy("enableSyncText", false)
-        assertFalse(updated.enableSyncText)
-        updated = config.copy("enableSyncUrl", false)
-        assertFalse(updated.enableSyncUrl)
-        updated = config.copy("enableSyncHtml", false)
-        assertFalse(updated.enableSyncHtml)
-        updated = config.copy("enableSyncRtf", false)
-        assertFalse(updated.enableSyncRtf)
-        updated = config.copy("enableSyncImage", false)
-        assertFalse(updated.enableSyncImage)
-        updated = config.copy("enableSyncFile", false)
-        assertFalse(updated.enableSyncFile)
-        updated = config.copy("enableSyncColor", false)
-        assertFalse(updated.enableSyncColor)
+        var updated = config.copy("enableSyncText", true)
+        assertTrue(updated.enableSyncText)
+        updated = config.copy("enableSyncUrl", true)
+        assertTrue(updated.enableSyncUrl)
+        updated = config.copy("enableSyncHtml", true)
+        assertTrue(updated.enableSyncHtml)
+        updated = config.copy("enableSyncRtf", true)
+        assertTrue(updated.enableSyncRtf)
+        updated = config.copy("enableSyncImage", true)
+        assertTrue(updated.enableSyncImage)
+        updated = config.copy("enableSyncFile", true)
+        assertTrue(updated.enableSyncFile)
+        updated = config.copy("enableSyncColor", true)
+        assertTrue(updated.enableSyncColor)
     }
 
     @Test

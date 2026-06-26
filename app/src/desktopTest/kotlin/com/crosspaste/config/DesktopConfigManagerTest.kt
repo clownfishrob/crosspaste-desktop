@@ -6,6 +6,7 @@ import okio.Path.Companion.toOkioPath
 import java.nio.file.Files
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
@@ -28,12 +29,13 @@ class DesktopConfigManagerTest {
     fun `initial config has default values`() {
         val (manager, _) = createConfigManager()
         val config = manager.getCurrentConfig()
-        assertEquals(13129, config.port)
-        assertTrue(config.enableAutoStartUp)
+        assertEquals(13139, config.port)
+        assertFalse(config.enableAutoStartUp)
         assertTrue(config.enablePasteboardListening)
         assertTrue(config.enableExpirationCleanup)
         assertTrue(config.enableThresholdCleanup)
         assertEquals(2048, config.maxStorage)
+        assertEquals(1000, config.maxHistoryItems)
         assertEquals(20, config.cleanupPercentage)
     }
 
@@ -156,8 +158,12 @@ class DesktopConfigManagerTest {
     @Test
     fun `updateConfig updates sync content type controls`() {
         val (manager, _) = createConfigManager()
+        manager.updateConfig("enableSyncText", true)
+        assertEquals(true, manager.getCurrentConfig().enableSyncText)
         manager.updateConfig("enableSyncText", false)
         assertEquals(false, manager.getCurrentConfig().enableSyncText)
+        manager.updateConfig("enableSyncImage", true)
+        assertEquals(true, manager.getCurrentConfig().enableSyncImage)
         manager.updateConfig("enableSyncImage", false)
         assertEquals(false, manager.getCurrentConfig().enableSyncImage)
     }

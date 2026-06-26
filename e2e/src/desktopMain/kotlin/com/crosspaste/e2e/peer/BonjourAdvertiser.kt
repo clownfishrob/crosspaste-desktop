@@ -9,7 +9,7 @@ import javax.jmdns.JmDNS
 import javax.jmdns.ServiceInfo
 
 /**
- * Advertises this peer as a CrossPaste device via mDNS so the target's nearbyDeviceManager
+ * Advertises this peer as a PasteFlow Dev device via mDNS so the target's nearbyDeviceManager
  * sees it. Without this, target's `/sync/trust` succeeds but never writes SyncRuntimeInfo
  * (because trustSyncInfo() only registers peers it has discovered), and subsequent
  * `/sync/paste` calls fail with NOT_FOUND_APP_INSTANCE_ID.
@@ -24,7 +24,7 @@ class BonjourAdvertiser(
 ) {
 
     companion object {
-        const val SERVICE_TYPE: String = "_crosspasteService._tcp.local."
+        const val SERVICE_TYPE: String = "_pasteflowDevService._tcp.local."
 
         // No real server is bound; this is a marker port baked into the announcement.
         const val ADVERTISED_PORT: Int = 13139
@@ -53,7 +53,7 @@ class BonjourAdvertiser(
                 val info =
                     ServiceInfo.create(
                         SERVICE_TYPE,
-                        "crosspaste@${appInfo.appInstanceId}@${addr.hostAddress.replace(".", "_")}",
+                        "pasteflow-dev@${appInfo.appInstanceId}@${addr.hostAddress.replace(".", "_")}",
                         advertisedPort,
                         0,
                         0,

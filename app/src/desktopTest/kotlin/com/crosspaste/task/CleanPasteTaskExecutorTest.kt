@@ -31,6 +31,7 @@ class CleanPasteTaskExecutorTest {
             every { config.imageCleanTimeIndex } returns CleanTime.ONE_WEEK.ordinal
             every { config.fileCleanTimeIndex } returns CleanTime.ONE_MONTH.ordinal
             every { config.maxStorage } returns 1024L // 1024 MB
+            every { config.maxHistoryItems } returns 1000
             every { config.cleanupPercentage } returns 20
             every { configManager.getCurrentConfig() } returns config
         }
@@ -111,6 +112,7 @@ class CleanPasteTaskExecutorTest {
             every { config.enableExpirationCleanup } returns false
             every { config.enableThresholdCleanup } returns true
             every { config.maxStorage } returns 1024L
+            every { config.maxHistoryItems } returns 1000
             every { config.cleanupPercentage } returns 20
             every { deps.configManager.getCurrentConfig() } returns config
 
@@ -128,6 +130,7 @@ class CleanPasteTaskExecutorTest {
             coVerify(exactly = 0) { deps.pasteDao.markDeleteByCleanTime(any(), any()) }
             // Size check was performed
             coVerify(exactly = 1) { deps.pasteDao.getSize(true) }
+            coVerify(exactly = 1) { deps.pasteDao.markDeleteOldestUntaggedAboveLimit(1000) }
         }
 
     @Test
@@ -168,6 +171,22 @@ class CleanPasteTaskExecutorTest {
             assertTrue(result is SuccessPasteTaskResult)
             // Should call markDeleteByCleanTime for size-based cleanup (no type param)
             coVerify(atLeast = 1) { deps.pasteDao.markDeleteByCleanTime(any()) }
+        }
+
+    @Test
+    fun `history cap cleanup removes oldest untagged entries beyond limit`() =
+        runTest {
+            val deps = TestDeps()
+            coEvery { deps.pasteDao.getSize(true) } returns 100L
+            coEvery { deps.pasteDao.getSize(false) } returns 50L
+
+            val executor = deps.createExecutor()
+            val task = createPasteTask()
+
+            val result = executor.doExecuteTask(task)
+
+            assertTrue(result is SuccessPasteTaskResult)
+            coVerify(exactly = 1) { deps.pasteDao.markDeleteOldestUntaggedAboveLimit(1000) }
         }
 
     @Test

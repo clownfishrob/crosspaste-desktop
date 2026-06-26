@@ -231,17 +231,18 @@ fun PasteDataScope.SidePasteTitleView() {
                 }
             }
 
-            relativeTime?.let {
-                Text(
-                    text = copywriter.getText(it.unit, it.value?.toString() ?: ""),
-                    style =
-                        DesktopAppUIFont.sidePasteTimeTextStyle.copy(
-                            color = onBackground,
-                        ),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-            }
+            val categoryText = copywriter.getText(pasteData.getTypeName())
+            val relativeTimeText = relativeTime?.let { copywriter.getText(it.unit, it.value?.toString() ?: "") }
+            val detailText = listOfNotNull(categoryText, relativeTimeText).joinToString(" - ")
+            Text(
+                text = detailText,
+                style =
+                    DesktopAppUIFont.sidePasteTimeTextStyle.copy(
+                        color = onBackground,
+                    ),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
         }
         SidePasteTypeIconView(
             modifier = Modifier.fillMaxHeight().wrapContentWidth(),

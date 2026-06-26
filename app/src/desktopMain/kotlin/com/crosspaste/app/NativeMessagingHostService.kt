@@ -18,7 +18,7 @@ class NativeMessagingHostService(
     private val logger = KotlinLogging.logger {}
 
     companion object {
-        const val HOST_NAME = "com.crosspaste.desktop"
+        const val HOST_NAME = DesktopAppIdentity.nativeMessagingHostName
         const val MANIFEST_FILE = "$HOST_NAME.json"
 
         val CHROME_EXTENSION_IDS: List<String> by lazy {
@@ -44,7 +44,7 @@ class NativeMessagingHostService(
             return """
                 {
                   "name": "$HOST_NAME",
-                  "description": "CrossPaste Desktop Native Messaging Host",
+                  "description": "${DesktopAppIdentity.displayName} Desktop Native Messaging Host",
                   "path": "${bridgeScriptPath.replace("\\", "/")}",
                   "type": "stdio",
                   "allowed_origins": [$origins]

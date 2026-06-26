@@ -79,9 +79,17 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
+import java.awt.event.KeyEvent.VK_0
 import java.awt.event.KeyEvent.VK_1
 import java.awt.event.KeyEvent.VK_9
 import kotlin.time.Duration.Companion.milliseconds
+
+internal fun quickSlotIndex(nativeKeyCode: Int): Int? =
+    when (nativeKeyCode) {
+        in VK_1..VK_9 -> nativeKeyCode - VK_1
+        VK_0 -> 9
+        else -> null
+    }
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -301,10 +309,9 @@ fun SidePasteboardContentView() {
                         isCtrlPressed = keyEvent.isCtrlPressed
 
                         if (keyEvent.type == KeyEventType.KeyDown) {
-                            if (keyEvent.key.nativeKeyCode in VK_1..VK_9) {
+                            quickSlotIndex(keyEvent.key.nativeKeyCode)?.let { index ->
                                 if (isCtrlPressed) {
                                     mainCoroutineDispatcher.launch {
-                                        val index = keyEvent.key.nativeKeyCode - VK_1
                                         if (searchResult.size > index) {
                                             pasteSelectionViewModel.toPaste(searchResult[index])
                                         }
@@ -363,7 +370,7 @@ fun SidePasteboardContentView() {
                             },
                         ) {
                             scope.SidePreviewView(
-                                showTop9 = isCtrlPressed && currentIndex < 9,
+                                showQuickSlot = isCtrlPressed && currentIndex < 10,
                                 index = currentIndex,
                             )
                         }

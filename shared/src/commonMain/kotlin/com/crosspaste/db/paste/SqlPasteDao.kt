@@ -250,6 +250,16 @@ class SqlPasteDao(
         }
     }
 
+    override suspend fun markDeleteOldestUntaggedAboveLimit(limit: Int) {
+        if (limit < 0) return
+        batchMarkDelete {
+            pasteDatabaseQueries.queryOldestUntaggedAboveLimit(
+                batchSize = markDeleteBatchNum,
+                historyLimit = limit.toLong(),
+            )
+        }
+    }
+
     override suspend fun getActiveCount(): Long =
         withContext(ioDispatcher) {
             pasteDatabaseQueries.getActiveCount().executeAsOne()

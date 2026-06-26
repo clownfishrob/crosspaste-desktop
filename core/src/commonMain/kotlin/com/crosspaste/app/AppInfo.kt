@@ -3,7 +3,7 @@ package com.crosspaste.app
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
-const val AppName: String = "CrossPaste"
+const val AppName: String = "PasteFlow Dev"
 
 @Serializable
 data class AppInfo(

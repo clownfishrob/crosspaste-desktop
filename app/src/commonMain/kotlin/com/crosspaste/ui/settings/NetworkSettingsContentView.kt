@@ -68,6 +68,16 @@ fun NetworkSettingsContentView(syncExtContent: @Composable () -> Unit = {}) {
     var networkInterfaces by remember { mutableStateOf(listOf<NetworkInterfaceInfo>()) }
 
     val useNetworkInterfaces: List<String> = jsonUtils.JSON.decodeFromString(config.useNetworkInterfaces)
+    val localOnlyMode =
+        !config.enableDiscovery &&
+            !config.enableEncryptSync &&
+            !config.enableSyncText &&
+            !config.enableSyncUrl &&
+            !config.enableSyncHtml &&
+            !config.enableSyncRtf &&
+            !config.enableSyncImage &&
+            !config.enableSyncFile &&
+            !config.enableSyncColor
 
     val blacklist =
         remember(config) {
@@ -92,6 +102,57 @@ fun NetworkSettingsContentView(syncExtContent: @Composable () -> Unit = {}) {
     ) {
         item {
             SettingSectionCard {
+                SettingListSwitchItem(
+                    title = "local_only_mode",
+                    icon = IconData(MaterialSymbols.Rounded.Shield, themeExt.greenIconColor),
+                    checked = localOnlyMode,
+                ) { enabled ->
+                    if (enabled) {
+                        configManager.updateConfig(
+                            listOf(
+                                "useNetworkInterfaces",
+                                "enableDiscovery",
+                                "enableEncryptSync",
+                                "enableSyncText",
+                                "enableSyncUrl",
+                                "enableSyncHtml",
+                                "enableSyncRtf",
+                                "enableSyncImage",
+                                "enableSyncFile",
+                                "enableSyncColor",
+                                "enableRemoteShowPairingCode",
+                            ),
+                            listOf(
+                                "[]",
+                                false,
+                                false,
+                                false,
+                                false,
+                                false,
+                                false,
+                                false,
+                                false,
+                                false,
+                                false,
+                            ),
+                        )
+                    } else {
+                        configManager.updateConfig(
+                            listOf(
+                                "enableSyncText",
+                                "enableSyncUrl",
+                                "enableSyncHtml",
+                                "enableSyncRtf",
+                                "enableSyncImage",
+                                "enableSyncFile",
+                                "enableSyncColor",
+                                "enableRemoteShowPairingCode",
+                            ),
+                            listOf(true, true, true, true, true, true, true, true),
+                        )
+                    }
+                }
+                HorizontalDivider(modifier = Modifier.padding(start = xxxxLarge))
                 SettingListSwitchItem(
                     title = "allow_discovery_by_new_devices",
                     icon = IconData(MaterialSymbols.Rounded.Visibility, themeExt.blueIconColor),

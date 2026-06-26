@@ -22,7 +22,7 @@ public func getPasteboardChangeCount(currentChangeCount: Int,
             for type in item.types {
                 if type.rawValue == "com.apple.is-remote-clipboard" {
                     isRemote.pointee = true
-                } else if type.rawValue == "com.crosspaste" {
+                } else if type.rawValue == "com.robdev.pasteflow.dev" {
                     isCrossPaste.pointee = true
                 }
             }
@@ -85,8 +85,8 @@ public func writeFilesToPasteboard(
         let item = NSPasteboardItem()
         // Lazy: data is provided via callback only when the pasteboard consumer reads it
         item.setDataProvider(provider, forTypes: [.fileURL])
-        // Eager: mark as CrossPaste to prevent self-consumption in the polling loop
-        item.setData(Data(), forType: NSPasteboard.PasteboardType("com.crosspaste"))
+        // Eager: mark as PasteFlow Dev to prevent self-consumption in the polling loop
+        item.setData(Data(), forType: NSPasteboard.PasteboardType("com.robdev.pasteflow.dev"))
         items.append(item)
     }
 
@@ -256,7 +256,7 @@ public func mainToBack(
 ) {
     let appNameString = String(cString: appName)
     DispatchQueue.main.async {
-        hideWindowAndActivateApp(hideTitle: "CrossPaste", appName: appNameString)
+        hideWindowAndActivateApp(hideTitle: "PasteFlow Dev", appName: appNameString)
     }
 }
 
@@ -269,7 +269,7 @@ public func mainToBack(
     let appNameString = String(cString: appName)
     let keyCodes = Array(UnsafeBufferPointer(start: keyCodesPointer, count: count))
     DispatchQueue.main.async {
-        hideWindowAndActivateApp(hideTitle: "CrossPaste", appName: appNameString)
+        hideWindowAndActivateApp(hideTitle: "PasteFlow Dev", appName: appNameString)
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
             keyCodes.withUnsafeBufferPointer { buffer in
@@ -286,7 +286,7 @@ public func searchToBack(
 ) {
     let appNameString = String(cString: appName)
     DispatchQueue.main.async {
-        hideWindowAndActivateApp(hideTitle: "CrossPaste Search", appName: appNameString)
+        hideWindowAndActivateApp(hideTitle: "PasteFlow Dev Search", appName: appNameString)
     }
 }
 
@@ -299,7 +299,7 @@ public func searchToBackAndPaste(
     let appNameString = String(cString: appName)
     let keyCodes = Array(UnsafeBufferPointer(start: keyCodesPointer, count: count))
     DispatchQueue.main.async {
-        hideWindowAndActivateApp(hideTitle: "CrossPaste Search", appName: appNameString)
+        hideWindowAndActivateApp(hideTitle: "PasteFlow Dev Search", appName: appNameString)
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
             keyCodes.withUnsafeBufferPointer { buffer in
@@ -401,7 +401,7 @@ public func applyAcrylicBackground(_ rawPtr: UnsafeRawPointer?, _ isDark: Bool) 
         contentView.wantsLayer = true
         contentView.layer?.backgroundColor = NSColor.clear.cgColor
 
-        let kLayerId = NSUserInterfaceItemIdentifier("CrossPasteBackgroundLayer")
+        let kLayerId = NSUserInterfaceItemIdentifier("PasteFlowDevBackgroundLayer")
         containerView.subviews.filter { $0.identifier == kLayerId }.forEach { $0.removeFromSuperview() }
 
         #if arch(arm64)
@@ -450,12 +450,12 @@ public func bringToFront(windowTitle: UnsafePointer<CChar>) {
         for window in windows {
             if window.title == title {
                 window.makeKeyAndOrderFront(nil)
-                if title == "CrossPaste" {
+                if title == "PasteFlow Dev" {
                     if app.activationPolicy() != .regular {
                         app.setActivationPolicy(.regular)
                         app.activate(ignoringOtherApps: true)
                     }
-                } else if title == "CrossPaste Search" {
+                } else if title == "PasteFlow Dev Search" {
                     if app.activationPolicy() != .accessory {
                         app.setActivationPolicy(.accessory)
                         app.activate(ignoringOtherApps: true)
@@ -861,7 +861,7 @@ public func trayCleanup() {
 
 private var networkPathMonitor: NWPathMonitor?
 private var networkStateCallback: (@convention(c) () -> Void)?
-private let networkMonitorQueue = DispatchQueue(label: "com.crosspaste.networkStateMonitor")
+private let networkMonitorQueue = DispatchQueue(label: "com.robdev.pasteflow.dev.networkStateMonitor")
 
 @_cdecl("startNetworkStateMonitor")
 public func startNetworkStateMonitor(callback: @escaping @convention(c) () -> Void) {

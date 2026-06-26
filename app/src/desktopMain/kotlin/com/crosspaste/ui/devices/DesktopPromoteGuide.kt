@@ -41,7 +41,7 @@ fun DesktopPromoteGuide() {
             )
         },
         topText = copyWriter.getText("download"),
-        bottomText = "CrossPaste",
+        bottomText = "PasteFlow Dev",
         onClick = { uiSupport.openCrossPasteWebInBrowser("download") },
     )
 }

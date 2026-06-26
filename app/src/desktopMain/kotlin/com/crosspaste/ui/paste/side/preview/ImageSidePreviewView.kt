@@ -90,6 +90,14 @@ fun PasteDataScope.ImageSidePreviewView() {
     }
 
     val fileFormat = remember(imagePath) { imagePath.extension }
+    val screenshotLabelKey =
+        remember(intSize, imagePath) {
+            ScreenshotLabel.getLabelKey(
+                width = intSize?.width,
+                height = intSize?.height,
+                fileName = imagePath.name,
+            )
+        }
 
     SidePasteLayoutView(
         pasteBottomContent = {},
@@ -121,6 +129,7 @@ fun PasteDataScope.ImageSidePreviewView() {
 
             ImageInfoLabels(
                 isInDownloads = isInDownloads,
+                screenshotLabelKey = screenshotLabelKey,
                 fileFormat = fileFormat,
                 intSize = intSize,
                 fileSize = fileSize,
@@ -147,6 +156,7 @@ private fun BoxScope.ImageCountBadge(imageCount: Long) {
 @Composable
 private fun BoxScope.ImageInfoLabels(
     isInDownloads: Boolean,
+    screenshotLabelKey: String?,
     fileFormat: String,
     intSize: IntSize?,
     fileSize: Long,
@@ -162,6 +172,9 @@ private fun BoxScope.ImageInfoLabels(
     ) {
         if (isInDownloads) {
             ImageInfoLabel(text = copywriter.getText("in_downloads"))
+        }
+        screenshotLabelKey?.let {
+            ImageInfoLabel(text = copywriter.getText(it))
         }
         FlowRow(
             horizontalArrangement = Arrangement.spacedBy(tiny3X, Alignment.CenterHorizontally),

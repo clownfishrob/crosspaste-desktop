@@ -190,7 +190,7 @@ class WindowsZipUpdater(
 
     private fun isInstallDirWritable(): Boolean =
         runCatching {
-            val exe = appPathProvider.pasteAppExePath.resolve("CrossPaste.exe")
+            val exe = appPathProvider.pasteAppExePath.resolve(DesktopAppIdentity.windowsExecutableName)
             fileUtils.existFile(exe) &&
                 Files.isWritable(appPathProvider.pasteAppPath.toNioPath())
         }.getOrDefault(false)
@@ -303,7 +303,7 @@ class WindowsZipUpdater(
 
             batPath.toFile().writeText(APPLY_UPDATE_BAT)
 
-            val exePath = appPathProvider.pasteAppExePath.resolve("CrossPaste.exe")
+            val exePath = appPathProvider.pasteAppExePath.resolve(DesktopAppIdentity.windowsExecutableName)
             val pid = ProcessHandle.current().pid().toString()
 
             // Pass paths through the environment, not as cmd arguments: several

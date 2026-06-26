@@ -65,7 +65,7 @@ class WindowsLazyClipboard : AutoCloseable {
                     user32.CreateWindowEx(
                         0,
                         "STATIC",
-                        "CrossPasteLazyClipboard",
+                        "PasteFlowDevLazyClipboard",
                         0,
                         0,
                         0,
@@ -86,8 +86,8 @@ class WindowsLazyClipboard : AutoCloseable {
 
                 user32.SetWindowLongPtr(hwnd, User32.GWL_WNDPROC, wndProc)
 
-                crossPasteFormatId = user32.RegisterClipboardFormatA("CrossPaste")
-                logger.info { "Registered CrossPaste clipboard format: $crossPasteFormatId" }
+                crossPasteFormatId = user32.RegisterClipboardFormatA("PasteFlowDev")
+                logger.info { "Registered PasteFlow Dev clipboard format: $crossPasteFormatId" }
 
                 ready.complete(Unit)
 
@@ -187,7 +187,7 @@ class WindowsLazyClipboard : AutoCloseable {
         return try {
             user32.EmptyClipboard()
 
-            // Set eager CrossPaste marker
+            // Set eager PasteFlow Dev marker
             val markerMem =
                 kernel32.GlobalAlloc(
                     GlobalMemoryFlags.GMEM_MOVEABLE or GlobalMemoryFlags.GMEM_ZEROINIT,

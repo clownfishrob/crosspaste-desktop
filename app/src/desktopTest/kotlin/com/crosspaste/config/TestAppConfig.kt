@@ -14,6 +14,7 @@ data class TestAppConfig(
     override val fileCleanTimeIndex: Int = 6,
     override val enableThresholdCleanup: Boolean = false,
     override val maxStorage: Long = 2048,
+    override val maxHistoryItems: Int = 1000,
     override val cleanupPercentage: Int = 20,
     override val enableDiscovery: Boolean = true,
     override val blacklist: String = "[]",

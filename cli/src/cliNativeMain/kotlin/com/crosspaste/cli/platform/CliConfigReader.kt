@@ -6,9 +6,11 @@ import okio.FileSystem
 import okio.Path
 import okio.Path.Companion.toPath
 
+private const val DEFAULT_DEV_PORT = 13139
+
 @Serializable
 data class CliAppConfig(
-    val port: Int = 13129,
+    val port: Int = DEFAULT_DEV_PORT,
     val useDefaultStoragePath: Boolean = true,
     val storagePath: String = "",
 )

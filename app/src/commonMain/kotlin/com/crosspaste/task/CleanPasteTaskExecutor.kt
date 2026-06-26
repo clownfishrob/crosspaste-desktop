@@ -66,6 +66,9 @@ class CleanPasteTaskExecutor(
                         val cleanSize = untaggedSize * config.cleanupPercentage / 100
                         deleteStorageOfApproximateSize(cleanSize)
                     }
+                    if (config.maxHistoryItems > 0) {
+                        pasteDao.markDeleteOldestUntaggedAboveLimit(config.maxHistoryItems)
+                    }
                 }
             }.onFailure {
                 val baseExtraInfo = TaskUtils.getExtraInfo(pasteTask, BaseExtraInfo::class)

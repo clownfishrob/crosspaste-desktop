@@ -1,4 +1,4 @@
-const NATIVE_HOST_NAME = "com.crosspaste.desktop";
+const NATIVE_HOST_NAME = "com.robdev.pasteflow.dev.desktop";
 const RECONNECT_BASE_MS = 10_000;
 const RECONNECT_MAX_MS = 60_000;
 

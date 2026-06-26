@@ -2,6 +2,7 @@ package com.crosspaste.paste.plugin.type
 
 import com.crosspaste.app.AppFileType
 import com.crosspaste.app.AppInfo
+import com.crosspaste.app.DesktopAppIdentity
 import com.crosspaste.image.ImageHandler
 import com.crosspaste.paste.DesktopPasteDataFlavor
 import com.crosspaste.paste.PasteCollector
@@ -47,6 +48,8 @@ class DesktopImageTypePlugin(
         const val IMAGE_PNG = "image/png"
         const val IMAGE_JPEG = "image/jpeg"
         const val IMAGE = "image"
+
+        fun isWithinImageLimit(size: Long): Boolean = size <= DesktopAppIdentity.maxImageBytes
     }
 
     private val logger = KotlinLogging.logger {}
@@ -126,6 +129,13 @@ class DesktopImageTypePlugin(
                 )
             if (imageHandler.writeImage(image, ext, imagePath)) {
                 val fileTree = fileUtils.getFileInfoTree(imagePath)
+                if (!isWithinImageLimit(fileTree.size)) {
+                    fileUtils.deleteFile(imagePath)
+                    logger.info {
+                        "Skipped oversized clipboard image pasteId=$pasteId itemIndex=$itemIndex size=${fileTree.size}"
+                    }
+                    return
+                }
 
                 val update: (PasteItem) -> PasteItem = { pasteItem ->
                     createImagesPasteItem(

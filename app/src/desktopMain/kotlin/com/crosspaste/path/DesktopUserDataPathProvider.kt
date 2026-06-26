@@ -1,5 +1,6 @@
 package com.crosspaste.path
 
+import com.crosspaste.app.DesktopAppIdentity
 import com.crosspaste.config.DevConfig
 import com.crosspaste.path.LinuxAppPathProvider.Companion.LOCAL
 import com.crosspaste.path.LinuxAppPathProvider.Companion.SHARE
@@ -51,7 +52,7 @@ class DevelopmentPlatformUserDataPathProvider : PlatformUserDataPathProvider {
             } else {
                 composeAppDir.toPath().resolve(it)
             }
-        } ?: composeAppDir.toPath()
+        } ?: composeAppDir.toPath().resolve(DesktopAppIdentity.devDataDir)
 }
 
 class TestPlatformUserDataPathProvider : PlatformUserDataPathProvider {
@@ -67,7 +68,7 @@ class WindowsPlatformUserDataPathProvider : PlatformUserDataPathProvider {
 
     private val userHome: Path = systemProperty.get("user.home").toPath(normalize = true)
 
-    override fun getUserDefaultStoragePath(): Path = userHome.resolve(CROSSPASTE_DIR_NAME)
+    override fun getUserDefaultStoragePath(): Path = userHome.resolve(DesktopAppIdentity.devDataDir)
 }
 
 class MacosPlatformUserDataPathProvider : PlatformUserDataPathProvider {
@@ -83,7 +84,7 @@ class MacosPlatformUserDataPathProvider : PlatformUserDataPathProvider {
             userHome
                 .resolve("Library")
                 .resolve("Application Support")
-                .resolve("CrossPaste")
+                .resolve(DesktopAppIdentity.macosAppSupportDir)
         if (!fileUtils.existFile(appSupportPath)) {
             fileUtils.createDir(appSupportPath).getOrThrow()
         }
@@ -109,8 +110,8 @@ class LinuxPlatformUserDataPathProvider : PlatformUserDataPathProvider {
 
     override fun getUserDefaultStoragePath(): Path {
         // Migrate from ~/.local/shard/.crosspaste to ~/.local/share/.crosspaste
-        val oldPath = userHome.resolve(LOCAL).resolve("shard").resolve(CROSSPASTE_DIR_NAME)
-        val newPath = userHome.resolve(LOCAL).resolve(SHARE).resolve(CROSSPASTE_DIR_NAME)
+        val oldPath = userHome.resolve(LOCAL).resolve("shard").resolve(DesktopAppIdentity.devDataDir)
+        val newPath = userHome.resolve(LOCAL).resolve(SHARE).resolve(DesktopAppIdentity.devDataDir)
 
         if (!migrationChecked) {
             runBlockingMigrationOnce(oldPath, newPath)

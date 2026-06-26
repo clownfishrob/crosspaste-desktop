@@ -1,6 +1,7 @@
 package com.crosspaste.net
 
 import com.crosspaste.app.AppInfo
+import com.crosspaste.app.DesktopAppIdentity
 import com.crosspaste.app.EndpointInfoFactory
 import com.crosspaste.db.sync.HostInfo
 import com.crosspaste.dto.sync.SyncInfo
@@ -36,7 +37,8 @@ class DesktopPasteBonjourService(
 ) : PasteBonjourService {
 
     companion object {
-        private const val SERVICE_TYPE = "_crosspasteService._tcp.local."
+        private const val SERVICE_TYPE = DesktopAppIdentity.bonjourServiceType
+        private const val SERVICE_NAME_PREFIX = DesktopAppIdentity.bonjourServiceNamePrefix
 
         private const val ACTIVE_SCAN_TIMEOUT = 3000L // jmdns.list blocking time
         private const val INTERFACE_SCAN_INTERVAL = 5000L // Throttle for heavy scan per interface
@@ -107,7 +109,7 @@ class DesktopPasteBonjourService(
                             val serviceInfo =
                                 ServiceInfo.create(
                                     SERVICE_TYPE,
-                                    "crosspaste@${appInfo.appInstanceId}@${hostAddress.replace(".", "_")}",
+                                    "$SERVICE_NAME_PREFIX@${appInfo.appInstanceId}@${hostAddress.replace(".", "_")}",
                                     endpointInfo.port,
                                     0,
                                     0,
@@ -179,7 +181,7 @@ class DesktopPasteBonjourService(
         appInstanceId: String,
         currentTime: Long,
     ) {
-        val servicePrefix = "crosspaste@$appInstanceId@"
+        val servicePrefix = "$SERVICE_NAME_PREFIX@$appInstanceId@"
 
         // 1. Try to find from local cache first
         var targetService = jmdns.list(SERVICE_TYPE).find { it.name.startsWith(servicePrefix) }
@@ -268,6 +270,10 @@ class DesktopServiceListener(
     private val nearbyDeviceManager: NearbyDeviceManager,
 ) : ServiceListener {
 
+    private companion object {
+        const val SERVICE_NAME_PREFIX = DesktopAppIdentity.bonjourServiceNamePrefix
+    }
+
     private val logger = KotlinLogging.logger {}
 
     override fun serviceAdded(event: ServiceEvent) {
@@ -282,7 +288,7 @@ class DesktopServiceListener(
         }
         runCatching {
             val serviceName = event.info.name
-            if (serviceName.startsWith("crosspaste@")) {
+            if (serviceName.startsWith("$SERVICE_NAME_PREFIX@")) {
                 logger.debug { "Processing service removed: $serviceName" }
                 serviceName.split("@").takeIf { it.size == 3 }?.let { parts ->
                     val appInstanceId = parts[1]

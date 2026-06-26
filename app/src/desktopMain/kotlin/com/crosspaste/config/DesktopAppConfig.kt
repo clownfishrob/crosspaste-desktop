@@ -1,5 +1,7 @@
 package com.crosspaste.config
 
+import com.crosspaste.app.DesktopAppIdentity
+import com.crosspaste.clean.CleanTime
 import com.crosspaste.config.AppConfig.Companion.toBoolean
 import com.crosspaste.config.AppConfig.Companion.toInt
 import com.crosspaste.config.AppConfig.Companion.toLong
@@ -11,20 +13,21 @@ import kotlinx.serialization.Serializable
 data class DesktopAppConfig(
     override val language: String,
     override val font: String = "",
-    val enableAutoStartUp: Boolean = true,
+    val enableAutoStartUp: Boolean = false,
     val enableDebugMode: Boolean = false,
     override val isFollowSystemTheme: Boolean = true,
     override val isDarkTheme: Boolean = false,
-    override val port: Int = 13129,
+    override val port: Int = DesktopAppIdentity.defaultPort,
     override val enableEncryptSync: Boolean = false,
     override val enableExpirationCleanup: Boolean = true,
-    override val imageCleanTimeIndex: Int = 6,
-    override val fileCleanTimeIndex: Int = 6,
+    override val imageCleanTimeIndex: Int = CleanTime.TWO_MONTH.ordinal,
+    override val fileCleanTimeIndex: Int = CleanTime.TWO_MONTH.ordinal,
     override val enableThresholdCleanup: Boolean = true,
     // MB
     override val maxStorage: Long = 2048,
+    override val maxHistoryItems: Int = DesktopAppIdentity.maxHistoryItems,
     override val cleanupPercentage: Int = 20,
-    override val enableDiscovery: Boolean = true,
+    override val enableDiscovery: Boolean = false,
     override val blacklist: String = "[]",
     override val enableSkipPreLaunchPasteboardContent: Boolean = true,
     override val lastPasteboardChangeCount: Int = -1,
@@ -32,9 +35,9 @@ data class DesktopAppConfig(
     val sourceExclusions: String = "[]",
     val showTutorial: Boolean = true,
     // MB
-    override val maxBackupFileSize: Long = 32,
+    override val maxBackupFileSize: Long = 20,
     override val enabledSyncFileSizeLimit: Boolean = true,
-    override val maxSyncFileSize: Long = 512,
+    override val maxSyncFileSize: Long = 20,
     override val useDefaultStoragePath: Boolean = true,
     override val storagePath: String = "",
     override val enableSoundEffect: Boolean = true,
@@ -49,13 +52,13 @@ data class DesktopAppConfig(
     val showGrantAccessibility: Boolean = true,
     val enableClipboardRelay: Boolean = false,
     // Sync content type controls
-    override val enableSyncText: Boolean = true,
-    override val enableSyncUrl: Boolean = true,
-    override val enableSyncHtml: Boolean = true,
-    override val enableSyncRtf: Boolean = true,
-    override val enableSyncImage: Boolean = true,
-    override val enableSyncFile: Boolean = true,
-    override val enableSyncColor: Boolean = true,
+    override val enableSyncText: Boolean = false,
+    override val enableSyncUrl: Boolean = false,
+    override val enableSyncHtml: Boolean = false,
+    override val enableSyncRtf: Boolean = false,
+    override val enableSyncImage: Boolean = false,
+    override val enableSyncFile: Boolean = false,
+    override val enableSyncColor: Boolean = false,
     override val enableRemoteShowPairingCode: Boolean = true,
     // MCP server
     val enableMcpServer: Boolean = false,
@@ -99,7 +102,9 @@ data class DesktopAppConfig(
                     enableThresholdCleanup
                 },
             maxStorage = if (key == "maxStorage") toLong(value) else maxStorage,
+            maxHistoryItems = if (key == "maxHistoryItems") toInt(value) else maxHistoryItems,
             cleanupPercentage = if (key == "cleanupPercentage") toInt(value) else cleanupPercentage,
+            enableDiscovery = if (key == "enableDiscovery") toBoolean(value) else enableDiscovery,
             blacklist = if (key == "blacklist") toString(value) else blacklist,
             enableSkipPreLaunchPasteboardContent =
                 if (key == "enableSkipPreLaunchPasteboardContent") {

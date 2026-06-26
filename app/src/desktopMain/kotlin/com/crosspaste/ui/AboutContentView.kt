@@ -39,6 +39,7 @@ import com.composables.icons.materialsymbols.rounded.Language
 import com.composables.icons.materialsymbols.rounded.Mail
 import com.composables.icons.materialsymbols.rounded.School
 import com.crosspaste.app.AppInfo
+import com.crosspaste.app.AppName
 import com.crosspaste.app.AppUrls
 import com.crosspaste.config.DesktopConfigManager
 import com.crosspaste.i18n.GlobalCopywriter
@@ -95,14 +96,14 @@ fun AboutContentView() {
             Text(
                 text =
                     if (!config.enableDebugMode) {
-                        "CrossPaste"
+                        AppName
                     } else {
-                        "CrossPaste [Debug]"
+                        "$AppName [Debug]"
                     },
                 style =
                     MaterialTheme.typography.headlineMedium.copy(
                         fontWeight = FontWeight.Bold,
-                        letterSpacing = (-0.5).sp,
+                        letterSpacing = 0.sp,
                     ),
                 color = MaterialTheme.colorScheme.onSurface,
             )

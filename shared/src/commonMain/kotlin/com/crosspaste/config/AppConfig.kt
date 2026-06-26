@@ -14,6 +14,7 @@ interface AppConfig {
 
     // MB
     val maxStorage: Long
+    val maxHistoryItems: Int
     val cleanupPercentage: Int
     val enableDiscovery: Boolean
     val blacklist: String

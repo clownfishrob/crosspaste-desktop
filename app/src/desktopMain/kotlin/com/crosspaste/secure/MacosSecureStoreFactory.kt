@@ -2,6 +2,7 @@ package com.crosspaste.secure
 
 import com.crosspaste.app.AppFileType
 import com.crosspaste.app.AppInfo
+import com.crosspaste.app.DesktopAppIdentity
 import com.crosspaste.db.secure.SecureIO
 import com.crosspaste.path.AppPathProvider
 import com.crosspaste.platform.macos.MacosKeychainHelper
@@ -30,7 +31,8 @@ class MacosSecureStoreFactory(
 
     override fun createSecureStore(): SecureStore =
         runBlocking {
-            val service = "crosspaste-${appEnvUtils.getCurrentAppEnv().name}-${appInfo.appInstanceId}"
+            val service =
+                "${DesktopAppIdentity.packageName}-${appEnvUtils.getCurrentAppEnv().name}-${appInfo.appInstanceId}"
             val file = filePersist.path.toFile()
             if (file.exists()) {
                 logger.info { "Found secureKeyPair encrypt file" }

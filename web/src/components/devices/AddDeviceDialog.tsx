@@ -46,7 +46,7 @@ export function AddDeviceDialog({ open, onClose, onConnect, onPair, initialSyncI
   const t = useI18n();
   const [phase, setPhase] = useState<Phase>("input");
   const [host, setHost] = useState("");
-  const [port, setPort] = useState("13129");
+  const [port, setPort] = useState("13139");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [syncInfo, setSyncInfo] = useState<SyncInfo | null>(null);
@@ -67,7 +67,7 @@ export function AddDeviceDialog({ open, onClose, onConnect, onPair, initialSyncI
     const timer = setTimeout(() => {
       setPhase("input");
       setHost("");
-      setPort("13129");
+      setPort("13139");
       setLoading(false);
       setError(null);
       setSyncInfo(null);
@@ -172,7 +172,7 @@ export function AddDeviceDialog({ open, onClose, onConnect, onPair, initialSyncI
                   type="text"
                   value={port}
                   onChange={(e) => setPort(e.target.value.replace(/\D/g, ""))}
-                  placeholder="13129"
+                  placeholder="13139"
                   autoComplete="off"
                   className="w-full px-3 py-2.5 rounded-xl border border-m3-outline-variant bg-m3-surface text-m3-on-surface text-sm placeholder:text-m3-outline focus:outline-none focus:ring-2 focus:ring-m3-primary focus:border-transparent"
                 />
