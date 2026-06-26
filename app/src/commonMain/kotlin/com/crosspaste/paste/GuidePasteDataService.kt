@@ -26,7 +26,8 @@ abstract class GuidePasteDataService(
 ) {
 
     companion object {
-        const val CROSSPASTE_GUIDE = "CrossPaste Guide"
+        const val PASTEFLOW_DEV_GUIDE = "PasteFlow Dev Guide"
+        const val PASTEFLOW_DEV_REPOSITORY_URL = "https://github.com/clownfishrob/crosspaste-desktop"
     }
 
     private val codecsUtils = getCodecsUtils()
@@ -50,7 +51,7 @@ abstract class GuidePasteDataService(
     private fun getGuideIndexFromJson(jsonObject: JsonObject): Int? = jsonObject["guideIndex"]?.jsonPrimitive?.int
 
     suspend fun updateData() {
-        val pasteDataList = pasteDao.searchBySource(CROSSPASTE_GUIDE)
+        val pasteDataList = pasteDao.searchBySource(PASTEFLOW_DEV_GUIDE)
         if (pasteDataList.isNotEmpty()) {
             pasteDataList.forEach { pasteData ->
                 pasteData.pasteAppearItem?.let { pasteItem ->
@@ -79,9 +80,8 @@ abstract class GuidePasteDataService(
         val extraInfo = buildJson(index)
 
         return if (index == 5) {
-            val githubUrl = "https://github.com/CrossPaste/crosspaste-desktop"
             createUrlPasteItem(
-                url = githubUrl,
+                url = PASTEFLOW_DEV_REPOSITORY_URL,
                 extraInfo = extraInfo,
             )
         } else {
@@ -95,8 +95,7 @@ abstract class GuidePasteDataService(
 
     private fun getGuidePasteData(index: Int): PasteData =
         if (index == 5) {
-            val githubUrl = "https://github.com/CrossPaste/crosspaste-desktop"
-            val githubUrlBytes = githubUrl.encodeToByteArray()
+            val githubUrlBytes = PASTEFLOW_DEV_REPOSITORY_URL.encodeToByteArray()
             val githubUrlHash = codecsUtils.hash(githubUrlBytes)
             val githubUrlSize = githubUrlBytes.size.toLong()
             PasteData(
@@ -105,7 +104,7 @@ abstract class GuidePasteDataService(
                 pasteAppearItem = getGuidePasteItem(index),
                 pasteCollection = PasteCollection(listOf()),
                 pasteType = PasteType.URL_TYPE.type,
-                source = CROSSPASTE_GUIDE,
+                source = PASTEFLOW_DEV_GUIDE,
                 size = githubUrlSize,
                 hash = githubUrlHash,
                 pasteState = PasteState.LOADED,
@@ -122,7 +121,7 @@ abstract class GuidePasteDataService(
                 pasteAppearItem = getGuidePasteItem(index),
                 pasteCollection = PasteCollection(listOf()),
                 pasteType = PasteType.TEXT_TYPE.type,
-                source = CROSSPASTE_GUIDE,
+                source = PASTEFLOW_DEV_GUIDE,
                 size = size,
                 hash = hash,
                 pasteState = PasteState.LOADED,

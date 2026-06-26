@@ -46,7 +46,6 @@ import com.crosspaste.i18n.GlobalCopywriter
 import com.crosspaste.ui.base.CrossPasteLogoView
 import com.crosspaste.ui.base.IconData
 import com.crosspaste.ui.base.UISupport
-import com.crosspaste.ui.base.x
 import com.crosspaste.ui.settings.SettingListItem
 import com.crosspaste.ui.settings.SettingSectionCard
 import com.crosspaste.ui.theme.AppUISize.giant
@@ -57,8 +56,8 @@ import com.crosspaste.ui.theme.AppUISize.xxLarge
 import com.crosspaste.ui.theme.AppUISize.xxxxLarge
 import org.koin.compose.koinInject
 
-private const val GITHUB_URL = "https://github.com/CrossPaste"
-private const val TWITTER_URL = "https://x.com/CrossPaste"
+private const val PROJECT_REPOSITORY_URL = "https://github.com/clownfishrob/crosspaste-desktop"
+private const val PROJECT_README_URL = "$PROJECT_REPOSITORY_URL/blob/pasteflow-dev-mvp/README.md"
 
 @Composable
 fun AboutContentView() {
@@ -122,15 +121,11 @@ fun AboutContentView() {
             ) {
                 SocialLinkButton(
                     icon = FontAwesome.Brands.Github,
-                    onClick = { uiSupport.openUrlInBrowser(GITHUB_URL) },
-                )
-                SocialLinkButton(
-                    icon = x(),
-                    onClick = { uiSupport.openUrlInBrowser(TWITTER_URL) },
+                    onClick = { uiSupport.openUrlInBrowser(PROJECT_REPOSITORY_URL) },
                 )
                 SocialLinkButton(
                     icon = MaterialSymbols.Rounded.Language,
-                    onClick = { uiSupport.openCrossPasteWebInBrowser() },
+                    onClick = { uiSupport.openUrlInBrowser(PROJECT_README_URL) },
                 )
             }
         }
@@ -150,19 +145,19 @@ fun AboutContentView() {
             )
             SettingSectionCard {
                 SettingListItem(
-                    title = "official_website",
-                    subtitle = "official_website_desc",
+                    title = "project_repository",
+                    subtitle = "project_repository_desc",
                     icon = IconData(MaterialSymbols.Rounded.Language, themeExt.blueIconColor),
                 ) {
-                    uiSupport.openCrossPasteWebInBrowser()
+                    uiSupport.openUrlInBrowser(PROJECT_REPOSITORY_URL)
                 }
                 HorizontalDivider(modifier = Modifier.padding(start = xxxxLarge))
                 SettingListItem(
-                    title = "newbie_tutorial",
-                    subtitle = "newbie_tutorial_desc",
+                    title = "project_readme",
+                    subtitle = "project_readme_desc",
                     icon = IconData(MaterialSymbols.Rounded.School, themeExt.greenIconColor),
                 ) {
-                    uiSupport.openCrossPasteWebInBrowser("tutorial/pasteboard")
+                    uiSupport.openUrlInBrowser(PROJECT_README_URL)
                 }
                 HorizontalDivider(modifier = Modifier.padding(start = xxxxLarge))
                 SettingListItem(
@@ -231,13 +226,13 @@ fun AboutContentView() {
                     tint = Color(0xFFEF4444),
                 )
                 Text(
-                    text = "by CrossPaste Team",
+                    text = "for PasteFlow Dev",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
             Text(
-                text = "\u00A9 2024 Compile Future",
+                text = "AGPL-3.0 licensed fork of CrossPaste",
                 style =
                     MaterialTheme.typography.labelSmall.copy(
                         letterSpacing = 0.5.sp,
