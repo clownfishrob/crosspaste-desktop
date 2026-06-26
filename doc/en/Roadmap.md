@@ -1,5 +1,12 @@
 # Project Roadmap
 
+## PasteFlow Dev MVP follow-up
+
+- Update the Share settings page for the PasteFlow Dev product direction.
+- Reset the Change Log content so it no longer carries inappropriate CrossPaste history.
+- Change the About page copy, branding, links, and metadata for PasteFlow Dev.
+- Update remaining CrossPaste references across the settings experience and supporting copy.
+
 Below is our current project roadmap. Rather than pinning features to specific version numbers, we group them into what has shipped and what we're working on next:
 
 ```mermaid
