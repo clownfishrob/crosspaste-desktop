@@ -35,7 +35,7 @@ Validated locally on macOS:
 
 This fork currently keeps GitHub automation deliberately small:
 
-- CI can be run manually and also runs on `pasteflow-dev-mvp` changes
+- CI is manual-only while product direction is being decided
 - Dependabot remains enabled for Gradle dependency visibility
 - Release publishing, beta publishing, sponsor updates, issue translation, and AI review workflows are disabled
 

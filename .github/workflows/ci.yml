@@ -2,10 +2,6 @@ name: CI
 
 on:
   workflow_dispatch:
-  push:
-    branches: [ pasteflow-dev-mvp ]
-  pull_request:
-    branches: [ pasteflow-dev-mvp ]
 
 jobs:
   changes:
