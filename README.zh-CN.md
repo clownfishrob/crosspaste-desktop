@@ -36,10 +36,10 @@ PasteFlow Dev 已经完成了基本的开发身份分离：
 - Share 页面与 Share 菜单
 - Check for updates / 发布更新通道
 - 仍继承自 CrossPaste 的旧更新文档和基础设施命名
-- 产品文案、截图和公开发布打包
+- 公开定位、截图和发布打包
 - 其他设备上的多机测试
 
-更多后续事项见 [doc/en/Roadmap.md](doc/en/Roadmap.md)。
+更多后续事项见 [doc/zh/Roadmap.md](doc/zh/Roadmap.md)。
 
 ## 开发设置
 

@@ -48,7 +48,7 @@ These areas are intentionally hidden or still need a PasteFlow Dev pass:
 - Share page and share menu
 - Check for updates / release delivery
 - Legacy update documentation and infrastructure naming still inherited from CrossPaste
-- Product copy, screenshots, and public release packaging
+- Public positioning, screenshots, and release packaging
 - Multi-device testing on additional machines
 
 See [doc/en/Roadmap.md](doc/en/Roadmap.md) for the active follow-up list.
