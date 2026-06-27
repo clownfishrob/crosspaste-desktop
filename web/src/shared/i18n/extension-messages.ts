@@ -29,12 +29,12 @@ export const extensionMessages: Record<string, Record<string, string>> = {
     ip_address: "IP Address",
     devices_guide_title: "Manual Connection Only",
     devices_guide_desc:
-      "The Chrome extension runs in a browser sandbox and cannot broadcast on the local network, so other CrossPaste clients cannot automatically discover it.",
+      "The Chrome extension runs in a browser sandbox and cannot broadcast on the local network, so other PasteFlow Dev clients cannot automatically discover it.",
     devices_guide_step1:
       "Find your device's IP and port in the desktop app: Settings → Network Settings",
     devices_guide_step2:
       "Click \"Add Device\" below and enter the connection info",
-    paste_not_synced_title: "CrossPaste: paste from %s not synced",
+    paste_not_synced_title: "PasteFlow Dev: paste from %s not synced",
     paste_oversize_file: "\"%s\" (%s) exceeds the %s per-file limit",
     paste_oversize_total: "Total size %s exceeds the %s limit",
     install_desktop_client: "Install the desktop client for full functionality",
@@ -66,12 +66,12 @@ export const extensionMessages: Record<string, Record<string, string>> = {
     ip_address: "IP-Adresse",
     devices_guide_title: "Nur manuelle Verbindung",
     devices_guide_desc:
-      "Die Chrome-Erweiterung läuft in einer Browser-Sandbox und kann nicht im lokalen Netzwerk senden, daher können andere CrossPaste-Clients sie nicht automatisch erkennen.",
+      "Die Chrome-Erweiterung läuft in einer Browser-Sandbox und kann nicht im lokalen Netzwerk senden, daher können andere PasteFlow Dev-Clients sie nicht automatisch erkennen.",
     devices_guide_step1:
       "IP-Adresse und Port des Geräts finden: Desktop-App → Einstellungen → Netzwerkeinstellungen",
     devices_guide_step2:
       'Klicken Sie unten auf „Gerät hinzufügen" und geben Sie die Verbindungsdaten ein',
-    paste_not_synced_title: "CrossPaste: Einfügung von %s nicht synchronisiert",
+    paste_not_synced_title: "PasteFlow Dev: Einfügung von %s nicht synchronisiert",
     paste_oversize_file: "„%s\" (%s) überschreitet das Limit von %s pro Datei",
     paste_oversize_total: "Gesamtgröße %s überschreitet das Limit von %s",
     install_desktop_client: "Desktop-Client für alle Funktionen installieren",
@@ -103,12 +103,12 @@ export const extensionMessages: Record<string, Record<string, string>> = {
     ip_address: "Dirección IP",
     devices_guide_title: "Solo conexión manual",
     devices_guide_desc:
-      "La extensión de Chrome se ejecuta en un entorno aislado del navegador y no puede transmitir en la red local, por lo que otros clientes de CrossPaste no pueden descubrirla automáticamente.",
+      "La extensión de Chrome se ejecuta en un entorno aislado del navegador y no puede transmitir en la red local, por lo que otros clientes de PasteFlow Dev no pueden descubrirla automáticamente.",
     devices_guide_step1:
       "Encuentre la IP y el puerto del dispositivo en la app de escritorio: Ajustes → Configuración de red",
     devices_guide_step2:
       "Haga clic en \"Agregar dispositivo\" abajo e ingrese la información de conexión",
-    paste_not_synced_title: "CrossPaste: pegado de %s no sincronizado",
+    paste_not_synced_title: "PasteFlow Dev: pegado de %s no sincronizado",
     paste_oversize_file: "\"%s\" (%s) supera el límite de %s por archivo",
     paste_oversize_total: "El tamaño total %s supera el límite de %s",
     install_desktop_client: "Instala el cliente de escritorio para todas las funciones",
@@ -139,12 +139,12 @@ export const extensionMessages: Record<string, Record<string, string>> = {
     ip_address: "آدرس IP",
     devices_guide_title: "فقط اتصال دستی",
     devices_guide_desc:
-      "افزونه کروم در ساندباکس مرورگر اجرا می‌شود و نمی‌تواند در شبکه محلی پخش کند، بنابراین سایر کلاینت‌های CrossPaste نمی‌توانند آن را به‌طور خودکار کشف کنند.",
+      "افزونه کروم در ساندباکس مرورگر اجرا می‌شود و نمی‌تواند در شبکه محلی پخش کند، بنابراین سایر کلاینت‌های PasteFlow Dev نمی‌توانند آن را به‌طور خودکار کشف کنند.",
     devices_guide_step1:
       "آدرس IP و پورت دستگاه را در اپ دسکتاپ پیدا کنید: تنظیمات ← تنظیمات شبکه",
     devices_guide_step2:
       "روی «افزودن دستگاه» در پایین کلیک کنید و اطلاعات اتصال را وارد کنید",
-    paste_not_synced_title: "CrossPaste: چسباندن از %s همگام‌سازی نشد",
+    paste_not_synced_title: "PasteFlow Dev: چسباندن از %s همگام‌سازی نشد",
     paste_oversize_file: "«%s» (%s) از محدودیت %s در هر فایل فراتر می‌رود",
     paste_oversize_total: "اندازه کل %s از محدودیت %s فراتر می‌رود",
     install_desktop_client:
@@ -177,12 +177,12 @@ export const extensionMessages: Record<string, Record<string, string>> = {
     ip_address: "Adresse IP",
     devices_guide_title: "Connexion manuelle uniquement",
     devices_guide_desc:
-      "L'extension Chrome fonctionne dans un bac à sable du navigateur et ne peut pas diffuser sur le réseau local. Les autres clients CrossPaste ne peuvent donc pas la découvrir automatiquement.",
+      "L'extension Chrome fonctionne dans un bac à sable du navigateur et ne peut pas diffuser sur le réseau local. Les autres clients PasteFlow Dev ne peuvent donc pas la découvrir automatiquement.",
     devices_guide_step1:
       "Trouvez l'IP et le port de l'appareil dans l'application de bureau : Paramètres → Paramètres réseau",
     devices_guide_step2:
       "Cliquez sur « Ajouter un appareil » ci-dessous et entrez les informations de connexion",
-    paste_not_synced_title: "CrossPaste : collage depuis %s non synchronisé",
+    paste_not_synced_title: "PasteFlow Dev : collage depuis %s non synchronisé",
     paste_oversize_file: "« %s » (%s) dépasse la limite de %s par fichier",
     paste_oversize_total: "La taille totale %s dépasse la limite de %s",
     install_desktop_client: "Installer le client de bureau pour toutes les fonctionnalités",
@@ -213,12 +213,12 @@ export const extensionMessages: Record<string, Record<string, string>> = {
     ip_address: "IPアドレス",
     devices_guide_title: "手動接続のみ",
     devices_guide_desc:
-      "Chrome 拡張機能はブラウザのサンドボックス内で動作し、ローカルネットワークでブロードキャストできないため、他の CrossPaste クライアントが自動検出することはできません。",
+      "Chrome 拡張機能はブラウザのサンドボックス内で動作し、ローカルネットワークでブロードキャストできないため、他の PasteFlow Dev クライアントが自動検出することはできません。",
     devices_guide_step1:
       "デスクトップアプリでデバイスの IP とポートを確認：設定 → ネットワーク設定",
     devices_guide_step2:
       "下の「デバイスを追加」をクリックし、接続情報を入力してください",
-    paste_not_synced_title: "CrossPaste: %s からのペーストは同期されませんでした",
+    paste_not_synced_title: "PasteFlow Dev: %s からのペーストは同期されませんでした",
     paste_oversize_file: "「%s」(%s) が1ファイルあたりの上限 %s を超えています",
     paste_oversize_total: "合計サイズ %s が上限 %s を超えています",
     install_desktop_client: "すべての機能を利用するためにデスクトップクライアントをインストール",
@@ -248,12 +248,12 @@ export const extensionMessages: Record<string, Record<string, string>> = {
     ip_address: "IP 주소",
     devices_guide_title: "수동 연결만 가능",
     devices_guide_desc:
-      "Chrome 확장 프로그램은 브라우저 샌드박스에서 실행되어 로컬 네트워크에서 브로드캐스트할 수 없으므로, 다른 CrossPaste 클라이언트가 자동으로 검색할 수 없습니다.",
+      "Chrome 확장 프로그램은 브라우저 샌드박스에서 실행되어 로컬 네트워크에서 브로드캐스트할 수 없으므로, 다른 PasteFlow Dev 클라이언트가 자동으로 검색할 수 없습니다.",
     devices_guide_step1:
       "데스크톱 앱에서 기기의 IP와 포트를 확인하세요: 설정 → 네트워크 설정",
     devices_guide_step2:
       "아래의 \"기기 추가\"를 클릭하고 연결 정보를 입력하세요",
-    paste_not_synced_title: "CrossPaste: %s 의 붙여넣기가 동기화되지 않았습니다",
+    paste_not_synced_title: "PasteFlow Dev: %s 의 붙여넣기가 동기화되지 않았습니다",
     paste_oversize_file: "\"%s\"(%s)이(가) 파일당 한도 %s 을(를) 초과합니다",
     paste_oversize_total: "총 크기 %s 이(가) 한도 %s 을(를) 초과합니다",
     install_desktop_client: "전체 기능을 위해 데스크톱 클라이언트 설치",
@@ -284,12 +284,12 @@ export const extensionMessages: Record<string, Record<string, string>> = {
     ip_address: "Endereço IP",
     devices_guide_title: "Apenas conexão manual",
     devices_guide_desc:
-      "A extensão do Chrome é executada em uma sandbox do navegador e não pode transmitir na rede local, portanto outros clientes do CrossPaste não conseguem descobri-la automaticamente.",
+      "A extensão do Chrome é executada em uma sandbox do navegador e não pode transmitir na rede local, portanto outros clientes do PasteFlow Dev não conseguem descobri-la automaticamente.",
     devices_guide_step1:
       "Encontre o IP e a porta do dispositivo no app de desktop: Configurações → Configurações de rede",
     devices_guide_step2:
       "Clique em \"Adicionar dispositivo\" abaixo e insira as informações de conexão",
-    paste_not_synced_title: "CrossPaste: colagem de %s não sincronizada",
+    paste_not_synced_title: "PasteFlow Dev: colagem de %s não sincronizada",
     paste_oversize_file: "\"%s\" (%s) excede o limite de %s por arquivo",
     paste_oversize_total: "Tamanho total %s excede o limite de %s",
     install_desktop_client:
@@ -319,12 +319,12 @@ export const extensionMessages: Record<string, Record<string, string>> = {
     ip_address: "IP 地址",
     devices_guide_title: "仅支持手动连接",
     devices_guide_desc:
-      "Chrome 扩展运行在浏览器沙箱中，无法在局域网中广播，因此其他 CrossPaste 客户端无法自动发现本扩展。",
+      "Chrome 扩展运行在浏览器沙箱中，无法在局域网中广播，因此其他 PasteFlow Dev 客户端无法自动发现本扩展。",
     devices_guide_step1:
       "在桌面端查找设备的 IP 和端口：设置 → 网络设置",
     devices_guide_step2:
       "点击下方「添加设备」按钮，输入连接信息",
-    paste_not_synced_title: "CrossPaste：来自 %s 的剪贴板未同步",
+    paste_not_synced_title: "PasteFlow Dev：来自 %s 的剪贴板未同步",
     paste_oversize_file: "文件「%s」大小为 %s，超过单文件上限 %s",
     paste_oversize_total: "总大小 %s 超过 %s 上限",
     install_desktop_client: "安装桌面客户端以支持完整功能",
@@ -353,12 +353,12 @@ export const extensionMessages: Record<string, Record<string, string>> = {
     ip_address: "IP 位址",
     devices_guide_title: "僅支援手動連線",
     devices_guide_desc:
-      "Chrome 擴充功能運行在瀏覽器沙箱中，無法在區域網路中廣播，因此其他 CrossPaste 用戶端無法自動發現本擴充功能。",
+      "Chrome 擴充功能運行在瀏覽器沙箱中，無法在區域網路中廣播，因此其他 PasteFlow Dev 用戶端無法自動發現本擴充功能。",
     devices_guide_step1:
       "在桌面端查看裝置的 IP 和連接埠：設定 → 網路設定",
     devices_guide_step2:
       "點擊下方「新增裝置」按鈕，輸入連線資訊",
-    paste_not_synced_title: "CrossPaste：來自 %s 的剪貼簿未同步",
+    paste_not_synced_title: "PasteFlow Dev：來自 %s 的剪貼簿未同步",
     paste_oversize_file: "檔案「%s」大小為 %s，超過單檔上限 %s",
     paste_oversize_total: "總大小 %s 超過 %s 上限",
     install_desktop_client: "安裝桌面客戶端以支援完整功能",

@@ -43,7 +43,7 @@ export function ConnectionSetup({
             Enter pairing code
           </h3>
           <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
-            A 6-digit code is shown on the CrossPaste desktop app.
+            A 6-digit code is shown on the PasteFlow Dev desktop app.
           </p>
           <TokenInput onComplete={(token) => onPair(token)} />
           {state.error && (
@@ -105,7 +105,7 @@ export function ConnectionSetup({
     <div className="space-y-4">
       <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm border border-gray-200 dark:border-gray-700">
         <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-3">
-          Connect to CrossPaste
+          Connect to PasteFlow Dev
         </h3>
         <form onSubmit={handleConnect} className="space-y-3">
           <div>

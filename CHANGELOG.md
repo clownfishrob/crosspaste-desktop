@@ -18,6 +18,7 @@ to the upstream project and is available from:
 - Kept GitHub automation minimal: manual CI, Dependabot, and issue templates.
 - Removed obsolete Windows self-update runbooks and helper scripts from the MVP repo surface.
 - Updated extension-facing About/settings links and visible PasteFlow Dev wording.
+- Updated extension pairing and notification wording from CrossPaste to PasteFlow Dev.
 
 ## 2026-06-26 - Development MVP baseline
 
