@@ -20,6 +20,7 @@ to the upstream project and is available from:
 - Updated extension-facing About/settings links and visible PasteFlow Dev wording.
 - Updated extension pairing and notification wording from CrossPaste to PasteFlow Dev.
 - Clarified README attribution links as upstream CrossPaste resources.
+- Normalized hidden Share copy and Contact email text for the MVP.
 
 ## 2026-06-26 - Development MVP baseline
 
