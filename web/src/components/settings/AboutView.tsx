@@ -11,11 +11,11 @@ import { useI18n } from "@/shared/i18n/use-i18n";
 import { APP_VERSION } from "@/shared/app/version.generated";
 
 const LINKS = {
-  website: "https://crosspaste.com",
-  tutorial: "https://crosspaste.com/tutorial",
-  changelog: "https://crosspaste.com/changelog",
-  feedback: "https://github.com/CrossPaste/crosspaste-desktop/issues",
-  email: "mailto:compile.future@gmail.com",
+  website: "https://github.com/clownfishrob/crosspaste-desktop",
+  tutorial: "https://github.com/clownfishrob/crosspaste-desktop#local-macos-build-and-install",
+  changelog: "https://github.com/clownfishrob/crosspaste-desktop/blob/pasteflow-dev-mvp/CHANGELOG.md",
+  feedback: "https://github.com/clownfishrob/crosspaste-desktop/issues",
+  email: "mailto:rob@ngduk.co.uk",
 };
 
 function openUrl(url: string) {
@@ -105,12 +105,12 @@ export function AboutView({ onBack }: Props) {
           <div className="flex flex-col items-center gap-3 py-6">
             <img
               src="/public/icons/icon-128.png"
-              alt="CrossPaste"
+              alt="PasteFlow Dev"
               className="w-[72px] h-[72px] rounded-2xl"
             />
             <div className="flex flex-col items-center gap-1">
               <span className="text-lg font-bold text-m3-on-surface">
-                CrossPaste
+                PasteFlow Dev
               </span>
               <span className="text-xs text-m3-on-surface-variant">
                 v{APP_VERSION}
@@ -180,8 +180,9 @@ export function AboutView({ onBack }: Props) {
 
           {/* Footer */}
           <p className="text-center text-[10px] text-m3-outline py-2">
-            Made with ❤️ by CrossPaste Team
-            <br />© 2024 Compile Future
+            PasteFlow Dev MVP
+            <br />
+            AGPL-3.0 licensed fork of CrossPaste
           </p>
         </div>
       </div>

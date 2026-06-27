@@ -4,7 +4,7 @@
  * them as constants since it has no classpath resources.
  */
 export const AppUrls = {
-  homeUrl: "https://crosspaste.com",
-  changeLogUrl: "https://github.com/crosspaste/crosspaste-desktop/blob/main/CHANGELOG.md",
-  issueTrackerUrl: "https://github.com/CrossPaste/crosspaste-desktop/issues",
+  homeUrl: "https://github.com/clownfishrob/crosspaste-desktop",
+  changeLogUrl: "https://github.com/clownfishrob/crosspaste-desktop/blob/pasteflow-dev-mvp/CHANGELOG.md",
+  issueTrackerUrl: "https://github.com/clownfishrob/crosspaste-desktop/issues",
 } as const;

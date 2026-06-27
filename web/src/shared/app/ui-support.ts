@@ -16,7 +16,7 @@ export function openUrlInBrowser(url: string): void {
   }
 }
 
-/** Open the localized CrossPaste website — [path] is appended after the locale segment. */
+/** Open the localized project website — [path] is appended after the locale segment. */
 export async function openCrossPasteWebInBrowser(path = ""): Promise<void> {
   const url = await CrossPasteWebService.getLocalizedUrl(path);
   openUrlInBrowser(url);

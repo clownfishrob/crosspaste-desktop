@@ -10,7 +10,7 @@ import {
 
 /**
  * Drain oversize-paste notices persisted by the service worker and surface
- * them as in-panel notifications with a CTA to download the desktop client.
+ * them as in-panel notifications with a CTA to open the desktop project page.
  *
  * The service worker always enqueues a notice first, then sends a drain ping.
  * We drain on mount (to catch any queued while the panel was closed) and on
@@ -20,15 +20,14 @@ import {
 export function useOversizeNoticeListener(): void {
   const t = useI18n();
   useEffect(() => {
-    // Warm the locale path map so the CTA can open the correct localized URL
-    // (also gracefully falls back to /en/ if the fetch fails or is slow).
+    // Warm the locale path map for project homes that support localized URLs.
     void CrossPasteWebService.refresh();
 
     const showNotice = (title: string, message: string) => {
       NotificationManager.warning(title, message, null, {
         label: t("install_desktop_client"),
         onClick: () => {
-          void openCrossPasteWebInBrowser("download");
+          void openCrossPasteWebInBrowser();
         },
       });
     };

@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "PasteFlow Dev",
   "description": "Clipboard sync with PasteFlow Dev",
-  "version": "2.1.4",
+  "version": "2.1.5",
   "permissions": ["storage", "sidePanel", "alarms", "offscreen", "clipboardRead", "clipboardWrite", "downloads", "nativeMessaging"],
   "optional_host_permissions": ["http://*/*"],
   "side_panel": {

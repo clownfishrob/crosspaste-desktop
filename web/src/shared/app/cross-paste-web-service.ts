@@ -2,9 +2,8 @@ import { AppUrls } from "./app-urls";
 import { getActiveLanguage } from "@/shared/i18n/i18n-core";
 
 /**
- * Mirrors the Kotlin [CrossPasteWebService] — resolves the locale path
- * segment of https://crosspaste.com so we can deep-link users to the
- * localized landing / download page.
+ * Mirrors the Kotlin web-service helper and resolves a locale path when the
+ * configured project home supports localized deep links.
  *
  * The desktop app fetches `/api/meta.json` and caches `localePathMap`;
  * we do the same here (lazy, in-memory) with a hard-coded fallback for
@@ -54,8 +53,11 @@ function resolveLocalePath(language: string): string {
 export const CrossPasteWebService = {
   refresh,
 
-  /** Build a localized URL like `https://crosspaste.com/en/download`. */
+  /** Build a localized URL from the configured project home. */
   getWebUrl(language: string, path = ""): string {
+    if (AppUrls.homeUrl.includes("github.com/")) {
+      return AppUrls.homeUrl;
+    }
     return `${AppUrls.homeUrl}${resolveLocalePath(language)}${path}`;
   },
 

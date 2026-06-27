@@ -5,7 +5,7 @@ export function DesktopPrompt() {
         Large item
       </p>
       <p className="text-[10px] text-amber-600 dark:text-amber-400 mt-1">
-        Use CrossPaste desktop for files over 5MB
+        Use PasteFlow Dev desktop for files over 5MB
       </p>
     </div>
   );

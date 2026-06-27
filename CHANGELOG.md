@@ -17,6 +17,7 @@ to the upstream project and is available from:
 - Updated contact wording to use `rob@ngduk.co.uk`.
 - Kept GitHub automation minimal: manual CI, Dependabot, and issue templates.
 - Removed obsolete Windows self-update runbooks and helper scripts from the MVP repo surface.
+- Updated extension-facing About/settings links and visible PasteFlow Dev wording.
 
 ## 2026-06-26 - Development MVP baseline
 
