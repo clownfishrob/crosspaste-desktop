@@ -28,6 +28,7 @@ import com.crosspaste.config.DesktopConfigManager
 import com.crosspaste.db.paste.PasteDao
 import com.crosspaste.i18n.GlobalCopywriter
 import com.crosspaste.paste.DesktopSourceExclusionService
+import com.crosspaste.paste.GuidePasteDataService
 import com.crosspaste.ui.base.AppSourceIcon
 import com.crosspaste.ui.settings.SettingSectionCard
 import com.crosspaste.ui.theme.AppUISize.medium
@@ -39,6 +40,16 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 import org.koin.compose.koinInject
+
+private const val LEGACY_CROSSPASTE_GUIDE = "CrossPaste Guide"
+
+private val hiddenSourceNames =
+    setOf(
+        GuidePasteDataService.PASTEFLOW_DEV_GUIDE,
+        LEGACY_CROSSPASTE_GUIDE,
+    )
+
+internal fun List<String>.withoutBuiltInGuideSources(): List<String> = filterNot { it in hiddenSourceNames }
 
 @Composable
 fun SourceControlContentView() {
@@ -63,7 +74,10 @@ fun SourceControlContentView() {
                 coroutineScope {
                     val dbDeferred = async { pasteDao.getDistinctSources() }
                     val runningDeferred = async { appWindowManager.getRunningAppNames() }
-                    (dbDeferred.await() + runningDeferred.await() + exclusions).distinct().sorted()
+                    (dbDeferred.await() + runningDeferred.await() + exclusions)
+                        .withoutBuiltInGuideSources()
+                        .distinct()
+                        .sorted()
                 }
             }
     }

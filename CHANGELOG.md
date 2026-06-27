@@ -23,6 +23,7 @@ to the upstream project and is available from:
 - Normalized hidden Share copy and Contact email text for the MVP.
 - Pointed dormant Share/project web links at the fork repository instead of a paused download page.
 - Added an explicit MVP completion checklist with manual blockers and deferred work.
+- Hid built-in guide entries from Clipboard Source Control so only real app sources are shown.
 
 ## 2026-06-26 - Development MVP baseline
 
