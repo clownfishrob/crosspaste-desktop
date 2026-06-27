@@ -33,6 +33,10 @@ class CrossPasteWebService(
     private var localePathMap: Map<String, String> = ConcurrentMap()
 
     suspend fun refresh() {
+        if (appUrls.homeUrl.contains("github.com/")) {
+            logger.info { "Skipping web locale config for repository home URL: ${appUrls.homeUrl}" }
+            return
+        }
         runCatching {
             val metaUrl = "${appUrls.homeUrl}/api/meta.json"
             resourcesClient

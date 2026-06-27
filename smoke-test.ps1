@@ -1,4 +1,4 @@
-# Boot the CrossPaste desktop app for a short time and fail if it crashes.
+# Boot the PasteFlow Dev desktop app for a short time and fail if it crashes.
 #
 # Local-only check — NOT wired into CI. Run it on a real Windows desktop
 # before landing dependency bumps; the headless GitHub runner produces
@@ -8,7 +8,7 @@
 # can't see, because `build` never triggers the first Compose composition.
 #
 # Usage: powershell -ExecutionPolicy Bypass -File smoke-test.ps1 [bootTimeout] [composeWait]
-#   bootTimeout  max seconds to wait for the "CrossPaste started" log line (default 120)
+#   bootTimeout  max seconds to wait for the "PasteFlow Dev started" log line (default 120)
 #   composeWait  extra seconds after boot to let the first Composition render (default 25)
 #
 # Exit code: 0 success, 1 detected failure.
@@ -84,7 +84,7 @@ Write-Host "[smoke] launched, pid=$($proc.Id)"
 $started = $false
 for ($i = 0; $i -lt $BootTimeout; $i++) {
     if (Test-Path $LogFile) {
-        if (Select-String -Path $LogFile -Pattern 'CrossPaste started' -Quiet) {
+        if (Select-String -Path $LogFile -Pattern 'PasteFlow Dev started' -Quiet) {
             $started = $true
             Write-Host "[smoke] boot marker detected at ${i}s"
             break
@@ -109,7 +109,7 @@ if (-not $proc.HasExited) {
     Get-CimInstance Win32_Process -Filter "ParentProcessId=$($proc.Id)" -ErrorAction SilentlyContinue |
         ForEach-Object { try { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue } catch {} }
 }
-# Best-effort: kill any java.exe whose command line references CrossPaste.
+# Best-effort: kill any java.exe whose command line references the inherited main class.
 # Narrow on `appEnv=DEVELOPMENT` so we never reach the user's locally
 # running PROD CrossPaste, which boots with `-DappEnv=PRODUCTION`.
 Get-CimInstance Win32_Process -ErrorAction SilentlyContinue |
@@ -133,10 +133,10 @@ $failures = 0
 
 if (-not $started) {
     if ((Test-Path $LogFile) -and (Select-String -Path $LogFile -Pattern 'Another instance of the application is already running' -Quiet)) {
-        Write-Host '[smoke] FAIL: another CrossPaste DEV instance is already running and holds app.lock.'
+        Write-Host '[smoke] FAIL: another PasteFlow Dev instance is already running and holds app.lock.'
         Write-Host '[smoke]       Quit it and rerun.'
     } else {
-        Write-Host "[smoke] FAIL: app never logged 'CrossPaste started' within ${BootTimeout}s"
+        Write-Host "[smoke] FAIL: app never logged 'PasteFlow Dev started' within ${BootTimeout}s"
     }
     $failures++
 }

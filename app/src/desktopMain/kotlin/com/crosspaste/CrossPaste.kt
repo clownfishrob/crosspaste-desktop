@@ -202,7 +202,7 @@ class CrossPaste {
                     exitProcess(0)
                 }
             }.onFailure { e ->
-                logger.error(e) { "cant start crosspaste" }
+                logger.error(e) { "cant start PasteFlow Dev" }
                 exitProcess(0)
             }
         }
@@ -316,9 +316,9 @@ class CrossPaste {
             DesktopBootstrap.preStart(logger)
             initModule()
 
-            logger.info { "Starting CrossPaste${if (headless) " (headless)" else ""}" }
+            logger.info { "Starting PasteFlow Dev${if (headless) " (headless)" else ""}" }
             runBlocking { startApplication() }
-            logger.info { "CrossPaste started" }
+            logger.info { "PasteFlow Dev started" }
 
             logger.info { "SkikoProperties.renderApi=${SkikoProperties.renderApi}" }
 

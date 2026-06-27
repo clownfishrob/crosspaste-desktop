@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Boot the CrossPaste desktop app for a short time and fail if it crashes.
+# Boot the PasteFlow Dev desktop app for a short time and fail if it crashes.
 #
 # Local-only check — NOT wired into CI. Run it on a real desktop before
 # landing dependency bumps. Headless CI runners (Xvfb, no GL, missing
@@ -13,7 +13,7 @@
 #   * compose-shimmer 1.4.0 vs Compose 1.11 → NoSuchMethodError on SidePasteItemView
 #
 # Usage: ./smoke-test.sh [boot_timeout_seconds] [compose_wait_seconds]
-#   boot_timeout_seconds  max time to wait for the "CrossPaste started" log line (default 120)
+#   boot_timeout_seconds  max time to wait for the "PasteFlow Dev started" log line (default 120)
 #   compose_wait_seconds  extra time after boot to let the first Composition render (default 25)
 #
 # Exit code: 0 on success, 1 on detected failure, 2 on environment problem.
@@ -116,7 +116,7 @@ echo "[smoke] launched, pid=$APP_PID"
 started=0
 elapsed=0
 while [ "$elapsed" -lt "$BOOT_TIMEOUT" ]; do
-  if grep -q "CrossPaste started" "$LOG_FILE" 2>/dev/null; then
+  if grep -q "PasteFlow Dev started" "$LOG_FILE" 2>/dev/null; then
     started=1
     echo "[smoke] boot marker detected at ${elapsed}s"
     break
@@ -164,10 +164,10 @@ failures=0
 
 if [ "$started" != "1" ]; then
   if grep -q "Another instance of the application is already running" "$LOG_FILE" 2>/dev/null; then
-    echo "[smoke] FAIL: another CrossPaste DEV instance is already running and holds app.lock." >&2
+    echo "[smoke] FAIL: another PasteFlow Dev instance is already running and holds app.lock." >&2
     echo "[smoke]       Quit it (or 'pkill -f com.crosspaste.CrossPaste') and rerun." >&2
   else
-    echo "[smoke] FAIL: app never logged 'CrossPaste started' within ${BOOT_TIMEOUT}s"
+    echo "[smoke] FAIL: app never logged 'PasteFlow Dev started' within ${BOOT_TIMEOUT}s"
   fi
   failures=$((failures + 1))
 fi
