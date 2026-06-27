@@ -5,7 +5,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to suggest improvements to CrossPaste!
+        Thanks for taking the time to suggest improvements to PasteFlow Dev.
   - type: textarea
     id: solution
     attributes:

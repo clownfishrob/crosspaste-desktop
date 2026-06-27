@@ -31,6 +31,16 @@ Validated locally on macOS:
 - Restart behavior
 - macOS Accessibility authorization flow
 
+## Repository status
+
+This fork currently keeps GitHub automation deliberately small:
+
+- CI can be run manually and also runs on `pasteflow-dev-mvp` changes
+- Dependabot remains enabled for Gradle dependency visibility
+- Release publishing, beta publishing, sponsor updates, issue translation, and AI review workflows are disabled
+
+There is no updater or public release channel until the product direction is clearer.
+
 ## Deferred for later
 
 These areas are intentionally hidden or still need a PasteFlow Dev pass:
