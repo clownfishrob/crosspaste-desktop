@@ -1,8 +1,10 @@
 # Testing the Windows portable-zip self-update (no release needed)
 
-> PasteFlow Dev note: update delivery is currently hidden in the app and this
-> document is retained as legacy upstream implementation context. Revalidate and
-> rebrand this flow before re-enabling user-facing update controls.
+> PasteFlow Dev note: update delivery is currently paused. The app has no
+> updater or public release channel until product direction, signing, and release
+> ownership are clearer. This document is retained only as legacy upstream
+> implementation context; revalidate and rebrand this flow before re-enabling
+> user-facing update controls.
 
 The portable-zip updater downloads a new build, verifies it, and on confirmation
 hands off to a batch script that replaces the install directory and relaunches.

@@ -1,5 +1,25 @@
 # 项目路线图
 
+## PasteFlow Dev MVP 后续事项
+
+### 已确定的 MVP 决策
+
+- 这台 Mac 上的本地冒烟测试已通过：启动、剪贴板捕获、快捷键、重启行为和辅助功能授权均可用。
+- 更新交付暂时暂停，直到产品方向和发布渠道更清晰。
+- GitHub CI/构建暂时只允许手动触发，不会在 push 或 pull request 时自动运行。
+- 公开发布和 beta 发布工作流暂时移除。
+- Sponsors 更新、Issue 翻译和 AI review 自动化暂时移除。
+- GitHub 仓库保持最小化：Issue 模板、Dependabot 和手动 CI。
+
+### 暂缓的产品工作
+
+- 根据 PasteFlow Dev 的产品方向更新 Share 设置页面。
+- 等 PasteFlow Dev 的分享流程和文案确定后，再重新启用 Share 菜单。
+- 等更新元数据、签名和发布交付都归 PasteFlow Dev 所有后，再重新启用 Check for updates。
+- 在更新控件重新出现之前，重命名或替换仍带有 CrossPaste 命名的旧更新基础设施。
+- 等公开定位更清晰后，再重写 GitHub README。
+- 有第二台设备可用时，完成多设备测试。
+
 以下是我们当前的项目路线图。我们不再把每个功能强行绑定到具体的版本号上，而是按"已发布"与"接下来要做"两类来组织：
 
 ```mermaid

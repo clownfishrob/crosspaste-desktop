@@ -2,10 +2,23 @@
 
 ## PasteFlow Dev MVP follow-up
 
+### Locked MVP decisions
+
+- Local smoke test on this Mac is clear: launch, clipboard capture, shortcuts, restart behavior, and Accessibility authorization are working.
+- Update delivery is paused until the product direction and release channel are clearer.
+- GitHub CI/builds are manual-only; they do not run on push or pull request.
+- Public release and beta publishing workflows have been removed for now.
+- Sponsor updates, issue translation, and AI review automation have been removed for now.
+- The GitHub repo should stay minimal: issue templates, Dependabot, and manual CI only.
+
+### Deferred product work
+
 - Update the Share settings page for the PasteFlow Dev product direction.
 - Re-enable the Share menu once the PasteFlow Dev share flow and copy are ready.
-- Re-enable Check for updates once update metadata and release delivery are owned by PasteFlow Dev.
+- Re-enable Check for updates once update metadata, signing, and release delivery are owned by PasteFlow Dev.
 - Rebrand or replace legacy CrossPaste update infrastructure names before update controls return.
+- Rework the GitHub README once the public positioning is clearer.
+- Complete multi-device testing on another machine when available.
 
 Below is our current project roadmap. Rather than pinning features to specific version numbers, we group them into what has shipped and what we're working on next:
 
