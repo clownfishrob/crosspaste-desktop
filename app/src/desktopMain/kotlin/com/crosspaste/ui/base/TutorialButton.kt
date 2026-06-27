@@ -19,6 +19,9 @@ import com.crosspaste.config.DesktopConfigManager
 import com.crosspaste.i18n.GlobalCopywriter
 import org.koin.compose.koinInject
 
+private const val TUTORIAL_URL =
+    "https://github.com/clownfishrob/crosspaste-desktop/blob/pasteflow-dev-mvp/doc/en/FQA.md"
+
 @Composable
 fun TutorialButton() {
     val configManager = koinInject<DesktopConfigManager>()
@@ -37,7 +40,7 @@ fun TutorialButton() {
 
     TextButton(
         onClick = {
-            uiSupport.openCrossPasteWebInBrowser("tutorial/pasteboard")
+            uiSupport.openUrlInBrowser(TUTORIAL_URL)
             configManager.updateConfig("showTutorial", false)
         },
     ) {

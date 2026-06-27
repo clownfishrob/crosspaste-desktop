@@ -17,6 +17,9 @@ import com.crosspaste.ui.theme.AppUISize.medium
 import com.crosspaste.ui.theme.AppUISize.small2X
 import org.koin.compose.koinInject
 
+private const val INSTALL_NOTES_URL =
+    "https://github.com/clownfishrob/crosspaste-desktop/blob/pasteflow-dev-mvp/README.md#local-install-on-macos"
+
 @Composable
 fun DesktopPromoteGuide() {
     val copyWriter = koinInject<GlobalCopywriter>()
@@ -26,7 +29,7 @@ fun DesktopPromoteGuide() {
     HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
     Spacer(modifier = Modifier.height(medium))
     Text(
-        text = copyWriter.getText("get_other_platform_crosspaste"),
+        text = "PasteFlow Dev README",
         style = MaterialTheme.typography.labelMedium,
         color = MaterialTheme.colorScheme.primary,
     )
@@ -40,8 +43,8 @@ fun DesktopPromoteGuide() {
                 tint = MaterialTheme.colorScheme.surface,
             )
         },
-        topText = copyWriter.getText("download"),
-        bottomText = "PasteFlow Dev",
-        onClick = { uiSupport.openCrossPasteWebInBrowser("download") },
+        topText = copyWriter.getText("open"),
+        bottomText = "README",
+        onClick = { uiSupport.openUrlInBrowser(INSTALL_NOTES_URL) },
     )
 }

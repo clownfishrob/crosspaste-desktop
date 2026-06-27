@@ -23,7 +23,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
@@ -33,7 +32,6 @@ import com.composables.icons.fontawesome.FontAwesome
 import com.composables.icons.fontawesome.brands.Github
 import com.composables.icons.materialsymbols.MaterialSymbols
 import com.composables.icons.materialsymbols.rounded.Auto_awesome
-import com.composables.icons.materialsymbols.rounded.Favorite
 import com.composables.icons.materialsymbols.rounded.Feedback
 import com.composables.icons.materialsymbols.rounded.Language
 import com.composables.icons.materialsymbols.rounded.Mail
@@ -58,6 +56,7 @@ import org.koin.compose.koinInject
 
 private const val PROJECT_REPOSITORY_URL = "https://github.com/clownfishrob/crosspaste-desktop"
 private const val PROJECT_README_URL = "$PROJECT_REPOSITORY_URL/blob/pasteflow-dev-mvp/README.md"
+private const val PROJECT_LICENSE_URL = "$PROJECT_REPOSITORY_URL/blob/pasteflow-dev-mvp/LICENSE"
 
 @Composable
 fun AboutContentView() {
@@ -215,20 +214,20 @@ fun AboutContentView() {
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = "Made with",
+                    text = "PasteFlow Dev MVP",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                Icon(
-                    imageVector = MaterialSymbols.Rounded.Favorite,
-                    contentDescription = null,
-                    modifier = Modifier.size(12.dp),
-                    tint = Color(0xFFEF4444),
                 )
                 Text(
-                    text = "for PasteFlow Dev",
+                    text = "-",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Text(
+                    modifier = Modifier.clickable { uiSupport.openUrlInBrowser(PROJECT_LICENSE_URL) },
+                    text = "AGPL-3.0",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.primary,
                 )
             }
             Text(

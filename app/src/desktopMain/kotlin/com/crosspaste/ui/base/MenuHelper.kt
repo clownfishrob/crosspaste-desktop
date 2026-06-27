@@ -21,6 +21,9 @@ import com.crosspaste.utils.GlobalCoroutineScope.mainCoroutineDispatcher
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.launch
 
+private const val FAQ_URL =
+    "https://github.com/clownfishrob/crosspaste-desktop/blob/pasteflow-dev-mvp/doc/en/FQA.md"
+
 class MenuHelper(
     private val appWindowManager: DesktopAppWindowManager,
     private val copywriter: GlobalCopywriter,
@@ -117,7 +120,7 @@ class MenuHelper(
             title = { copywriter -> copywriter.getText("faq") },
             action = {
                 mainCoroutineDispatcher.launch(CoroutineName("Open FAQ")) {
-                    uiSupport.openCrossPasteWebInBrowser("FAQ")
+                    uiSupport.openUrlInBrowser(FAQ_URL)
                 }
             },
         )
