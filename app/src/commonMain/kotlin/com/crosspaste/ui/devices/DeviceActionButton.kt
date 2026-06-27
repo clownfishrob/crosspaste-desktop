@@ -10,20 +10,14 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import com.composables.icons.materialsymbols.MaterialSymbols
 import com.composables.icons.materialsymbols.rounded.Link
 import com.composables.icons.materialsymbols.rounded.Refresh
-import com.composables.icons.materialsymbols.rounded.Upgrade
-import com.crosspaste.app.AppUpdateService
 import com.crosspaste.db.sync.SyncState
-import com.crosspaste.net.VersionRelation
 import com.crosspaste.notification.MessageType
 import com.crosspaste.notification.NotificationManager
 import com.crosspaste.sync.SyncManager
@@ -42,7 +36,6 @@ fun DeviceScope.DeviceActionButton(
     refreshing: Boolean,
     updateRefreshing: (Boolean) -> Unit,
 ) {
-    val appUpdateService = koinInject<AppUpdateService>()
     val notificationManager = koinInject<NotificationManager>()
     val syncManager = koinInject<SyncManager>()
 
@@ -112,25 +105,6 @@ fun DeviceScope.DeviceActionButton(
                 syncManager.toVerify(syncRuntimeInfo.appInstanceId)
             }
         }
-        SyncState.INCOMPATIBLE -> {
-            val versionRelation by syncManager
-                .getSyncHandler(syncRuntimeInfo.appInstanceId)
-                ?.versionRelation
-                ?.collectAsState() ?: remember { mutableStateOf(null) }
-
-            if (versionRelation == VersionRelation.LOWER_THAN) {
-                GeneralIconButton(
-                    imageVector = MaterialSymbols.Rounded.Upgrade,
-                    desc = "upgrade",
-                    colors =
-                        IconButtonDefaults.iconButtonColors(
-                            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
-                        ),
-                ) {
-                    appUpdateService.tryTriggerUpdate()
-                }
-            }
-        }
+        SyncState.INCOMPATIBLE -> Unit
     }
 }
