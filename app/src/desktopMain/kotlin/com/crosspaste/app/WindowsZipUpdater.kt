@@ -240,7 +240,8 @@ class WindowsZipUpdater(
         // user's privileges. Integrity therefore rests entirely on HTTPS + the GitHub /
         // Aliyun OSS repository ACLs. Proper hardening is to verify a detached signature
         // (e.g. minisign / GPG) over the zip or checksum against a public key baked into
-        // the app, before extracting. See doc/en/WindowsZipSelfUpdateTest.md.
+        // the app, before extracting. PasteFlow Dev has paused update delivery
+        // until release ownership, signing, and product direction are clearer.
         val winner = fetchChecksumFromFastestSource(release)
         if (winner == null) {
             _updateState.value = UpdateState.Failed("update_download_failed")
@@ -366,8 +367,7 @@ class WindowsZipUpdater(
     private fun mirrorBases(release: RemoteRelease): List<String> =
         baseUrlOverride?.let { listOf(it.trimEnd('/') + "/") }
             ?: listOf(
-                "https://github.com/CrossPaste/crosspaste-desktop/releases/download/${release.tag}/",
-                "https://oss.crosspaste.com/${release.tag}/",
+                "https://github.com/clownfishrob/crosspaste-desktop/releases/download/${release.tag}/",
             )
 
     private fun recreateDir(dir: Path) {
@@ -382,7 +382,7 @@ class WindowsZipUpdater(
             .fetchLatest(
                 metadataPropertiesUrl = metadataUrl(),
                 // Under a test override that base is the single source of truth;
-                // otherwise fall back to crosspaste.com when GitHub is blocked.
+                // otherwise keep release metadata tied to this fork.
                 versionApiUrl = if (baseUrlOverride != null) null else DesktopAppUrls.versionApiUrl,
                 // Keep the resolved tag authoritative: it drives the download URLs
                 // ([mirrorBases]), so honor what the source reports rather than
@@ -493,10 +493,8 @@ class WindowsZipUpdater(
          * `app.jvm.options` always reaches `System.getProperty`. The env var stays for
          * the local-server flow where it does propagate.
          *
-         * Every build except PRODUCTION accepts any URL — in particular a BETA build
-         * (the only packaged channel with a real Windows portable path provider) can be
-         * pointed at a remote test bucket such as `https://oss.crosspaste.com/test`,
-         * so the whole download/verify/replace/restart flow runs without a local server.
+         * Every build except PRODUCTION accepts any URL, which keeps local MVP testing
+         * possible while public update delivery is paused.
          * PRODUCTION accepts only a loopback server, so a stray override can never
          * redirect actual users to a remote update source.
          */

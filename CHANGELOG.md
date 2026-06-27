@@ -16,6 +16,7 @@ to the upstream project and is available from:
 - Hid Share and Check for updates entry points from the MVP app surface.
 - Updated contact wording to use `rob@ngduk.co.uk`.
 - Kept GitHub automation minimal: manual CI, Dependabot, and issue templates.
+- Removed obsolete Windows self-update runbooks and helper scripts from the MVP repo surface.
 
 ## 2026-06-26 - Development MVP baseline
 

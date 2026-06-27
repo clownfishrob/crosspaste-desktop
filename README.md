@@ -47,7 +47,7 @@ These areas are intentionally hidden or still need a PasteFlow Dev pass:
 
 - Share page and share menu
 - Check for updates / release delivery
-- Legacy update documentation and infrastructure naming still inherited from CrossPaste
+- Legacy updater implementation names still inherited from CrossPaste
 - Public positioning, screenshots, and release packaging
 - Multi-device testing on additional machines
 

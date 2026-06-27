@@ -15,7 +15,7 @@ data class ReleaseMetadata(
 )
 
 /**
- * Shape of `https://crosspaste.com/api/desktop.json`. [tag] is optional so a
+ * Shape of a desktop version JSON endpoint. [tag] is optional so a
  * payload without it still resolves (we derive `version.revision`, the same tag
  * GitHub releases use).
  */
@@ -27,14 +27,11 @@ private data class DesktopVersionApi(
 )
 
 /**
- * Resolves the latest published release, preferring GitHub's release
- * `metadata.properties` and falling back to crosspaste.com's `/api/desktop.json`
- * when GitHub is unreachable.
+ * Resolves the latest published release, preferring release `metadata.properties`
+ * and optionally falling back to a JSON version endpoint.
  *
- * GitHub is frequently blocked in mainland China, where crosspaste.com still
- * resolves; without this fallback those users would neither see the "new version
- * available" prompt nor be able to resolve the download tag, so the whole update
- * flow would be dead for them even though the OSS download mirror is reachable.
+ * PasteFlow Dev currently keeps update delivery paused; this helper remains only
+ * as retained infrastructure for a future owned release channel.
  */
 class UpdateMetadataFetcher(
     private val resourcesClient: ResourcesClient,
@@ -44,9 +41,9 @@ class UpdateMetadataFetcher(
     /**
      * @param metadataPropertiesUrl GitHub-style `metadata.properties` (also the
      *   test-override target); tried first.
-     * @param versionApiUrl crosspaste.com `/api/desktop.json`, tried only when the
-     *   first source fails. Pass null to disable the fallback (e.g. under a test
-     *   override, so the test source stays the single source of truth).
+     * @param versionApiUrl JSON version endpoint, tried only when the first source
+     *   fails. Pass null to disable the fallback (e.g. under a test override, so
+     *   the test source stays the single source of truth).
      */
     suspend fun fetchLatest(
         metadataPropertiesUrl: String,

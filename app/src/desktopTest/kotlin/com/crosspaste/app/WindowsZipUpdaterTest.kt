@@ -50,8 +50,8 @@ class WindowsZipUpdaterTest {
 
     @Test
     fun `treats remote hosts as non-loopback`() {
-        assertEquals(false, WindowsZipUpdater.isLoopbackHost("https://github.com/CrossPaste/x"))
-        assertEquals(false, WindowsZipUpdater.isLoopbackHost("https://oss.crosspaste.com/2.1.5"))
+        assertEquals(false, WindowsZipUpdater.isLoopbackHost("https://github.com/clownfishrob/crosspaste-desktop"))
+        assertEquals(false, WindowsZipUpdater.isLoopbackHost("https://updates.example.test/2.1.5"))
         assertEquals(false, WindowsZipUpdater.isLoopbackHost("not a url"))
     }
 }
