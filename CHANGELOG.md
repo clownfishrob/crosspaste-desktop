@@ -22,6 +22,7 @@ to the upstream project and is available from:
 - Clarified README attribution links as upstream CrossPaste resources.
 - Normalized hidden Share copy and Contact email text for the MVP.
 - Pointed dormant Share/project web links at the fork repository instead of a paused download page.
+- Added an explicit MVP completion checklist with manual blockers and deferred work.
 
 ## 2026-06-26 - Development MVP baseline
 

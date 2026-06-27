@@ -40,6 +40,7 @@ PasteFlow Dev 已经完成了基本的开发身份分离：
 - 其他设备上的多机测试
 
 更多后续事项见 [doc/zh/Roadmap.md](doc/zh/Roadmap.md)。
+剩余 MVP 完成检查见 [doc/zh/MVPChecklist.md](doc/zh/MVPChecklist.md)。
 
 ## 开发设置
 

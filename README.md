@@ -52,6 +52,7 @@ These areas are intentionally hidden or still need a PasteFlow Dev pass:
 - Multi-device testing on additional machines
 
 See [doc/en/Roadmap.md](doc/en/Roadmap.md) for the active follow-up list.
+See [doc/en/MVPChecklist.md](doc/en/MVPChecklist.md) for the remaining MVP completion checks.
 
 ## Development setup
 

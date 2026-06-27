@@ -29,6 +29,7 @@
 - 继续减少不属于致谢、包命名或继承内部结构的可见 CrossPaste 文案。
 - 在实际使用中遇到问题时，继续改善设置标签和空状态。
 - 持续在路线图和 changelog 中记录产品决策。
+- 在 [MVPChecklist.md](MVPChecklist.md) 中跟踪 MVP 完成检查。
 
 ## 暂缓的产品工作
 

@@ -33,6 +33,7 @@ the upstream CrossPaste release roadmap.
   package namespace, or inherited internal structure.
 - Improve settings labels and empty states as they are encountered during use.
 - Keep documenting decisions in this roadmap and the changelog.
+- Track MVP completion checks in [MVPChecklist.md](MVPChecklist.md).
 
 ## Deferred product work
 
