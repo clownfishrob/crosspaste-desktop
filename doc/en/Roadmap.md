@@ -24,11 +24,12 @@ the upstream CrossPaste release roadmap.
 - macOS Accessibility prompt handling adjusted for shortcut use.
 - Local macOS manual build and install path documented.
 - GitHub README, changelog, and app-facing copy reset for MVP context.
+- Extension-facing settings, pairing, and notification copy reset for MVP context.
 
 ## Next focus
 
 - Keep the MVP stable as a local desktop clipboard manager.
-- Reduce remaining user-visible CrossPaste wording where it is not attribution,
+- Reduce remaining visible CrossPaste wording where it is not attribution,
   package namespace, or inherited internal structure.
 - Improve settings labels and empty states as they are encountered during use.
 - Keep documenting decisions in this roadmap and the changelog.

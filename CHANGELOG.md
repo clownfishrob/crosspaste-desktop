@@ -19,6 +19,7 @@ to the upstream project and is available from:
 - Removed obsolete Windows self-update runbooks and helper scripts from the MVP repo surface.
 - Updated extension-facing About/settings links and visible PasteFlow Dev wording.
 - Updated extension pairing and notification wording from CrossPaste to PasteFlow Dev.
+- Clarified README attribution links as upstream CrossPaste resources.
 
 ## 2026-06-26 - Development MVP baseline
 

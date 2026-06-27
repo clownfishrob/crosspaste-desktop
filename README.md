@@ -115,8 +115,8 @@ cross-platform clipboard, sync, storage, UI, and extension foundations.
 
 Original project:
 
-- Repository: [CrossPaste/crosspaste-desktop](https://github.com/CrossPaste/crosspaste-desktop)
-- Website: [crosspaste.com](https://crosspaste.com)
+- Upstream repository: [CrossPaste/crosspaste-desktop](https://github.com/CrossPaste/crosspaste-desktop)
+- Upstream website: [crosspaste.com](https://crosspaste.com)
 
 ## License
 

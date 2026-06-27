@@ -21,6 +21,7 @@
 - macOS Accessibility 权限提示已针对快捷键使用做过调整。
 - 已记录本地 macOS 手动构建和安装流程。
 - GitHub README、changelog 和应用内可见文案已重置为 MVP 上下文。
+- 扩展端设置、配对和通知文案已重置为 MVP 上下文。
 
 ## 下一步重点
 

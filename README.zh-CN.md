@@ -101,8 +101,8 @@ PasteFlow Dev 是 CrossPaste 的 fork。原项目提供了跨平台剪贴板、�
 
 原项目：
 
-- Repository: [CrossPaste/crosspaste-desktop](https://github.com/CrossPaste/crosspaste-desktop)
-- Website: [crosspaste.com](https://crosspaste.com)
+- 上游仓库：[CrossPaste/crosspaste-desktop](https://github.com/CrossPaste/crosspaste-desktop)
+- 上游网站：[crosspaste.com](https://crosspaste.com)
 
 ## License
 
