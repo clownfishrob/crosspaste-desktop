@@ -26,12 +26,11 @@ class DesktopAppShareService(
 
     override val shareTitleKey: String = "share_title"
 
-    override fun getShareText(): String =
-        "${copywriter.getText(shareContentKey)}\n${uiSupport.getCrossPasteWebUrl("download")}"
+    override fun getShareText(): String = "${copywriter.getText(shareContentKey)}\n${getShareUrl()}"
 
     override fun getShareTitle(): String = copywriter.getText(shareTitleKey)
 
     override fun getShareContent(): String = copywriter.getText(shareContentKey)
 
-    override fun getShareUrl(): String = uiSupport.getCrossPasteWebUrl("download")
+    override fun getShareUrl(): String = uiSupport.getCrossPasteWebUrl()
 }

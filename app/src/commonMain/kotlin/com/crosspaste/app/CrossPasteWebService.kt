@@ -57,6 +57,9 @@ class CrossPasteWebService(
         language: String,
         path: String = "",
     ): String {
+        if (appUrls.homeUrl.contains("github.com/")) {
+            return appUrls.homeUrl
+        }
         val localePath = resolveLocalePath(language)
         return "${appUrls.homeUrl}$localePath$path"
     }
