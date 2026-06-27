@@ -77,7 +77,7 @@ object CrossPasteColor : ThemeColor {
     val surfaceContainerHighDark = Color(0xFF1F1F1F)
     val surfaceContainerHighestDark = Color(0xFF2A2A2A)
 
-    override val name: String = "CrossPaste"
+    override val name: String = "PasteFlow Dev"
 
     override val lightColorScheme =
         lightColorScheme(

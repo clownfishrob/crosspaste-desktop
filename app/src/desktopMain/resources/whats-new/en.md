@@ -9,5 +9,5 @@ PasteFlow Dev now uses its own app name, bundle ID, storage folder, network port
 ## Local clipboard manager baseline
 The desktop app has been validated on this Mac for clipboard capture, main shortcut launch, search shortcut launch, restart behavior, and macOS Accessibility prompt handling.
 
-## Follow-up cleanup
-Settings copy, About, and Change Log are being reset for PasteFlow Dev. Share-page updates are intentionally left for a later pass.
+## MVP operating mode
+Settings, About, Change Log, and help links now point at PasteFlow Dev project context. Updates, public release delivery, and Share-page work are paused until product direction is clearer.

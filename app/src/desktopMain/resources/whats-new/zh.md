@@ -9,5 +9,5 @@ PasteFlow Dev 已使用独立的应用名称、bundle ID、存储目录、网络
 ## 本地剪贴板管理基线
 已在这台 Mac 上验证剪贴板捕获、主快捷键启动、搜索快捷键启动、重启行为和 macOS Accessibility 授权流程。
 
-## 后续清理
-Settings 文案、About 和 Change Log 正在为 PasteFlow Dev 重置。Share 页面会在之后单独处理。
+## MVP 运行模式
+Settings、About、Change Log 和帮助链接已指向 PasteFlow Dev 项目上下文。更新、公开发布交付和 Share 页面工作会等产品方向更清晰后再继续。

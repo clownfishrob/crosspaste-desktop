@@ -89,7 +89,7 @@ class PasteExportService(
                 }
             }
             val exportedCount = nextIndex - 1
-            val exportFileName = "crosspaste-export-$epochMilliseconds.data"
+            val exportFileName = "pasteflow-dev-export-$epochMilliseconds.data"
             if (exportError && exportedCount == 0L) {
                 notificationManager.sendNotification(
                     title = { it.getText("export_fail") },

@@ -86,7 +86,7 @@ actual fun CrossPasteLogoView(
                     .padding(paddingDp),
             painter = painterResource(Res.drawable.crosspaste_svg),
             tint = MaterialTheme.colorScheme.onPrimary,
-            contentDescription = "CrossPaste Logo",
+            contentDescription = "PasteFlow Dev Logo",
         )
     }
 }
