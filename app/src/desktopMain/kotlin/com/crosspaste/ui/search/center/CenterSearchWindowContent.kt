@@ -52,6 +52,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.isCtrlPressed
+import androidx.compose.ui.input.key.isShiftPressed
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.nativeKeyCode
 import androidx.compose.ui.input.key.onPreviewKeyEvent
@@ -127,6 +128,7 @@ fun CenterSearchWindowContent() {
     val searchResult by pasteSearchViewModel.searchResults.collectAsState()
 
     var isCtrlPressed by remember { mutableStateOf(false) }
+    var isShiftPressed by remember { mutableStateOf(false) }
 
     val latestSearchResult = rememberUpdatedState(searchResult)
 
@@ -141,6 +143,7 @@ fun CenterSearchWindowContent() {
                 .border(tiny5X, AppUIColors.lightBorderColor, mediumRoundedCornerShape)
                 .onPreviewKeyEvent { event ->
                     isCtrlPressed = event.isCtrlPressed
+                    isShiftPressed = event.isShiftPressed
                     if (event.type != KeyEventType.KeyDown) return@onPreviewKeyEvent false
                     when (event.key) {
                         Key.Enter -> {
@@ -178,7 +181,10 @@ fun CenterSearchWindowContent() {
         Column(modifier = Modifier.fillMaxSize()) {
             CenterSearchTopBar()
             Row(modifier = Modifier.weight(1f).fillMaxWidth()) {
-                CenterItemList(isCtrlPressed = isCtrlPressed)
+                CenterItemList(
+                    isCtrlPressed = isCtrlPressed,
+                    isShiftPressed = isShiftPressed,
+                )
                 VerticalDivider(color = AppUIColors.lightBorderColor)
                 CenterPreviewPane()
             }
@@ -313,7 +319,10 @@ private fun CenterSearchTopBar() {
 }
 
 @Composable
-private fun CenterItemList(isCtrlPressed: Boolean) {
+private fun CenterItemList(
+    isCtrlPressed: Boolean,
+    isShiftPressed: Boolean,
+) {
     val pasteMenuService = koinInject<DesktopPasteMenuService>()
     val pasteSearchViewModel = koinInject<PasteSearchViewModel>()
     val pasteSelectionViewModel = koinInject<PasteSelectionViewModel>()
@@ -408,10 +417,12 @@ private fun CenterItemList(isCtrlPressed: Boolean) {
                     pinned = currentPasteData.id in taggedIds,
                     showSlotHighlight = isCtrlPressed,
                     onPress = {
-                        pasteSelectionViewModel.clickSelectedIndex(currentIndex)
+                        pasteSelectionViewModel.clickSelectedIndex(currentIndex, isShiftPressed)
                     },
                     onDoubleTap = {
-                        pasteMenuService.quickPasteFromSearchWindow(currentPasteData)
+                        if (!isShiftPressed) {
+                            pasteMenuService.quickPasteFromSearchWindow(currentPasteData)
+                        }
                     },
                 )
             }
