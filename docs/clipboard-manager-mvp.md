@@ -111,8 +111,9 @@ The code package names remain `com.crosspaste` to avoid a large, risky rename ac
   offers a restart; Settings gained a macOS-only "Permissions" section with a
   live status row that deep-links to the right System Settings pane
 - Better empty states and settings explanations
-  — partial: the search overlay now distinguishes "nothing captured yet" from
-  "no matches for your search or filters"; broader settings copy review open
+  — done: the search overlay distinguishes "nothing captured yet" from "no
+  matches for your search or filters", and the copy audit confirmed all ten
+  locales and UI strings already use PasteFlow Dev naming
 - Import/export pinned collections
   — done: the export screen can export a single collection; the bundle
   carries `collection.info` (tag name + colour) and import recreates the

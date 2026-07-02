@@ -57,8 +57,8 @@ Known follow-ups for the new layout:
   list. Not addressed yet.
 - On macOS the acrylic blur fills the square window rect, so the panel's
   rounded corners show blur instead of the desktop. Cosmetic.
-- Multi-select (shift-click) is not wired in the new list (single select
-  only); the side strip still supports it.
+- Multi-select: restored — shift-click works in the new list, matching the
+  old strip; double-tap quick-paste is suppressed while Shift is held.
 
 ---
 
