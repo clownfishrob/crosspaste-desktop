@@ -32,5 +32,9 @@ fun SettingsContentView() {
         item {
             AdvancedSettingsContentView()
         }
+
+        item {
+            AccessibilitySettingsContentView()
+        }
     }
 }
