@@ -4,6 +4,9 @@ import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.hoverable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -193,6 +196,37 @@ fun CenterSearchWindowContent() {
     }
 }
 
+// Filter target with a quiet hover highlight and a stronger selected state,
+// shared by the "All" chip and the per-type icons in the top bar.
+@Composable
+private fun HoverableFilterBox(
+    selected: Boolean,
+    onClick: () -> Unit,
+    content: @Composable () -> Unit,
+) {
+    val currentOnClick by rememberUpdatedState(onClick)
+    val interactionSource = remember { MutableInteractionSource() }
+    val hovered by interactionSource.collectIsHoveredAsState()
+    Box(
+        modifier =
+            Modifier
+                .clip(tiny2XRoundedCornerShape)
+                .hoverable(interactionSource)
+                .background(
+                    when {
+                        selected -> MaterialTheme.colorScheme.surfaceContainerHighest
+                        hovered -> MaterialTheme.colorScheme.surfaceContainerHigh
+                        else -> Color.Transparent
+                    },
+                ).pointerInput(Unit) {
+                    detectTapGestures { currentOnClick() }
+                },
+        contentAlignment = Alignment.Center,
+    ) {
+        content()
+    }
+}
+
 private fun typeIconData(
     themeExt: ThemeExt,
     pasteType: PasteType,
@@ -230,21 +264,12 @@ private fun CenterSearchTopBar() {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         // "All types" chip
-        Box(
-            modifier =
-                Modifier
-                    .clip(tiny2XRoundedCornerShape)
-                    .background(
-                        if (selectedTypes.isEmpty()) {
-                            MaterialTheme.colorScheme.surfaceContainerHighest
-                        } else {
-                            Color.Transparent
-                        },
-                    ).pointerInput(Unit) {
-                        detectTapGestures { pasteSearchViewModel.updatePasteType(listOf()) }
-                    }.padding(horizontal = small3X, vertical = tiny2X),
+        HoverableFilterBox(
+            selected = selectedTypes.isEmpty(),
+            onClick = { pasteSearchViewModel.updatePasteType(listOf()) },
         ) {
             Text(
+                modifier = Modifier.padding(horizontal = small3X, vertical = tiny2X),
                 text = copywriter.getText(PasteType.ALL_TYPES),
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onSurface,
@@ -257,30 +282,19 @@ private fun CenterSearchTopBar() {
         PasteType.TYPES.forEach { pasteType ->
             val iconData = typeIconData(themeExt, pasteType)
             val selected = selectedTypes.singleOrNull() == pasteType.type
-            Box(
-                modifier =
-                    Modifier
-                        .clip(tiny2XRoundedCornerShape)
-                        .background(
-                            if (selected) {
-                                MaterialTheme.colorScheme.surfaceContainerHighest
-                            } else {
-                                Color.Transparent
-                            },
-                        ).pointerInput(pasteType.type) {
-                            detectTapGestures {
-                                pasteSearchViewModel.updatePasteType(
-                                    if (selected) listOf() else listOf(pasteType.type),
-                                )
-                            }
-                        }.padding(tiny2X),
-                contentAlignment = Alignment.Center,
+            HoverableFilterBox(
+                selected = selected,
+                onClick = {
+                    pasteSearchViewModel.updatePasteType(
+                        if (selected) listOf() else listOf(pasteType.type),
+                    )
+                },
             ) {
                 Icon(
                     imageVector = iconData.imageVector,
                     contentDescription = copywriter.getText(pasteType.name),
                     tint = iconData.color,
-                    modifier = Modifier.size(large2X),
+                    modifier = Modifier.padding(tiny2X).size(large2X),
                 )
             }
             Spacer(modifier = Modifier.width(tiny2X))
@@ -342,11 +356,11 @@ private fun CenterItemList(
     val adapter = rememberScrollbarAdapter(scrollState = searchListState)
     val latestSearchResult = rememberUpdatedState(searchResult)
 
-    // Which of the visible items are pinned to a collection; re-emits when tag
+    // Primary collection colour per visible pinned item; re-emits when tag
     // membership changes (e.g. pinning via the row context menu).
-    val taggedIds by remember(searchResult) {
-        pasteTagDao.getTaggedPasteIdsFlow(searchResult.map { it.id })
-    }.collectAsState(initial = emptySet())
+    val tagColors by remember(searchResult) {
+        pasteTagDao.getPasteTagColorsFlow(searchResult.map { it.id })
+    }.collectAsState(initial = emptyMap())
 
     // Reset selection to the first match whenever the query or a filter changes.
     LaunchedEffect(
@@ -414,7 +428,7 @@ private fun CenterItemList(
                 rowScope?.CenterItemRow(
                     index = currentIndex,
                     selected = currentIndex in selectedIndexes,
-                    pinned = currentPasteData.id in taggedIds,
+                    pinColor = tagColors[currentPasteData.id]?.let { Color(it.toInt()) },
                     showSlotHighlight = isCtrlPressed,
                     onPress = {
                         pasteSelectionViewModel.clickSelectedIndex(currentIndex, isShiftPressed)
@@ -472,7 +486,7 @@ private fun CenterItemList(
 private fun PasteDataScope.CenterItemRow(
     index: Int,
     selected: Boolean,
-    pinned: Boolean,
+    pinColor: Color?,
     showSlotHighlight: Boolean,
     onPress: () -> Unit,
     onDoubleTap: () -> Unit,
@@ -497,6 +511,9 @@ private fun PasteDataScope.CenterItemRow(
                     ?.takeIf { it.isNotBlank() }
         } ?: copywriter.getText(pasteData.getTypeName())
 
+    val interactionSource = remember { MutableInteractionSource() }
+    val hovered by interactionSource.collectIsHoveredAsState()
+
     PasteContextMenuView(
         items = pasteMenuService.sidePasteMenuItemsProvider(this),
     ) {
@@ -506,11 +523,12 @@ private fun PasteDataScope.CenterItemRow(
                     .fillMaxWidth()
                     .height(xxLarge)
                     .clip(tinyRoundedCornerShape)
+                    .hoverable(interactionSource)
                     .background(
-                        if (selected) {
-                            MaterialTheme.colorScheme.surfaceContainerHighest
-                        } else {
-                            Color.Transparent
+                        when {
+                            selected -> MaterialTheme.colorScheme.secondaryContainer
+                            hovered -> MaterialTheme.colorScheme.surfaceContainerHighest
+                            else -> Color.Transparent
                         },
                     ).pointerInput(index) {
                         detectTapGestures(
@@ -562,12 +580,12 @@ private fun PasteDataScope.CenterItemRow(
                 overflow = TextOverflow.Ellipsis,
             )
 
-            if (pinned) {
+            pinColor?.let { color ->
                 Spacer(modifier = Modifier.width(tiny2X))
                 Icon(
                     imageVector = MaterialSymbols.RoundedFilled.Push_pin,
                     contentDescription = "pinned",
-                    tint = AppUIColors.importantColor,
+                    tint = color,
                     modifier = Modifier.size(small),
                 )
             }

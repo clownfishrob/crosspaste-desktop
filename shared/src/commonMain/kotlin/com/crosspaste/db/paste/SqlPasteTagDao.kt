@@ -20,17 +20,26 @@ class SqlPasteTagDao(
 
     private val tagDatabaseQueries = database.tagDatabaseQueries
 
-    override fun getTaggedPasteIdsFlow(pasteDataIds: List<Long>): Flow<Set<Long>> =
+    override fun getPasteTagColorsFlow(pasteDataIds: List<Long>): Flow<Map<Long, Long>> =
         if (pasteDataIds.isEmpty()) {
-            flowOf(emptySet())
+            flowOf(emptyMap())
         } else {
             tagDatabaseQueries
-                .getTaggedPasteIds(pasteDataIds)
+                .getPasteTagColors(pasteDataIds)
                 .asFlow()
-                .map { it.executeAsList().toSet() }
-                .catch { e ->
-                    logger.error(e) { "Error executing getTaggedPasteIdsFlow query: ${e.message}" }
-                    emit(emptySet())
+                .map { query ->
+                    // Rows arrive ordered by tag sort order, so the first colour
+                    // seen per paste id is its primary tag's colour.
+                    buildMap {
+                        query.executeAsList().forEach { row ->
+                            if (row.pasteId !in this) {
+                                put(row.pasteId, row.color)
+                            }
+                        }
+                    }
+                }.catch { e ->
+                    logger.error(e) { "Error executing getPasteTagColorsFlow query: ${e.message}" }
+                    emit(emptyMap())
                 }.flowOn(ioDispatcher)
         }
 

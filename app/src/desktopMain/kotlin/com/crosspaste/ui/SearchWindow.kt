@@ -123,9 +123,11 @@ fun SearchWindow(windowIcon: Painter?) {
         resizable = false,
     ) {
         if (isMac) {
+            // isDark deliberately omitted: the centered panel paints its own
+            // opaque rounded background, so acrylic would only bleed through
+            // at the corners. This still sets the popup window level.
             MacAcrylicEffect(
                 window = this.window,
-                isDark = themeState.isCurrentThemeDark,
             )
         } else if (isWindowsAndSupportBlurEffect) {
             WindowsBlurEffect(

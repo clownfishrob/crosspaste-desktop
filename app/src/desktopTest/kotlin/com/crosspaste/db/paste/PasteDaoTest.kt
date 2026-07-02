@@ -386,31 +386,45 @@ class PasteDaoTest {
     }
 
     @Test
-    fun `getTaggedPasteIdsFlow emits tagged subset and reacts to membership changes`() = runTest {
+    fun `getPasteTagColorsFlow emits primary colours and reacts to membership changes`() = runTest {
         val id1 = pasteDao.createPasteData(createTestPasteData(text = "tagged item"))
         val id2 = pasteDao.createPasteData(createTestPasteData(text = "untagged item"))
         val tagId = pasteTagDao.createPasteTag("collection", 0xFF0000L)
         pasteTagDao.switchPinPasteTagBlock(id1, tagId)
 
-        pasteTagDao.getTaggedPasteIdsFlow(listOf(id1, id2)).test {
-            assertEquals(setOf(id1), awaitItem())
+        pasteTagDao.getPasteTagColorsFlow(listOf(id1, id2)).test {
+            assertEquals(mapOf(id1 to 0xFF0000L), awaitItem())
 
             // Pinning the second item re-emits with both ids.
             pasteTagDao.switchPinPasteTagBlock(id2, tagId)
-            assertEquals(setOf(id1, id2), awaitItem())
+            assertEquals(mapOf(id1 to 0xFF0000L, id2 to 0xFF0000L), awaitItem())
 
             // Unpinning the first item re-emits without it.
             pasteTagDao.switchPinPasteTagBlock(id1, tagId)
-            assertEquals(setOf(id2), awaitItem())
+            assertEquals(mapOf(id2 to 0xFF0000L), awaitItem())
 
             cancelAndIgnoreRemainingEvents()
         }
     }
 
     @Test
-    fun `getTaggedPasteIdsFlow with empty input emits empty set`() = runTest {
-        pasteTagDao.getTaggedPasteIdsFlow(listOf()).test {
-            assertEquals(emptySet(), awaitItem())
+    fun `getPasteTagColorsFlow uses the lowest sort order tag as primary colour`() = runTest {
+        val id = pasteDao.createPasteData(createTestPasteData(text = "multi tagged"))
+        val firstTag = pasteTagDao.createPasteTag("first", 0x111111L)
+        val secondTag = pasteTagDao.createPasteTag("second", 0x222222L)
+        pasteTagDao.switchPinPasteTagBlock(id, secondTag)
+        pasteTagDao.switchPinPasteTagBlock(id, firstTag)
+
+        pasteTagDao.getPasteTagColorsFlow(listOf(id)).test {
+            assertEquals(mapOf(id to 0x111111L), awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `getPasteTagColorsFlow with empty input emits empty map`() = runTest {
+        pasteTagDao.getPasteTagColorsFlow(listOf()).test {
+            assertEquals(emptyMap(), awaitItem())
             awaitComplete()
         }
     }

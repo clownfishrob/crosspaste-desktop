@@ -5,9 +5,10 @@ import kotlinx.coroutines.flow.Flow
 
 interface PasteTagDao : QueryPasteTag {
 
-    // Emits the subset of the given paste ids that belong to at least one tag,
-    // re-emitting whenever tag membership changes.
-    fun getTaggedPasteIdsFlow(pasteDataIds: List<Long>): Flow<Set<Long>>
+    // Emits the primary (lowest sort order) tag colour for each of the given
+    // paste ids that belongs to at least one tag, re-emitting whenever tag
+    // membership changes. Ids without any tag are absent from the map.
+    fun getPasteTagColorsFlow(pasteDataIds: List<Long>): Flow<Map<Long, Long>>
 
     suspend fun getMaxSortOrder(): Long
 
