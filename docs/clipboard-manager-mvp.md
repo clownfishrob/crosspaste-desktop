@@ -99,11 +99,21 @@ The code package names remain `com.crosspaste` to avoid a large, risky rename ac
 ### Phase 2 - UX polish
 
 - Better previews for text, code, HTML, links, images, files, colours
+  — done: cards show character counts (text/HTML/RTF), format/resolution/size
+  and screenshot labels (images), and name/size (files)
 - Keyboard shortcuts for collection slots
-- Better onboarding for macOS Accessibility permissions
+  — done: slots follow the active collection (tag) filter; slot numbers are
+  now always visible on the first 10 cards (highlighted while Ctrl is held)
+  and the top bar advertises Ctrl+1…9 alongside the existing paste hints
+- Better onboarding for macOS Accessibility permissions — open
 - Better empty states and settings explanations
+  — partial: the search overlay now distinguishes "nothing captured yet" from
+  "no matches for your search or filters"; broader settings copy review open
 - Import/export pinned collections
-- Theme polish without copying any commercial app
+  — done: the export screen can export a single collection; the bundle
+  carries `collection.info` (tag name + colour) and import recreates the
+  collection and re-pins the imported items
+- Theme polish without copying any commercial app — open
 
 ### Phase 3 - Privacy and safety
 

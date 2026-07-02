@@ -1,4 +1,98 @@
-# Session Handoff — PasteFlow Dev MVP Verification (2026-07-02)
+# Session Handoff — PasteFlow Dev MVP Verification + Phase 2 Start (2026-07-02)
+
+## Two-Pane Center Search Overlay (Latest Work)
+
+After seeing the incremental slot-badge changes, the owner shared a reference
+layout again and asked for the overlay to be rebuilt to match its structure.
+Delivered a new compact centered search panel replacing the full-width bottom
+strip:
+
+- New package `app/src/desktopMain/kotlin/com/crosspaste/ui/search/center/`
+  (`CenterSearchWindowContent.kt`): category icon strip on top (All + one icon
+  per paste type, using ThemeExt icon data), vertical item list on the left
+  (slot number, type icon, snippet title from user-edit name or
+  pasteSearchContent), full preview on the right (reuses `SidePreviewView`,
+  which includes the title bar), search field + paste hints on the bottom.
+- Keyboard model: search input holds focus; the root `onPreviewKeyEvent`
+  intercepts Up/Down (selection), Enter (paste), Esc (hide), and
+  Ctrl+1…9/0 (slot paste). Slot numbers in rows highlight while Ctrl is held.
+- Window geometry: `DesktopAppSize.getSearchWindowState` now returns a
+  centered 780×520dp floating panel (`centerSearchWindowSize` and friends);
+  `SearchWindow.kt` uses `centerSearchSlideOffset` (48dp) for the show/hide
+  slide and composes `CenterSearchWindowContent`.
+- The old strip implementation (`ui/search/side/`, `ui/paste/side/`) is left
+  intact — switching back is a one-line change in `SearchWindow.kt` plus
+  reverting `getSearchWindowState`. `SideSearchWindowContent` is now unused
+  but compiled.
+
+Later fixes in the same session:
+- Row context menus restored (right-click → pin/tag, copy, open, delete) via
+  `PasteContextMenuView` + `sidePasteMenuItemsProvider`.
+- Main window menu gained a top "Search Pasteboard" entry that hides the main
+  window and reopens the overlay — previously there was no route back to the
+  results from Settings (the results only exist in the overlay).
+- Per-row pin indicators: rows show a filled pin icon when the item belongs
+  to any collection. Backed by a new reactive DAO API
+  `PasteTagDao.getTaggedPasteIdsFlow(ids)` (new `getTaggedPasteIds` query in
+  `TagDatabase.sq`), which re-emits on tag-membership changes; covered by two
+  new tests in `PasteDaoTest`.
+
+Known follow-ups for the new layout:
+- `BubbleWindow.kt` anchors bubbles using the shared `searchListState`
+  assuming the old horizontal strip; positions will be off with the vertical
+  list. Not addressed yet.
+- On macOS the acrylic blur fills the square window rect, so the panel's
+  rounded corners show blur instead of the desktop. Cosmetic.
+- Multi-select (shift-click) is not wired in the new list (single select
+  only); the side strip still supports it.
+
+---
+
+## Phase 2 Work (Second Half of This Session)
+
+The owner shared a reference screenshot of a commercial clipboard manager and
+asked for Phase 2 to start, UI first. Treated strictly as a functional
+reference (the MVP doc forbids copying any commercial app's look). Delivered:
+
+1. **Persistent quick-slot numbers** — the first 10 overlay cards now always
+   show their `#N` slot badge (quiet chip), switching to the accent color
+   while Ctrl is held. Since quick slots operate on the filtered result list,
+   selecting a collection (tag) chip makes Ctrl+1…0 paste from that
+   collection — this is the "keyboard shortcuts for collection slots" item.
+   Files: `Top9IndexView.kt`, `SidePreviewView.kt`,
+   `SidePasteboardContentView.kt`, plus a `Ctrl+1…9` hint chip in
+   `QuickPasteView.kt`.
+2. **Single-collection export/import** — the export screen
+   (`PasteExportContentView.kt`) gained an "Export a single collection (tag)"
+   switch with a tag picker. The SQL export queries
+   (`PasteDatabase.sq: getBatchExportPasteData/getExportNum`) accept a
+   nullable `tagId` that takes precedence over `onlyTagged`. Export bundles
+   `collection.info` (JSON: tag name + colour; see `PasteCollectionInfo.kt`)
+   and `PasteImportService.restoreCollection()` finds-or-creates the tag by
+   name and re-pins every imported item. Both services now take `PasteTagDao`
+   (Koin wiring updated in `DesktopPasteComponentModule.kt`).
+3. **Empty-state fix** — `PasteEmptyScreenView` takes a `messageKey`; the
+   overlay shows `no_search_results` when a search term, type filter, or tag
+   filter is active instead of implying the history is empty.
+4. **Preview metadata** — verified already implemented upstream of this
+   session (char counts, image format/resolution/size, file name/size); no
+   changes needed.
+
+New i18n keys (en + zh; other locales fall back to English):
+`export_single_collection`, `no_search_results`.
+
+Tests: two new tests in `PasteExportImportServiceTest` cover the
+collection.info export bundling and the import-side collection restore, plus
+a `PasteCollectionInfo` JSON round-trip. Full suite re-run green (1289 app
+tests, 0 failures), ktlintCheck green, `:app:createDistributable` green.
+
+Phase 2 items still open: macOS Accessibility onboarding, broader settings
+copy review, theme polish. See the roadmap annotations in
+`docs/clipboard-manager-mvp.md`.
+
+---
+
+# Session Handoff — PasteFlow Dev MVP Verification (2026-07-02, first half)
 
 This note lets any harness (Claude Code, Codex, or a human) pick up the
 PasteFlow Dev MVP work without re-deriving context. Read
