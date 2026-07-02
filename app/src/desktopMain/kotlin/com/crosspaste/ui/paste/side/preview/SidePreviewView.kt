@@ -12,6 +12,7 @@ import com.crosspaste.ui.paste.PasteDataScope
 fun PasteDataScope.SidePreviewView(
     showQuickSlot: Boolean,
     index: Int,
+    quickSlotActive: Boolean = true,
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         if (pasteData.pasteState == PasteState.LOADING) {
@@ -29,7 +30,7 @@ fun PasteDataScope.SidePreviewView(
         }
 
         if (showQuickSlot) {
-            QuickSlotIndexView(index)
+            QuickSlotIndexView(index, active = quickSlotActive)
         }
     }
 }

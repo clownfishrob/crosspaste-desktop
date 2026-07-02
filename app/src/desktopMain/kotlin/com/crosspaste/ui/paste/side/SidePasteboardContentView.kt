@@ -370,8 +370,9 @@ fun SidePasteboardContentView() {
                             },
                         ) {
                             scope.SidePreviewView(
-                                showQuickSlot = isCtrlPressed && currentIndex < 10,
+                                showQuickSlot = currentIndex < 10,
                                 index = currentIndex,
+                                quickSlotActive = isCtrlPressed,
                             )
                         }
                     }
@@ -409,7 +410,21 @@ fun SidePasteboardContentView() {
             }
 
             if (searchResult.isEmpty()) {
-                PasteEmptyScreenView()
+                // Distinguish "nothing captured yet" from "your search/filter
+                // matched nothing" so an active query isn't misread as an
+                // empty clipboard history.
+                val filterActive =
+                    inputSearch.isNotBlank() ||
+                        searchBaseParams.pasteTypeList.isNotEmpty() ||
+                        searchBaseParams.tag != null
+                PasteEmptyScreenView(
+                    messageKey =
+                        if (filterActive) {
+                            "no_search_results"
+                        } else {
+                            "no_pasteboard_activity_detected_yet"
+                        },
+                )
             }
 
             HorizontalScrollbar(

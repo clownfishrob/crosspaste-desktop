@@ -7,6 +7,7 @@ import com.crosspaste.utils.ioDispatcher
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -18,6 +19,20 @@ class SqlPasteTagDao(
     private val logger = KotlinLogging.logger {}
 
     private val tagDatabaseQueries = database.tagDatabaseQueries
+
+    override fun getTaggedPasteIdsFlow(pasteDataIds: List<Long>): Flow<Set<Long>> =
+        if (pasteDataIds.isEmpty()) {
+            flowOf(emptySet())
+        } else {
+            tagDatabaseQueries
+                .getTaggedPasteIds(pasteDataIds)
+                .asFlow()
+                .map { it.executeAsList().toSet() }
+                .catch { e ->
+                    logger.error(e) { "Error executing getTaggedPasteIdsFlow query: ${e.message}" }
+                    emit(emptySet())
+                }.flowOn(ioDispatcher)
+        }
 
     override fun getAllTagsFlow(): Flow<List<PasteTag>> =
         tagDatabaseQueries

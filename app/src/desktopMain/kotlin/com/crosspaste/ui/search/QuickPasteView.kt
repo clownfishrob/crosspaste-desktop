@@ -60,5 +60,9 @@ fun QuickPasteView() {
         ) {
             KeyboardView(key = copywriter.getText("double_click"))
         }
+        Spacer(modifier = Modifier.width(tiny))
+        Text(text = "/", color = MaterialTheme.colorScheme.onSurface)
+        Spacer(modifier = Modifier.width(tiny))
+        KeyboardView(key = "Ctrl+1…9")
     }
 }

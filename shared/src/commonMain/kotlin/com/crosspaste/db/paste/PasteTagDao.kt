@@ -1,8 +1,13 @@
 package com.crosspaste.db.paste
 
 import com.crosspaste.paste.PasteTag
+import kotlinx.coroutines.flow.Flow
 
 interface PasteTagDao : QueryPasteTag {
+
+    // Emits the subset of the given paste ids that belong to at least one tag,
+    // re-emitting whenever tag membership changes.
+    fun getTaggedPasteIdsFlow(pasteDataIds: List<Long>): Flow<Set<Long>>
 
     suspend fun getMaxSortOrder(): Long
 

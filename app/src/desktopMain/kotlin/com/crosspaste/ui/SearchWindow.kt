@@ -21,7 +21,7 @@ import com.crosspaste.platform.windows.WindowsVersionHelper
 import com.crosspaste.platform.windows.api.Dwmapi
 import com.crosspaste.ui.DesktopContext.SearchWindowContext
 import com.crosspaste.ui.model.PasteSelectionViewModel
-import com.crosspaste.ui.search.side.SideSearchWindowContent
+import com.crosspaste.ui.search.center.CenterSearchWindowContent
 import com.crosspaste.ui.theme.ThemeDetector
 import com.crosspaste.utils.cpuDispatcher
 import com.sun.jna.Memory
@@ -92,7 +92,7 @@ fun SearchWindow(windowIcon: Painter?) {
                 x = searchWindowInfo.state.position.x,
                 y =
                     searchWindowInfo.state.position.y +
-                        (appSizeValue.sideSearchWindowHeight * animationProgress),
+                        (appSizeValue.centerSearchSlideOffset * animationProgress),
             )
     }
 
@@ -166,7 +166,7 @@ fun SearchWindow(windowIcon: Painter?) {
         }
 
         SearchWindowContext(searchWindowInfo) {
-            SideSearchWindowContent()
+            CenterSearchWindowContent()
         }
     }
 }

@@ -386,6 +386,36 @@ class PasteDaoTest {
     }
 
     @Test
+    fun `getTaggedPasteIdsFlow emits tagged subset and reacts to membership changes`() = runTest {
+        val id1 = pasteDao.createPasteData(createTestPasteData(text = "tagged item"))
+        val id2 = pasteDao.createPasteData(createTestPasteData(text = "untagged item"))
+        val tagId = pasteTagDao.createPasteTag("collection", 0xFF0000L)
+        pasteTagDao.switchPinPasteTagBlock(id1, tagId)
+
+        pasteTagDao.getTaggedPasteIdsFlow(listOf(id1, id2)).test {
+            assertEquals(setOf(id1), awaitItem())
+
+            // Pinning the second item re-emits with both ids.
+            pasteTagDao.switchPinPasteTagBlock(id2, tagId)
+            assertEquals(setOf(id1, id2), awaitItem())
+
+            // Unpinning the first item re-emits without it.
+            pasteTagDao.switchPinPasteTagBlock(id1, tagId)
+            assertEquals(setOf(id2), awaitItem())
+
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `getTaggedPasteIdsFlow with empty input emits empty set`() = runTest {
+        pasteTagDao.getTaggedPasteIdsFlow(listOf()).test {
+            assertEquals(emptySet(), awaitItem())
+            awaitComplete()
+        }
+    }
+
+    @Test
     fun `switchPinPasteTagBlock toggles pin state`() = runTest {
         val pasteData = createTestPasteData()
         val pasteId = pasteDao.createPasteData(pasteData)

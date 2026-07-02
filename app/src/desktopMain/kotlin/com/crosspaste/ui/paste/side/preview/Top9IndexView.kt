@@ -21,7 +21,24 @@ import com.crosspaste.ui.theme.AppUISize.xxLarge
 import com.crosspaste.ui.theme.DesktopAppUIFont.keyboardCharTextStyle
 
 @Composable
-fun QuickSlotIndexView(index: Int) {
+fun QuickSlotIndexView(
+    index: Int,
+    active: Boolean = true,
+) {
+    // Active (Ctrl held) uses the accent color; idle uses a quiet chip so the
+    // slot number stays discoverable without competing with the preview.
+    val background =
+        if (active) {
+            AppUIColors.importantColor
+        } else {
+            MaterialTheme.colorScheme.surfaceContainerHighest
+        }
+    val textColor =
+        if (active) {
+            MaterialTheme.colorScheme.contentColorFor(AppUIColors.importantColor)
+        } else {
+            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+        }
     Row(
         modifier =
             Modifier
@@ -34,13 +51,13 @@ fun QuickSlotIndexView(index: Int) {
                 Modifier
                     .size(xxLarge, medium)
                     .clip(tiny4XRoundedCornerShape)
-                    .background(AppUIColors.importantColor),
+                    .background(background),
             contentAlignment = Alignment.Center,
         ) {
             Text(
                 text = "#${index + 1}",
                 style = keyboardCharTextStyle,
-                color = MaterialTheme.colorScheme.contentColorFor(AppUIColors.importantColor),
+                color = textColor,
             )
         }
     }

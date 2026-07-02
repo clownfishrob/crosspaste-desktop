@@ -16,7 +16,7 @@ import com.crosspaste.ui.theme.AppUIFont.emptyScreenTipsTextStyle
 import org.koin.compose.koinInject
 
 @Composable
-fun PasteEmptyScreenView() {
+fun PasteEmptyScreenView(messageKey: String = "no_pasteboard_activity_detected_yet") {
     val copywriter = koinInject<GlobalCopywriter>()
     Box(
         contentAlignment = Alignment.Center,
@@ -32,7 +32,7 @@ fun PasteEmptyScreenView() {
                 modifier =
                     Modifier
                         .fillMaxWidth(0.8f),
-                text = copywriter.getText("no_pasteboard_activity_detected_yet"),
+                text = copywriter.getText(messageKey),
                 maxLines = 3,
                 color =
                     MaterialTheme.colorScheme.contentColorFor(

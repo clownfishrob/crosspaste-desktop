@@ -36,6 +36,9 @@ FROM PasteTagEntity
 WHERE pasteId IN ?
 GROUP BY tagId;
 
+getTaggedPasteIds:
+SELECT DISTINCT pasteId FROM PasteTagEntity WHERE pasteId IN ?;
+
 isPinnedPasteTag:
 SELECT EXISTS(SELECT 1 FROM PasteTagEntity WHERE pasteId = ? AND tagId = ?);
 

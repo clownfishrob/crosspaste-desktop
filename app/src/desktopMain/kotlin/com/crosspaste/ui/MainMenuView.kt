@@ -39,6 +39,7 @@ import com.composables.icons.materialsymbols.rounded.Exit_to_app
 import com.composables.icons.materialsymbols.rounded.Extension
 import com.composables.icons.materialsymbols.rounded.Info
 import com.composables.icons.materialsymbols.rounded.Keyboard
+import com.composables.icons.materialsymbols.rounded.Search
 import com.composables.icons.materialsymbols.rounded.Settings
 import com.composables.icons.materialsymbols.rounded.Upload
 import com.composables.icons.materialsymbols.rounded.Vpn_key
@@ -46,7 +47,9 @@ import com.composables.icons.materialsymbols.rounded.Warning
 import com.crosspaste.app.AppUpdateService
 import com.crosspaste.app.DesktopAppLaunch
 import com.crosspaste.app.DesktopAppLaunchState
+import com.crosspaste.app.DesktopAppWindowManager
 import com.crosspaste.app.ExitMode
+import com.crosspaste.app.WindowTrigger
 import com.crosspaste.config.DesktopConfigManager
 import com.crosspaste.i18n.GlobalCopywriter
 import com.crosspaste.net.NetworkProfileService
@@ -70,6 +73,7 @@ fun MainMenuView() {
     val appLaunch = koinInject<DesktopAppLaunch>()
     val appLaunchState = koinInject<DesktopAppLaunchState>()
     val appUpdateService = koinInject<AppUpdateService>()
+    val appWindowManager = koinInject<DesktopAppWindowManager>()
     val configManager = koinInject<DesktopConfigManager>()
     val navigateManage = koinInject<NavigationManager>()
     val networkProfileService = koinInject<NetworkProfileService>()
@@ -146,6 +150,18 @@ fun MainMenuView() {
                     .padding(horizontal = tiny),
             verticalArrangement = Arrangement.spacedBy(tiny4X),
         ) {
+            // The clipboard results live in the search overlay, not in a main
+            // window route, so give every management screen a way back to them.
+            MainMenuItemView(
+                title = "search_pasteboard",
+                icon = MaterialSymbols.Rounded.Search,
+                selected = false,
+                onClick = {
+                    appWindowManager.hideMainWindow()
+                    appWindowManager.showSearchWindow(WindowTrigger.MENU)
+                },
+            )
+
             primaryMenuList.forEach { item ->
                 MainMenuItemView(
                     title = item.title,

@@ -60,6 +60,13 @@ class DesktopAppSize(
             val sideSearchPaddingSize: Dp = 16.dp
             val sideTitleHeight: Dp = huge
 
+            // --- Center Search Panel ---
+            val centerSearchWindowSize = DpSize(width = 780.dp, height = 520.dp)
+            val centerSearchListWidth: Dp = 300.dp
+            val centerSearchTopBarHeight: Dp = 48.dp
+            val centerSearchBottomBarHeight: Dp = 56.dp
+            val centerSearchSlideOffset: Dp = 48.dp
+
             // --- Bubble Window ---
             val bubbleBodySize = DpSize(480.dp, 360.dp)
             val bubbleCornerRadius: Dp = 12.dp
@@ -100,6 +107,11 @@ class DesktopAppSize(
                 sideSearchPaddingSize = sideSearchPaddingSize,
                 sideSearchWindowHeight = sideSearchWindowHeight,
                 sideTitleHeight = sideTitleHeight,
+                centerSearchWindowSize = centerSearchWindowSize,
+                centerSearchListWidth = centerSearchListWidth,
+                centerSearchTopBarHeight = centerSearchTopBarHeight,
+                centerSearchBottomBarHeight = centerSearchBottomBarHeight,
+                centerSearchSlideOffset = centerSearchSlideOffset,
                 // Bubble window
                 bubbleBodySize = bubbleBodySize,
                 bubbleCornerRadius = bubbleCornerRadius,
@@ -143,18 +155,20 @@ class DesktopAppSize(
     override fun getSearchWindowState(init: Boolean): WindowState {
         val graphicsDevice = getGraphicsDevice()
         val bounds = graphicsDevice.defaultConfiguration.bounds
-        val sideSearchWindowHeight = _appSizeValue.value.sideSearchWindowHeight
-        val x = bounds.x.dp
+        val size = _appSizeValue.value.centerSearchWindowSize
+        val slideOffset = _appSizeValue.value.centerSearchSlideOffset
+        val x = bounds.x.dp + (bounds.width.dp - size.width) / 2
+        val baseY = bounds.y.dp + (bounds.height.dp - size.height) / 2
         val y =
             if (init) {
-                bounds.y.dp + bounds.height.dp
+                baseY + slideOffset
             } else {
-                bounds.y.dp + bounds.height.dp - sideSearchWindowHeight
+                baseY
             }
         return WindowState(
             placement = WindowPlacement.Floating,
             position = WindowPosition(x, y),
-            size = DpSize(width = bounds.width.dp, height = sideSearchWindowHeight),
+            size = size,
         )
     }
 
@@ -188,6 +202,11 @@ class DesktopAppSizeValue(
     val sideSearchPaddingSize: Dp,
     val sideSearchWindowHeight: Dp,
     val sideTitleHeight: Dp,
+    val centerSearchWindowSize: DpSize,
+    val centerSearchListWidth: Dp,
+    val centerSearchTopBarHeight: Dp,
+    val centerSearchBottomBarHeight: Dp,
+    val centerSearchSlideOffset: Dp,
     val bubbleBodySize: DpSize,
     val bubbleCornerRadius: Dp,
     val bubbleTailWidth: Dp,
