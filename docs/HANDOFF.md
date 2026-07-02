@@ -51,12 +51,23 @@ Privacy & Accessibility pane while not granted. New i18n keys:
 `not_granted`, `permissions`; `accessibility_permission_desc` copy now
 explains shortcuts + paste-back and the restart requirement.
 
+Theme polish pass (closing Phase 2): pin indicators now use each item's
+primary collection colour via `PasteTagDao.getPasteTagColorsFlow` (replaced
+`getTaggedPasteIdsFlow`; new `getPasteTagColors` join query ordered by tag
+sort order — first colour per paste id wins); overlay rows and the top-bar
+filters gained hover states (`HoverableFilterBox`); selected rows use
+`secondaryContainer`; and the macOS acrylic is no longer applied behind the
+opaque panel (call `MacAcrylicEffect` without `isDark` — keeps the popup
+window level, drops the corner bleed). Deferred by choice: accent-colour
+picker, open/close motion changes.
+
 Known follow-ups for the new layout:
 - `BubbleWindow.kt` anchors bubbles using the shared `searchListState`
   assuming the old horizontal strip; positions will be off with the vertical
   list. Not addressed yet.
-- On macOS the acrylic blur fills the square window rect, so the panel's
-  rounded corners show blur instead of the desktop. Cosmetic.
+- Windows 11 blur still fills the square window rect behind the rounded
+  panel (same corner bleed the macOS side had); needs a Windows machine to
+  verify any change.
 - Multi-select: restored — shift-click works in the new list, matching the
   old strip; double-tap quick-paste is suppressed while Shift is held.
 

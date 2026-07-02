@@ -118,7 +118,14 @@ The code package names remain `com.crosspaste` to avoid a large, risky rename ac
   — done: the export screen can export a single collection; the bundle
   carries `collection.info` (tag name + colour) and import recreates the
   collection and re-pins the imported items
-- Theme polish without copying any commercial app — open
+- Theme polish without copying any commercial app
+  — done: pin indicators and rows use each collection's own stored colour,
+  overlay rows and top-bar filters have hover states, selection uses a
+  coherent secondary-container treatment, and the macOS panel corners no
+  longer show acrylic bleed. Deferred by choice: accent-colour picker and
+  open/close motion changes.
+
+Phase 2 is complete.
 
 ### Phase 3 - Privacy and safety
 
