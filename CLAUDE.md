@@ -2,6 +2,18 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## PasteFlow Dev MVP Context
+
+This repository is `clownfishrob/crosspaste-desktop`, an AGPL-3.0 licensed fork of CrossPaste being prepared as the PasteFlow Dev macOS MVP.
+
+Current direction:
+- Keep the app separate from upstream CrossPaste for development: bundle identity, data paths, network port, shortcuts, and native messaging identifiers have been separated.
+- Product update delivery is paused until direction is clearer. Do not re-enable visible updater or release automation without explicit instruction.
+- Share and Check for updates entry points are intentionally hidden for the MVP.
+- Contact email should be `rob@ngduk.co.uk`.
+- Preserve upstream attribution where appropriate, but visible user-facing MVP copy should say PasteFlow Dev unless the text is explicitly about upstream CrossPaste attribution.
+- Generated graph context is available in `graphify-out/`; use Graphify before broad source exploration.
+
 ## Interaction Language
 
 Default to communicating with developers in Chinese (中文), unless explicitly asked to use another language. Note that this applies only to conversational interaction; code, commit messages, and GitHub issue/PR content still follow their respective conventions documented below (which require English).
@@ -132,3 +144,19 @@ Language: English for commit messages
 ## Issue and Pull Request Language
 
 All GitHub issue titles/bodies and pull request titles/bodies (including summaries, descriptions, and notes) MUST be written in English. Do not use Chinese or any other language in issue/PR content, even when the conversation with the user is in another language. If translating existing non-English text, preserve the technical detail and intent exactly.
+
+## graphify
+
+This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.
+
+Before using the graph, ensure Graphify is installed:
+- Run `command -v graphify`.
+- If Graphify is missing and `uv` is available, run `uv tool install graphifyy`.
+- If Ollama semantic extraction is needed, install the optional backend with `uv tool install "graphifyy[ollama]" --force`.
+- After installation, confirm with `graphify --help`.
+
+Rules:
+- For codebase questions, first run `graphify query "<question>"` when graphify-out/graph.json exists. Use `graphify path "<A>" "<B>"` for relationships and `graphify explain "<concept>"` for focused concepts. These return a scoped subgraph, usually much smaller than GRAPH_REPORT.md or raw grep output.
+- If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.
+- Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
+- After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).

@@ -18,10 +18,15 @@
 - 本机 macOS 已验证启动、剪贴板捕获、快捷键、重启行为和 Accessibility 授权。
 - 桌面测试和扩展生产构建已在开发机器上通过。
 - 本地 macOS 应用包已可通过 `:app:createDistributable` 成功构建。
+- 2026-07-02 自动化复验：`docs/clipboard-manager-mvp.md` 全部声明已在代码中确认；
+  ktlintCheck、1287 个桌面测试、79 个扩展测试、扩展生产构建和
+  `:app:createDistributable` 全部通过（详见 `docs/HANDOFF.md`）。
 
 ## 标记 MVP 完成前仍需验证
 
-- 在这台 Mac 上执行最后一次手动已安装应用冒烟测试：
+- 在这台 Mac 上执行最后一次手动已安装应用冒烟测试
+  （注：2026-07-02 自动化 `./smoke-test.sh` 卡在首次运行的 macOS 钥匙串授权上——
+  首次交互式启动时请留意并批准钥匙串弹窗，详见 `docs/HANDOFF.md`）：
   - 启动已安装的 `PasteFlow Dev`。
   - 确认剪贴板捕获。
   - 确认主快捷键。

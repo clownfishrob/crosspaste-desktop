@@ -19,10 +19,16 @@ called complete.
 - Local macOS validation has covered launch, clipboard capture, shortcuts, restart behavior, and Accessibility authorization.
 - Desktop tests and extension production build pass on the development machine.
 - The local macOS distributable builds successfully with `:app:createDistributable`.
+- 2026-07-02 automated re-verification: all `docs/clipboard-manager-mvp.md` claims
+  confirmed in code; ktlintCheck, 1287 desktop tests, 79 extension tests, extension
+  production build, and `:app:createDistributable` all pass (see `docs/HANDOFF.md`).
 
 ## Required Before Calling MVP Complete
 
-- Run one final hands-on installed-app smoke test on this Mac:
+- Run one final hands-on installed-app smoke test on this Mac
+  (note: 2026-07-02 automated `./smoke-test.sh` hung at first-run macOS
+  keychain authorization — expect and approve a keychain prompt on first
+  interactive launch; see `docs/HANDOFF.md`):
   - Launch installed `PasteFlow Dev`.
   - Confirm clipboard capture.
   - Confirm main shortcut.
