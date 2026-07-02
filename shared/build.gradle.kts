@@ -43,6 +43,17 @@ ktlint {
     verbose = true
     android = false
     ignoreFailures = false
+    filter {
+        exclude { element ->
+            val path = element.path
+            path.contains("\\generated\\") ||
+                path.contains("/generated/") ||
+                path.contains("\\db\\") ||
+                path.contains("/db/") ||
+                path.endsWith("Database.kt") ||
+                path.endsWith("DatabaseImpl.kt")
+        }
+    }
 }
 
 kotlin {
