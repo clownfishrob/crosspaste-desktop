@@ -23,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.style.TextOverflow
 import com.composables.icons.materialsymbols.MaterialSymbols
 import com.composables.icons.materialsymbols.rounded.Storage
 import com.crosspaste.app.AppFileChooser
@@ -42,6 +43,7 @@ import com.crosspaste.ui.base.Counter
 import com.crosspaste.ui.base.IconData
 import com.crosspaste.ui.base.InnerScaffold
 import com.crosspaste.ui.base.SectionHeader
+import com.crosspaste.ui.model.PasteSearchViewModel
 import com.crosspaste.ui.settings.SettingListItem
 import com.crosspaste.ui.settings.SettingListSwitchItem
 import com.crosspaste.ui.settings.SettingSectionCard
@@ -64,6 +66,7 @@ fun PasteExportContentView() {
     val copywriter = koinInject<GlobalCopywriter>()
     val pasteExportService = koinInject<PasteExportService>()
     val pasteExportParamFactory = koinInject<PasteExportParamFactory<Any>>()
+    val pasteSearchViewModel = koinInject<PasteSearchViewModel>()
     val fileUtils = getFileUtils()
 
     // State for type filters
@@ -77,7 +80,10 @@ fun PasteExportContentView() {
 
     // State for additional filters
     var taggedSelected by remember { mutableStateOf(false) }
+    var selectedTagId by remember { mutableStateOf<Long?>(null) }
     var sizeFilterSelected by remember { mutableStateOf(false) }
+
+    val tagList by pasteSearchViewModel.tagList.collectAsState()
 
     val config by configManager.config.collectAsState()
 
@@ -132,6 +138,7 @@ fun PasteExportContentView() {
                                         colorTypeSelected,
                                     ),
                                 taggedSelected = taggedSelected,
+                                selectedTagId = selectedTagId,
                                 sizeFilterSelected = sizeFilterSelected,
                                 maxFileSize = maxFileSize,
                                 fileUtils = fileUtils,
@@ -315,8 +322,55 @@ fun PasteExportContentView() {
                     SettingListSwitchItem(
                         title = "export_tagged_only",
                         checked = taggedSelected,
-                        onCheckedChange = { taggedSelected = it },
+                        onCheckedChange = {
+                            taggedSelected = it
+                            if (it) {
+                                selectedTagId = null
+                            }
+                        },
                     )
+                    if (tagList.isNotEmpty()) {
+                        HorizontalDivider(modifier = Modifier.padding(start = xxxxLarge))
+                        SettingListSwitchItem(
+                            title = "export_single_collection",
+                            checked = selectedTagId != null,
+                            onCheckedChange = { checked ->
+                                selectedTagId = if (checked) tagList.first().id else null
+                                if (checked) {
+                                    taggedSelected = false
+                                }
+                            },
+                        )
+                        if (selectedTagId != null) {
+                            tagList.forEach { tag ->
+                                HorizontalDivider(modifier = Modifier.padding(start = xxxxLarge))
+                                SettingListItem(
+                                    // Tag names are user data, not i18n keys, so
+                                    // bypass the copywriter-backed title overload.
+                                    titleContent = {
+                                        Text(
+                                            text = tag.name,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis,
+                                        )
+                                    },
+                                    trailingContent = {
+                                        Checkbox(
+                                            checked = selectedTagId == tag.id,
+                                            onCheckedChange = { checked ->
+                                                if (checked) {
+                                                    selectedTagId = tag.id
+                                                }
+                                            },
+                                        )
+                                    },
+                                    onClick = {
+                                        selectedTagId = tag.id
+                                    },
+                                )
+                            }
+                        }
+                    }
                     HorizontalDivider(modifier = Modifier.padding(start = xxxxLarge))
                     SettingListSwitchItem(
                         title = "max_back_up_file_size",
@@ -353,6 +407,7 @@ private fun handleExportClick(
     appFileChooser: AppFileChooser,
     types: Set<Long>,
     taggedSelected: Boolean,
+    selectedTagId: Long?,
     sizeFilterSelected: Boolean,
     maxFileSize: Long,
     fileUtils: FileUtils,
@@ -366,6 +421,7 @@ private fun handleExportClick(
             pasteExportParamFactory.createPasteExportParam(
                 types = types,
                 onlyTagged = taggedSelected,
+                tagId = selectedTagId,
                 maxFileSize =
                     if (sizeFilterSelected) {
                         fileUtils.bytesSize(maxFileSize)

@@ -2,6 +2,7 @@ package com.crosspaste.paste
 
 import com.crosspaste.app.AppFileType
 import com.crosspaste.db.paste.PasteDao
+import com.crosspaste.db.paste.PasteTagDao
 import com.crosspaste.exception.PasteException
 import com.crosspaste.exception.StandardErrorCode
 import com.crosspaste.notification.MessageType
@@ -15,6 +16,7 @@ import com.crosspaste.utils.DateUtils
 import com.crosspaste.utils.getCodecsUtils
 import com.crosspaste.utils.getCompressUtils
 import com.crosspaste.utils.getFileUtils
+import com.crosspaste.utils.getJsonUtils
 import com.crosspaste.utils.ioDispatcher
 import com.crosspaste.utils.namedScope
 import com.crosspaste.utils.noOptionParent
@@ -28,6 +30,7 @@ class PasteImportService(
     private val notificationManager: NotificationManager,
     private val pasteDao: PasteDao,
     private val pasteItemReader: PasteItemReader,
+    private val pasteTagDao: PasteTagDao,
     private val searchContentService: SearchContentService,
     private val userDataPathProvider: UserDataPathProvider,
 ) {
@@ -38,6 +41,8 @@ class PasteImportService(
     private val compressUtils = getCompressUtils()
 
     private val fileUtils = getFileUtils()
+
+    private val jsonUtils = getJsonUtils()
 
     private val ioCoroutineDispatcher = namedScope(ioDispatcher, "PasteImportService")
 
@@ -84,18 +89,22 @@ class PasteImportService(
 
             var totalCount = 0L
             var successCount = 0L
+            val importedIds = mutableListOf<Long>()
 
             fileUtils.readByLines(pasteDataFile) { line ->
                 totalCount++
                 readPasteData(line)?.let { pasteData ->
-                    if (importPasteData(basePath, totalCount, pasteData)) {
+                    importPasteData(basePath, totalCount, pasteData)?.let { id ->
                         successCount++
+                        importedIds.add(id)
                     }
                 } ?: run {
                     logger.error { "Error parsing paste data, index = $totalCount" }
                 }
                 updateProgress(totalCount.toFloat() / importCount.toFloat())
             }
+
+            restoreCollection(basePath, importedIds)
             if (successCount > 0 && successCount < totalCount) {
                 notificationManager.sendNotification(
                     title = { it.getText("import_partial") },
@@ -130,11 +139,38 @@ class PasteImportService(
         }
     }
 
+    // Restore the pinned collection for single-collection exports: the bundle
+    // carries the tag metadata in collection.info, and every successfully
+    // imported item gets pinned to the (found or recreated) tag.
+    private suspend fun restoreCollection(
+        basePath: Path,
+        importedIds: List<Long>,
+    ) {
+        if (importedIds.isEmpty()) return
+        val infoFile = basePath.resolve(PasteCollectionInfo.COLLECTION_INFO_FILE)
+        if (!fileUtils.existFile(infoFile)) return
+        runCatching {
+            val jsonBuilder = StringBuilder()
+            fileUtils.readByLines(infoFile) { line -> jsonBuilder.append(line) }
+            val info =
+                jsonUtils.JSON.decodeFromString(
+                    PasteCollectionInfo.serializer(),
+                    jsonBuilder.toString(),
+                )
+            val tagId =
+                pasteTagDao.getAllTagsBlock().firstOrNull { it.name == info.name }?.id
+                    ?: pasteTagDao.createPasteTag(info.name, info.color)
+            pasteTagDao.addTagsToPastes(importedIds, setOf(tagId))
+        }.onFailure { e ->
+            logger.error(e) { "Error restoring collection from import" }
+        }
+    }
+
     private suspend fun importPasteData(
         basePath: Path,
         index: Long,
         pasteData: PasteData,
-    ): Boolean {
+    ): Long? {
         var recordId: Long? = null
         return runCatching {
             val id = pasteDao.createPasteData(pasteData)
@@ -169,10 +205,11 @@ class PasteImportService(
             }
 
             pasteDao.updatePasteState(id, PasteState.LOADED)
+            id
         }.onFailure { e ->
             logger.error(e) { "Error importing paste data, index = $index" }
             recordId?.let { runCatching { pasteDao.updatePasteState(it, PasteState.DELETED) } }
-        }.isSuccess
+        }.getOrNull()
     }
 
     private fun moveResource(

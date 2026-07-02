@@ -527,11 +527,12 @@ class SqlPasteDao(
         withContext(ioDispatcher) {
             pasteDatabaseQueries
                 .getBatchExportPasteData(
-                    id,
-                    pasteExportParam.types,
-                    pasteExportParam.onlyTagged,
-                    limit,
-                    PasteData::mapper,
+                    id = id,
+                    types = pasteExportParam.types,
+                    tagId = pasteExportParam.tagId,
+                    onlyTagged = pasteExportParam.onlyTagged,
+                    limit = limit,
+                    mapper = PasteData::mapper,
                 ).executeAsList()
         }
 
@@ -539,8 +540,9 @@ class SqlPasteDao(
         withContext(ioDispatcher) {
             pasteDatabaseQueries
                 .getExportNum(
-                    pasteExportParam.types,
-                    pasteExportParam.onlyTagged,
+                    types = pasteExportParam.types,
+                    tagId = pasteExportParam.tagId,
+                    onlyTagged = pasteExportParam.onlyTagged,
                 ).executeAsOne()
         }
 

@@ -2,6 +2,7 @@ package com.crosspaste.paste
 
 import com.crosspaste.app.AppFileType
 import com.crosspaste.db.paste.PasteDao
+import com.crosspaste.db.paste.PasteTagDao
 import com.crosspaste.exception.PasteException
 import com.crosspaste.exception.StandardErrorCode
 import com.crosspaste.notification.MessageType
@@ -13,6 +14,7 @@ import com.crosspaste.utils.DateUtils
 import com.crosspaste.utils.getCodecsUtils
 import com.crosspaste.utils.getCompressUtils
 import com.crosspaste.utils.getFileUtils
+import com.crosspaste.utils.getJsonUtils
 import com.crosspaste.utils.ioDispatcher
 import com.crosspaste.utils.namedScope
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -25,6 +27,7 @@ import okio.Path
 class PasteExportService(
     private val notificationManager: NotificationManager,
     private val pasteDao: PasteDao,
+    private val pasteTagDao: PasteTagDao,
     private val userDataPathProvider: UserDataPathProvider,
 ) {
     private val logger = KotlinLogging.logger { }
@@ -34,6 +37,8 @@ class PasteExportService(
     private val compressUtils = getCompressUtils()
 
     private val fileUtils = getFileUtils()
+
+    private val jsonUtils = getJsonUtils()
 
     private val ioCoroutineDispatcher = namedScope(ioDispatcher, "PasteExportService")
 
@@ -98,6 +103,7 @@ class PasteExportService(
             } else if (exportedCount > 0L) {
                 val countFile = basePath.resolve("$exportedCount.count")
                 fileUtils.createFile(countFile)
+                writeCollectionInfo(basePath, pasteExportParam)
                 compressExportFile(basePath, pasteExportParam, exportFileName)
                 if (exportError) {
                     notificationManager.sendNotification(
@@ -183,6 +189,25 @@ class PasteExportService(
 
         for (filePath in pasteFiles.getFilePaths(userDataPathProvider)) {
             fileUtils.copyPath(filePath, path.resolve(filePath.name))
+        }
+    }
+
+    // For single-collection exports, bundle the tag metadata so import can
+    // recreate the collection and re-pin the imported items to it.
+    private suspend fun writeCollectionInfo(
+        basePath: Path,
+        pasteExportParam: PasteExportParam,
+    ) {
+        val tagId = pasteExportParam.tagId ?: return
+        val tag =
+            pasteTagDao.getAllTagsBlock().firstOrNull { it.id == tagId } ?: run {
+                logger.warn { "Export tag not found, id = $tagId" }
+                return
+            }
+        val info = PasteCollectionInfo(name = tag.name, color = tag.color)
+        val infoFile = basePath.resolve(PasteCollectionInfo.COLLECTION_INFO_FILE)
+        fileUtils.writeFile(infoFile) { sink ->
+            sink.writeUtf8(jsonUtils.JSON.encodeToString(PasteCollectionInfo.serializer(), info))
         }
     }
 

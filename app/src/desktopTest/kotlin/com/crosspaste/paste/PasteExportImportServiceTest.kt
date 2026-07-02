@@ -2,6 +2,7 @@ package com.crosspaste.paste
 
 import com.crosspaste.app.AppFileType
 import com.crosspaste.db.paste.PasteDao
+import com.crosspaste.db.paste.PasteTagDao
 import com.crosspaste.notification.NotificationManager
 import com.crosspaste.paste.item.CreatePasteItemHelper.createColorPasteItem
 import com.crosspaste.paste.item.CreatePasteItemHelper.createHtmlPasteItem
@@ -9,6 +10,7 @@ import com.crosspaste.paste.item.CreatePasteItemHelper.createRtfPasteItem
 import com.crosspaste.paste.item.CreatePasteItemHelper.createTextPasteItem
 import com.crosspaste.paste.item.CreatePasteItemHelper.createUrlPasteItem
 import com.crosspaste.paste.item.PasteItem
+import com.crosspaste.paste.item.PasteItemReader
 import com.crosspaste.paste.item.PasteText
 import com.crosspaste.path.UserDataPathProvider
 import com.crosspaste.utils.DateUtils
@@ -16,6 +18,7 @@ import com.crosspaste.utils.getCodecsUtils
 import com.crosspaste.utils.getCompressUtils
 import com.crosspaste.utils.getJsonUtils
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
@@ -322,7 +325,9 @@ class PasteExportImportServiceTest {
                 path.toFile().mkdirs()
             }
 
-            val exportService = PasteExportService(notificationManager, pasteDao, userDataPathProvider)
+            val pasteTagDao = mockk<PasteTagDao>(relaxed = true)
+            val exportService =
+                PasteExportService(notificationManager, pasteDao, pasteTagDao, userDataPathProvider)
 
             val exportDir = File(tempDir, "output")
             exportDir.mkdirs()
@@ -331,6 +336,7 @@ class PasteExportImportServiceTest {
                 DesktopPasteExportParam(
                     types = PasteType.TYPES.map { it.type.toLong() }.toSet(),
                     onlyTagged = false,
+                    tagId = null,
                     maxFileSize = null,
                     exportPath = exportDir.toOkioPath(),
                 )
@@ -366,5 +372,147 @@ class PasteExportImportServiceTest {
             assertNotNull(restored)
             assertEquals(PasteType.TEXT_TYPE.type, restored.pasteType)
             assertEquals("service export test", (restored.pasteAppearItem as? PasteText)?.text)
+        }
+
+    // --- Single-collection export/import round-trip ---
+
+    @Test
+    fun `PasteCollectionInfo json round-trip`() {
+        val info = PasteCollectionInfo(name = "Snippets", color = 0xFF007AFF)
+        val json = jsonUtils.JSON.encodeToString(PasteCollectionInfo.serializer(), info)
+        val restored = jsonUtils.JSON.decodeFromString(PasteCollectionInfo.serializer(), json)
+        assertEquals(info, restored)
+    }
+
+    @Test
+    fun `export with tagId bundles collection info in the zip`() =
+        runTest {
+            val tempDir = Files.createTempDirectory("export-collection-test").toFile()
+            tempDir.deleteOnExit()
+
+            val textItem = createTextPasteItem(text = "pinned snippet")
+            val pasteData = createPasteDataForType(PasteType.TEXT_TYPE, textItem)
+
+            val pasteDao = mockk<PasteDao>()
+            coEvery { pasteDao.getExportNum(any()) } returns 1L
+            coEvery { pasteDao.batchReadPasteData(any(), any(), any()) } coAnswers {
+                val dealPasteData = thirdArg<(PasteData) -> Unit>()
+                dealPasteData(pasteData)
+                1L
+            }
+
+            val pasteTagDao = mockk<PasteTagDao>(relaxed = true)
+            every { pasteTagDao.getAllTagsBlock() } returns
+                listOf(PasteTag(id = 7L, name = "Snippets", color = 0xFF007AFF, sortOrder = 1L))
+
+            val notificationManager = mockk<NotificationManager>(relaxed = true)
+            val userDataPathProvider = mockk<UserDataPathProvider>(relaxed = true)
+            val tempPath = tempDir.resolve("temp").toOkioPath()
+            every { userDataPathProvider.resolve(appFileType = AppFileType.TEMP) } returns tempPath
+            every { userDataPathProvider.autoCreateDir(any()) } answers {
+                firstArg<okio.Path>().toFile().mkdirs()
+            }
+
+            val exportService =
+                PasteExportService(notificationManager, pasteDao, pasteTagDao, userDataPathProvider)
+
+            val exportDir = File(tempDir, "output")
+            exportDir.mkdirs()
+
+            val exportParam =
+                DesktopPasteExportParam(
+                    types = PasteType.TYPES.map { it.type.toLong() }.toSet(),
+                    onlyTagged = false,
+                    tagId = 7L,
+                    maxFileSize = null,
+                    exportPath = exportDir.toOkioPath(),
+                )
+
+            exportService.export(exportParam) { }
+            Thread.sleep(3000)
+
+            val exportedFile =
+                exportDir
+                    .listFiles { _, name -> name.endsWith(".data") }!!
+                    .first()
+            val verifyDir = File(tempDir, "verify")
+            verifyDir.mkdirs()
+            exportedFile.inputStream().source().buffer().use { source ->
+                assertTrue(compressUtils.unzip(source, verifyDir.toOkioPath()).isSuccess)
+            }
+
+            val infoFile = File(verifyDir, PasteCollectionInfo.COLLECTION_INFO_FILE)
+            assertTrue(infoFile.exists(), "Exported zip should contain collection.info")
+            val info =
+                jsonUtils.JSON.decodeFromString(
+                    PasteCollectionInfo.serializer(),
+                    infoFile.readText(),
+                )
+            assertEquals("Snippets", info.name)
+            assertEquals(0xFF007AFF, info.color)
+        }
+
+    @Test
+    fun `import restores collection from bundled collection info`() =
+        runTest {
+            val tempDir = Files.createTempDirectory("import-collection-test").toFile()
+            tempDir.deleteOnExit()
+
+            val textItem = createTextPasteItem(text = "pinned snippet")
+            val pasteData = createPasteDataForType(PasteType.TEXT_TYPE, textItem)
+
+            // Build an export bundle containing paste.data, count, and collection.info
+            val exportDir = File(tempDir, "export")
+            exportDir.mkdirs()
+            File(exportDir, "paste.data").writeText(
+                codecsUtils.base64Encode(pasteData.toJson().encodeToByteArray()) + "\n",
+            )
+            File(exportDir, "1.count").createNewFile()
+            val info = PasteCollectionInfo(name = "Snippets", color = 0xFF007AFF)
+            File(exportDir, PasteCollectionInfo.COLLECTION_INFO_FILE).writeText(
+                jsonUtils.JSON.encodeToString(PasteCollectionInfo.serializer(), info),
+            )
+            val zipFile = File(tempDir, "import.data")
+            zipFile.outputStream().sink().buffer().let { sink ->
+                try {
+                    compressUtils.zipDir(exportDir.toOkioPath(), sink)
+                } finally {
+                    runCatching { sink.close() }
+                }
+            }
+
+            val pasteDao = mockk<PasteDao>(relaxed = true)
+            coEvery { pasteDao.createPasteData(any()) } returns 11L
+
+            val pasteTagDao = mockk<PasteTagDao>(relaxed = true)
+            every { pasteTagDao.getAllTagsBlock() } returns listOf()
+            coEvery { pasteTagDao.createPasteTag("Snippets", 0xFF007AFF) } returns 42L
+
+            val notificationManager = mockk<NotificationManager>(relaxed = true)
+            val pasteItemReader = mockk<PasteItemReader>(relaxed = true)
+            val searchContentService = mockk<SearchContentService>(relaxed = true)
+
+            val userDataPathProvider = mockk<UserDataPathProvider>(relaxed = true)
+            val tempPath = tempDir.resolve("temp").toOkioPath()
+            every { userDataPathProvider.resolve(appFileType = AppFileType.TEMP) } returns tempPath
+            every { userDataPathProvider.autoCreateDir(any()) } answers {
+                firstArg<okio.Path>().toFile().mkdirs()
+            }
+
+            val importService =
+                PasteImportService(
+                    notificationManager,
+                    pasteDao,
+                    pasteItemReader,
+                    pasteTagDao,
+                    searchContentService,
+                    userDataPathProvider,
+                )
+
+            importService.import(DesktopPasteImportParam(zipFile.toOkioPath())) { }
+            Thread.sleep(3000)
+
+            coVerify { pasteTagDao.createPasteTag("Snippets", 0xFF007AFF) }
+            coVerify { pasteTagDao.addTagsToPastes(listOf(11L), setOf(42L)) }
         }
 }

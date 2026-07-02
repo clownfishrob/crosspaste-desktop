@@ -151,9 +151,9 @@ fun desktopPasteComponentModule(headless: Boolean): Module =
 
         // region Import & Export
         single<PasteExportParamFactory<Path>> { DesktopPasteExportParamFactory() }
-        single<PasteExportService> { PasteExportService(get(), get(), get()) }
+        single<PasteExportService> { PasteExportService(get(), get(), get(), get()) }
         single<PasteImportParamFactory<Path>> { DesktopPasteImportParamFactory() }
-        single<PasteImportService> { PasteImportService(get(), get(), get(), get(), get()) }
+        single<PasteImportService> { PasteImportService(get(), get(), get(), get(), get(), get()) }
         // endregion
 
         // region Paste data & items

@@ -6,7 +6,8 @@ class DesktopPasteExportParamFactory : PasteExportParamFactory<Path> {
     override fun createPasteExportParam(
         types: Set<Long>,
         onlyTagged: Boolean,
+        tagId: Long?,
         maxFileSize: Long?,
         exportPath: Path,
-    ): PasteExportParam = DesktopPasteExportParam(types, onlyTagged, maxFileSize, exportPath)
+    ): PasteExportParam = DesktopPasteExportParam(types, onlyTagged, tagId, maxFileSize, exportPath)
 }

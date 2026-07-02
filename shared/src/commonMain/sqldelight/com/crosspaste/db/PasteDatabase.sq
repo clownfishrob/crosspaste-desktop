@@ -63,7 +63,11 @@ SELECT * FROM PasteDataEntity
 WHERE id > :id AND
 pasteState != -1 AND
 pasteType IN :types AND
-CASE WHEN :onlyTagged THEN EXISTS (SELECT 1 FROM PasteTagEntity WHERE PasteTagEntity.pasteId = PasteDataEntity.id) ELSE TRUE END
+CASE
+WHEN :tagId IS NOT NULL THEN EXISTS (SELECT 1 FROM PasteTagEntity WHERE PasteTagEntity.pasteId = PasteDataEntity.id AND PasteTagEntity.tagId = :tagId)
+WHEN :onlyTagged THEN EXISTS (SELECT 1 FROM PasteTagEntity WHERE PasteTagEntity.pasteId = PasteDataEntity.id)
+ELSE TRUE
+END
 ORDER BY id ASC
 LIMIT :limit;
 
@@ -71,7 +75,11 @@ getExportNum:
 SELECT count(*) FROM PasteDataEntity
 WHERE pasteState != -1 AND
 pasteType IN :types AND
-CASE WHEN :onlyTagged THEN EXISTS (SELECT 1 FROM PasteTagEntity WHERE PasteTagEntity.pasteId = PasteDataEntity.id) ELSE TRUE END;
+CASE
+WHEN :tagId IS NOT NULL THEN EXISTS (SELECT 1 FROM PasteTagEntity WHERE PasteTagEntity.pasteId = PasteDataEntity.id AND PasteTagEntity.tagId = :tagId)
+WHEN :onlyTagged THEN EXISTS (SELECT 1 FROM PasteTagEntity WHERE PasteTagEntity.pasteId = PasteDataEntity.id)
+ELSE TRUE
+END;
 
 getPasteData:
 SELECT * FROM PasteDataEntity WHERE id = :id AND pasteState IN :states;
