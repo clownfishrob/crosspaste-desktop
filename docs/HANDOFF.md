@@ -37,6 +37,20 @@ Later fixes in the same session:
   `TagDatabase.sq`), which re-emits on tag-membership changes; covered by two
   new tests in `PasteDaoTest`.
 
+Accessibility onboarding (Phase 2 item, same session): the
+`GrantAccessibilityDialog` existed but had no call site — on a fresh macOS
+install shortcuts silently failed. Added
+`ui/settings/AccessibilitySettingsContentView.kt`:
+`AccessibilityDialogHost()` (composed in `CrossPasteMainWindowContent`)
+shows the dialog when the app launched without the permission
+(`DesktopAppLaunchState.accessibilityPermissions`), gated by the
+`showGrantAccessibility` config and a session-only dismiss; and a macOS-only
+"Permissions" settings section with a live-polling status row that opens the
+Privacy & Accessibility pane while not granted. New i18n keys:
+`accessibility_permission`, `accessibility_permission_row_desc`, `granted`,
+`not_granted`, `permissions`; `accessibility_permission_desc` copy now
+explains shortcuts + paste-back and the restart requirement.
+
 Known follow-ups for the new layout:
 - `BubbleWindow.kt` anchors bubbles using the shared `searchListState`
   assuming the old horizontal strip; positions will be off with the vertical

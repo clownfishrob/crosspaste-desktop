@@ -105,7 +105,11 @@ The code package names remain `com.crosspaste` to avoid a large, risky rename ac
   — done: slots follow the active collection (tag) filter; slot numbers are
   now always visible on the first 10 cards (highlighted while Ctrl is held)
   and the top bar advertises Ctrl+1…9 alongside the existing paste hints
-- Better onboarding for macOS Accessibility permissions — open
+- Better onboarding for macOS Accessibility permissions
+  — done: the grant dialog (previously orphaned) now shows over the main
+  window when the app starts without the permission, polls for the grant and
+  offers a restart; Settings gained a macOS-only "Permissions" section with a
+  live status row that deep-links to the right System Settings pane
 - Better empty states and settings explanations
   — partial: the search overlay now distinguishes "nothing captured yet" from
   "no matches for your search or filters"; broader settings copy review open
