@@ -61,6 +61,18 @@ opaque panel (call `MacAcrylicEffect` without `isDark` — keeps the popup
 window level, drops the corner bleed). Deferred by choice: accent-colour
 picker, open/close motion changes.
 
+Phase 3 start (privacy): `PauseCaptureService` (app/commonMain) stops the
+pasteboard monitor without touching the persisted listening setting; overlay
+top bar hosts the pause menu (1m/5m/until resumed) and a warning resume
+pill; flipping the settings listening toggle back on clears any pause
+(observer drops the subscription-time emission — see the drop(1) comment).
+`SecretDetector` (app/commonMain, pure + heavily tested) gates
+`DesktopTransferableConsumer.consume` behind the new `enableSecretDetection`
+config (toggle in pasteboard settings); skipped items trigger a warning
+notification and never reach the DB. TestAppConfig.copy now handles
+`enablePasteboardListening`. Remaining Phase 3 items: excluded-apps
+improvements, optional encrypted DB, per-collection sync controls.
+
 Known follow-ups for the new layout:
 - `BubbleWindow.kt` anchors bubbles using the shared `searchListState`
   assuming the old horizontal strip; positions will be off with the vertical

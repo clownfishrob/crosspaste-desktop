@@ -129,11 +129,17 @@ Phase 2 is complete.
 
 ### Phase 3 - Privacy and safety
 
-- Excluded apps list improvements
+- Excluded apps list improvements — open
 - Pause capture for 1 minute, 5 minutes, or until resumed
+  — done: runtime pause service (never outlives a restart), overlay pause
+  menu + resume pill, auto-resume for timed pauses
 - Secret detection for API keys, private keys, passwords, 2FA codes, recovery phrases
-- Optional encrypted local database
-- Per-collection sync controls
+  — done for high-confidence patterns (PEM keys, provider prefixes, JWTs,
+  AWS/Google keys, high-entropy tokens, secret assignments), gated by a
+  default-on setting; 2FA codes and recovery phrases deliberately excluded
+  for false-positive risk (see SecretDetector)
+- Optional encrypted local database — open
+- Per-collection sync controls — open (sync is off by default in the MVP)
 
 ### Phase 4 - Cross-platform reliability
 
