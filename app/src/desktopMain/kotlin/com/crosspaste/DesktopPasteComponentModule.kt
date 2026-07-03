@@ -146,6 +146,7 @@ fun desktopPasteComponentModule(headless: Boolean): Module =
                 get(),
                 get(),
                 get(),
+                get(),
             )
         }
         single<DesktopPasteTagMenuService> {

@@ -58,6 +58,7 @@ class DesktopPasteMenuService(
     private val pasteTagDao: PasteTagDao,
     private val pasteSearchViewModel: PasteSearchViewModel,
     private val ocrModule: OCRModule,
+    private val sourceExclusionService: DesktopSourceExclusionService,
     private val syncManager: SyncManager,
     private val taskSubmitter: TaskSubmitter,
     private val uiSupport: UISupport,
@@ -347,6 +348,22 @@ class DesktopPasteMenuService(
             openPasteData(pasteData)
         }
 
+    // One-click path into the excluded-apps list: stop capturing from the app
+    // this item came from. Hidden when the source is unknown or already excluded.
+    private fun createExcludeSourceMenuItem(pasteData: PasteData): ContextMenuItem? =
+        pasteData.source
+            ?.takeIf { it.isNotBlank() && !sourceExclusionService.isExcluded(it) }
+            ?.let { source ->
+                ContextMenuItem(copywriter.getText("exclude_source_app", source)) {
+                    sourceExclusionService.addExclusion(source)
+                    notificationManager.sendNotification(
+                        title = { it.getText("source_excluded") },
+                        message = { source },
+                        messageType = MessageType.Success,
+                    )
+                }
+            }
+
     private fun createLoadingMenuItems(pasteData: PasteData): List<ContextMenuItem> =
         listOf(
             createCopyContextMenuItem(pasteData),
@@ -355,11 +372,12 @@ class DesktopPasteMenuService(
         )
 
     private fun createBaseMenuItems(pasteData: PasteData): List<ContextMenuItem> =
-        listOf(
+        listOfNotNull(
             createCopyContextMenuItem(pasteData),
             createOpenContextMenuItem(pasteData),
             createPinTagMenuItem(pasteData),
             createSyncToMenuItem(pasteData),
+            createExcludeSourceMenuItem(pasteData),
             ContextMenuDivider,
             createDeleteContextMenuItem(pasteData),
         )
@@ -374,16 +392,18 @@ class DesktopPasteMenuService(
             add(createOpenContextMenuItem(pasteData))
             add(createPinTagMenuItem(pasteData))
             add(createSyncToMenuItem(pasteData))
+            createExcludeSourceMenuItem(pasteData)?.let { add(it) }
             add(ContextMenuDivider)
             add(createDeleteContextMenuItem(pasteData))
         }
 
     private fun createTextMenuItems(pasteData: PasteData): List<ContextMenuItem> =
-        listOf(
+        listOfNotNull(
             createCopyContextMenuItem(pasteData),
             createEditContextMenuItem(pasteData),
             createPinTagMenuItem(pasteData),
             createSyncToMenuItem(pasteData),
+            createExcludeSourceMenuItem(pasteData),
             ContextMenuDivider,
             createDeleteContextMenuItem(pasteData),
         )
@@ -399,6 +419,7 @@ class DesktopPasteMenuService(
             add(createExtractTextContextMenuItem(pasteData))
             add(createPinTagMenuItem(pasteData))
             add(createSyncToMenuItem(pasteData))
+            createExcludeSourceMenuItem(pasteData)?.let { add(it) }
             add(ContextMenuDivider)
             add(createDeleteContextMenuItem(pasteData))
         }
