@@ -1,13 +1,19 @@
 package com.crosspaste.paste
 
 import com.crosspaste.app.AppInfo
+import com.crosspaste.config.DesktopConfigManager
 import com.crosspaste.db.paste.PasteDao
+import com.crosspaste.notification.MessageType
+import com.crosspaste.notification.NotificationManager
 import com.crosspaste.paste.plugin.type.PasteTypePlugin
 import com.crosspaste.utils.LoggerExtension.logSuspendExecutionTime
 import io.github.oshai.kotlinlogging.KotlinLogging
+import java.awt.datatransfer.DataFlavor
 
 class DesktopTransferableConsumer(
     private val appInfo: AppInfo,
+    private val configManager: DesktopConfigManager,
+    private val notificationManager: NotificationManager,
     private val pasteDao: PasteDao,
     private val pasteReleaseService: PasteReleaseService,
     pasteTypePlugins: List<PasteTypePlugin>,
@@ -47,6 +53,18 @@ class DesktopTransferableConsumer(
                     return@logSuspendExecutionTime
                 }
 
+                if (configManager.getCurrentConfig().enableSecretDetection &&
+                    isLikelySecret(pasteTransferable)
+                ) {
+                    logger.info { "Skipping capture of likely secret content" }
+                    notificationManager.sendNotification(
+                        title = { it.getText("secret_skipped") },
+                        message = { it.getText("secret_skipped_desc") },
+                        messageType = MessageType.Warning,
+                    )
+                    return@logSuspendExecutionTime
+                }
+
                 val pasteCollector =
                     PasteCollector(
                         dataFlavorMap.size,
@@ -66,6 +84,17 @@ class DesktopTransferableConsumer(
             logger.error(e) { "Failed to consume transferable" }
         }
     }
+
+    private fun isLikelySecret(pasteTransferable: PasteTransferable): Boolean =
+        runCatching {
+            val transferable = (pasteTransferable as DesktopReadTransferable).transferable
+            transferable
+                .takeIf { it.isDataFlavorSupported(DataFlavor.stringFlavor) }
+                ?.getTransferData(DataFlavor.stringFlavor)
+                ?.let { it as? String }
+                ?.let { SecretDetector.isLikelySecret(it) }
+                ?: false
+        }.getOrDefault(false)
 
     override fun getPlugin(identity: String): PasteTypePlugin? = pasteTypePluginMap[identity]
 }

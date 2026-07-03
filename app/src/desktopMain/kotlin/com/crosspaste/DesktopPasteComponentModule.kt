@@ -102,6 +102,8 @@ fun desktopPasteComponentModule(headless: Boolean): Module =
                 get(),
                 get(),
                 get(),
+                get(),
+                get(),
                 listOf(
                     get<ColorTypePlugin>(),
                     get<FilesTypePlugin>(),

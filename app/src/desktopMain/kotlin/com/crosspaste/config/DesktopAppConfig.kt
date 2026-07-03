@@ -51,6 +51,9 @@ data class DesktopAppConfig(
     val proxyPort: String = "7890",
     val showGrantAccessibility: Boolean = true,
     val enableClipboardRelay: Boolean = false,
+    // Skip capturing clipboard content that looks like a secret (API keys,
+    // private keys, tokens); the OS clipboard itself is unaffected.
+    val enableSecretDetection: Boolean = true,
     // Sync content type controls
     override val enableSyncText: Boolean = false,
     override val enableSyncUrl: Boolean = false,
@@ -152,6 +155,7 @@ data class DesktopAppConfig(
             pastePrimaryTypeOnly = if (key == "pastePrimaryTypeOnly") toBoolean(value) else pastePrimaryTypeOnly,
             useNetworkInterfaces = if (key == "useNetworkInterfaces") toString(value) else useNetworkInterfaces,
             enableClipboardRelay = if (key == "enableClipboardRelay") toBoolean(value) else enableClipboardRelay,
+            enableSecretDetection = if (key == "enableSecretDetection") toBoolean(value) else enableSecretDetection,
             ocrLanguage = if (key == "ocrLanguage") toString(value) else ocrLanguage,
             useManualProxy = if (key == "useManualProxy") toBoolean(value) else useManualProxy,
             proxyType = if (key == "proxyType") toString(value) else proxyType,
