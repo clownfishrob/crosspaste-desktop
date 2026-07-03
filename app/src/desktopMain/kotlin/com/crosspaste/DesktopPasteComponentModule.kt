@@ -25,6 +25,7 @@ import com.crosspaste.paste.PasteImportService
 import com.crosspaste.paste.PasteReleaseService
 import com.crosspaste.paste.PasteSyncProcessManager
 import com.crosspaste.paste.PasteboardService
+import com.crosspaste.paste.PauseCaptureService
 import com.crosspaste.paste.SearchContentService
 import com.crosspaste.paste.TransferableConsumer
 import com.crosspaste.paste.TransferableProducer
@@ -95,6 +96,7 @@ fun desktopPasteComponentModule(headless: Boolean): Module =
                 )
             }
         }
+        single<PauseCaptureService> { PauseCaptureService(get(), get()) }
         single<TransferableConsumer> {
             DesktopTransferableConsumer(
                 get(),

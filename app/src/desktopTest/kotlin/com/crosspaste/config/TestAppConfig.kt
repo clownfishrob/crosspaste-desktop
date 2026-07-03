@@ -43,6 +43,7 @@ data class TestAppConfig(
         value: Any,
     ): TestAppConfig =
         when (key) {
+            "enablePasteboardListening" -> copy(enablePasteboardListening = toBoolean(value))
             "enableRemoteShowPairingCode" -> copy(enableRemoteShowPairingCode = toBoolean(value))
             else -> this
         }

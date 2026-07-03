@@ -61,10 +61,16 @@ import androidx.compose.ui.input.key.nativeKeyCode
 import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Popup
+import androidx.compose.ui.window.PopupProperties
 import com.composables.icons.materialsymbols.MaterialSymbols
+import com.composables.icons.materialsymbols.rounded.Pause_circle
 import com.composables.icons.materialsymbols.rounded.Search
 import com.composables.icons.materialsymbols.rounded.Settings
 import com.composables.icons.materialsymbols.roundedfilled.Push_pin
@@ -74,6 +80,8 @@ import com.crosspaste.db.paste.PasteTagDao
 import com.crosspaste.i18n.GlobalCopywriter
 import com.crosspaste.paste.DesktopPasteMenuService
 import com.crosspaste.paste.PasteType
+import com.crosspaste.paste.PauseCaptureService
+import com.crosspaste.paste.PauseCaptureState
 import com.crosspaste.paste.item.PasteItem
 import com.crosspaste.ui.LocalDesktopAppSizeValueState
 import com.crosspaste.ui.LocalSearchWindowInfoState
@@ -83,6 +91,7 @@ import com.crosspaste.ui.Settings
 import com.crosspaste.ui.base.CustomTextField
 import com.crosspaste.ui.base.GeneralIconButton
 import com.crosspaste.ui.base.KeyboardView
+import com.crosspaste.ui.base.MenuItemView
 import com.crosspaste.ui.base.PasteContextMenuView
 import com.crosspaste.ui.base.enter
 import com.crosspaste.ui.model.FocusedElement
@@ -97,6 +106,7 @@ import com.crosspaste.ui.paste.side.preview.SidePreviewView
 import com.crosspaste.ui.paste.side.quickSlotIndex
 import com.crosspaste.ui.search.side.SearchTagsView
 import com.crosspaste.ui.theme.AppUIColors
+import com.crosspaste.ui.theme.AppUIFont.getFontWidth
 import com.crosspaste.ui.theme.AppUISize.large2X
 import com.crosspaste.ui.theme.AppUISize.medium
 import com.crosspaste.ui.theme.AppUISize.mediumRoundedCornerShape
@@ -106,6 +116,7 @@ import com.crosspaste.ui.theme.AppUISize.small3X
 import com.crosspaste.ui.theme.AppUISize.tiny
 import com.crosspaste.ui.theme.AppUISize.tiny2X
 import com.crosspaste.ui.theme.AppUISize.tiny2XRoundedCornerShape
+import com.crosspaste.ui.theme.AppUISize.tiny3X
 import com.crosspaste.ui.theme.AppUISize.tiny5X
 import com.crosspaste.ui.theme.AppUISize.tinyRoundedCornerShape
 import com.crosspaste.ui.theme.AppUISize.xLarge
@@ -115,6 +126,7 @@ import com.crosspaste.utils.GlobalCoroutineScope.mainCoroutineDispatcher
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
+import kotlin.time.Duration.Companion.minutes
 
 /**
  * Compact two-pane search overlay: category icon strip on top, item list with
@@ -192,6 +204,123 @@ fun CenterSearchWindowContent() {
                 CenterPreviewPane()
             }
             CenterSearchBottomBar()
+        }
+    }
+}
+
+// Pause-capture entry point: an icon button with a duration menu while
+// capture runs, and a resume pill while it is paused.
+@Composable
+private fun CenterPauseCaptureControl() {
+    val copywriter = koinInject<GlobalCopywriter>()
+    val pauseCaptureService = koinInject<PauseCaptureService>()
+
+    val themeExt = LocalThemeExtState.current
+    val density = LocalDensity.current
+
+    val pauseState by pauseCaptureService.state.collectAsState()
+
+    var showMenu by remember { mutableStateOf(false) }
+
+    if (pauseState != PauseCaptureState.Off) {
+        Row(
+            modifier =
+                Modifier
+                    .clip(tiny2XRoundedCornerShape)
+                    .background(themeExt.warning.container)
+                    .pointerInput(Unit) {
+                        detectTapGestures { pauseCaptureService.resume() }
+                    }.padding(horizontal = small3X, vertical = tiny2X),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                imageVector = MaterialSymbols.Rounded.Pause_circle,
+                contentDescription = "capture_paused",
+                tint = themeExt.warning.onContainer,
+                modifier = Modifier.size(medium),
+            )
+            Spacer(modifier = Modifier.width(tiny2X))
+            Text(
+                text = "${copywriter.getText("capture_paused")} · ${copywriter.getText("resume")}",
+                style = MaterialTheme.typography.labelLarge,
+                color = themeExt.warning.onContainer,
+                maxLines = 1,
+            )
+        }
+    } else {
+        Box {
+            GeneralIconButton(
+                imageVector = MaterialSymbols.Rounded.Pause_circle,
+                desc = "pause_capture",
+                colors =
+                    iconButtonColors(
+                        containerColor = Color.Transparent,
+                        contentColor = MaterialTheme.colorScheme.primary,
+                    ),
+                buttonSize = xLarge,
+                iconSize = large2X,
+                shape = tiny2XRoundedCornerShape,
+            ) {
+                showMenu = true
+            }
+
+            if (showMenu) {
+                val textStyle =
+                    MaterialTheme.typography.labelLarge.copy(
+                        lineHeight = TextUnit.Unspecified,
+                    )
+                val paddingValues = PaddingValues(horizontal = small3X, vertical = tiny3X)
+                val menuTexts =
+                    listOf(
+                        copywriter.getText("pause_1_minute"),
+                        copywriter.getText("pause_5_minutes"),
+                        copywriter.getText("pause_until_resumed"),
+                    )
+                Popup(
+                    alignment = Alignment.TopEnd,
+                    offset = IntOffset(0, with(density) { xLarge.roundToPx() }),
+                    onDismissRequest = { showMenu = false },
+                    properties =
+                        PopupProperties(
+                            focusable = true,
+                            dismissOnBackPress = true,
+                            dismissOnClickOutside = true,
+                        ),
+                ) {
+                    Column(
+                        modifier =
+                            Modifier
+                                .width(getFontWidth(menuTexts, textStyle, paddingValues))
+                                .clip(tiny2XRoundedCornerShape)
+                                .background(MaterialTheme.colorScheme.surfaceBright),
+                    ) {
+                        MenuItemView(
+                            text = copywriter.getText("pause_1_minute"),
+                            textStyle = textStyle,
+                            paddingValues = paddingValues,
+                        ) {
+                            pauseCaptureService.pauseFor(1.minutes)
+                            showMenu = false
+                        }
+                        MenuItemView(
+                            text = copywriter.getText("pause_5_minutes"),
+                            textStyle = textStyle,
+                            paddingValues = paddingValues,
+                        ) {
+                            pauseCaptureService.pauseFor(5.minutes)
+                            showMenu = false
+                        }
+                        MenuItemView(
+                            text = copywriter.getText("pause_until_resumed"),
+                            textStyle = textStyle,
+                            paddingValues = paddingValues,
+                        ) {
+                            pauseCaptureService.pauseUntilResumed()
+                            showMenu = false
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -308,6 +437,10 @@ private fun CenterSearchTopBar() {
         ) {
             SearchTagsView()
         }
+
+        Spacer(modifier = Modifier.width(tiny))
+
+        CenterPauseCaptureControl()
 
         Spacer(modifier = Modifier.width(tiny))
 
