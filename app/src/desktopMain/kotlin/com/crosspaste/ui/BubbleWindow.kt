@@ -29,7 +29,6 @@ import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.input.key.type
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
@@ -124,7 +123,6 @@ fun BubbleWindow(windowIcon: Painter?) {
     val pasteSelectionViewModel = koinInject<PasteSelectionViewModel>()
     val platform = getPlatformUtils().platform
     val appSizeValue = LocalDesktopAppSizeValueState.current
-    val density = LocalDensity.current
 
     val bubbleWindowInfo by appWindowManager.bubbleWindowInfo.collectAsState()
     val searchWindowInfo by appWindowManager.searchWindowInfo.collectAsState()
@@ -140,9 +138,12 @@ fun BubbleWindow(windowIcon: Painter?) {
     val logger = remember { KotlinLogging.logger("BubbleWindow") }
     val ignoreFocusLoss = remember { AtomicBoolean(true) }
 
-    // Reactively track the target item's center-X in SearchWindow coordinates (Dp).
-    // Reads LazyListState.layoutInfo which is snapshot state → recomposes on scroll.
-    val itemCenterXInSearchWindow: Dp? by remember(bubbleWindowInfo.pasteId) {
+    // Reactively track whether the target item is visible, then anchor the bubble
+    // to the fixed center-list column rather than the vertical scroll offset.
+    val itemCenterXInSearchWindow: Dp? by remember(
+        bubbleWindowInfo.pasteId,
+        appSizeValue.centerSearchListWidth,
+    ) {
         derivedStateOf {
             if (!bubbleWindowInfo.show) return@derivedStateOf null
             val listState = pasteSelectionViewModel.searchListState ?: return@derivedStateOf null
@@ -150,17 +151,10 @@ fun BubbleWindow(windowIcon: Painter?) {
             val index = searchResults.indexOfFirst { it.id == bubbleWindowInfo.pasteId }
             if (index < 0) return@derivedStateOf null
 
-            val itemInfo =
-                listState.layoutInfo.visibleItemsInfo.find { it.index == index }
-                    ?: return@derivedStateOf null
+            listState.layoutInfo.visibleItemsInfo.find { it.index == index }
+                ?: return@derivedStateOf null
 
-            // Each LazyRow slot = [Spacer(sideSearchPaddingSize)] [Card(sidePasteSize)]
-            // Card center = slot offset + paddingSize + cardWidth / 2
-            with(density) {
-                itemInfo.offset.toDp() +
-                    appSizeValue.sideSearchPaddingSize +
-                    appSizeValue.sidePasteSize.width / 2
-            }
+            BubbleWindowPosition.centerSearchListAnchorX(appSizeValue.centerSearchListWidth)
         }
     }
 
@@ -171,30 +165,19 @@ fun BubbleWindow(windowIcon: Painter?) {
     // Also updates tailCenterFraction so the tail still points at the target item.
     fun computeBubblePosition(): WindowPosition {
         val searchPos = searchWindowInfo.state.position
-        val searchWidth = searchWindowInfo.state.size.width
-        val centerX = itemCenterXInSearchWindow
-        val idealBubbleX =
-            if (centerX != null) {
-                searchPos.x + centerX - windowSize.width / 2
-            } else {
-                searchPos.x + (searchWidth - windowSize.width) / 2
-            }
-        // Clamp bubble X within the search window bounds
-        val minX = searchPos.x
-        val maxX = searchPos.x + searchWidth - windowSize.width
-        val clampedBubbleX = idealBubbleX.coerceIn(minX, maxX)
-
-        // Compute tail fraction: where should the tail point within the bubble?
-        tailCenterFraction =
-            if (centerX != null) {
-                val itemScreenX = searchPos.x + centerX
-                ((itemScreenX - clampedBubbleX) / windowSize.width).coerceIn(0.1f, 0.9f)
-            } else {
-                0.5f
-            }
-
-        val bubbleY = searchPos.y - windowSize.height - gap + appSizeValue.sideSearchTopBarHeight
-        return WindowPosition(x = clampedBubbleX, y = bubbleY)
+        val placement =
+            BubbleWindowPosition.calculate(
+                searchX = searchPos.x,
+                searchY = searchPos.y,
+                searchWidth = searchWindowInfo.state.size.width,
+                windowWidth = windowSize.width,
+                windowHeight = windowSize.height,
+                gap = gap,
+                targetCenterXInSearchWindow = itemCenterXInSearchWindow,
+                verticalOffset = appSizeValue.centerSearchTopBarHeight,
+            )
+        tailCenterFraction = placement.tailCenterFraction
+        return WindowPosition(x = placement.x, y = placement.y)
     }
 
     val windowState =

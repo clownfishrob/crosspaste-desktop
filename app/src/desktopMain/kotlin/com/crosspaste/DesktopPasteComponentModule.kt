@@ -17,6 +17,7 @@ import com.crosspaste.paste.DesktopSourceExclusionService
 import com.crosspaste.paste.DesktopTransferableConsumer
 import com.crosspaste.paste.DesktopTransferableProducer
 import com.crosspaste.paste.GuidePasteDataService
+import com.crosspaste.paste.MacScreenshotFileMonitor
 import com.crosspaste.paste.PasteDataHelper
 import com.crosspaste.paste.PasteExportParamFactory
 import com.crosspaste.paste.PasteExportService
@@ -97,6 +98,7 @@ fun desktopPasteComponentModule(headless: Boolean): Module =
             }
         }
         single<PauseCaptureService> { PauseCaptureService(get(), get()) }
+        single<MacScreenshotFileMonitor> { MacScreenshotFileMonitor(get(), get()) }
         single<TransferableConsumer> {
             DesktopTransferableConsumer(
                 get(),

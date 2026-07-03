@@ -5,7 +5,6 @@ import com.crosspaste.app.AppInfo
 import com.crosspaste.app.DesktopAppIdentity
 import com.crosspaste.db.secure.SecureIO
 import com.crosspaste.path.AppPathProvider
-import com.crosspaste.platform.macos.MacosKeychainHelper
 import com.crosspaste.presist.FilePersist
 import com.crosspaste.utils.CryptographyUtils
 import com.crosspaste.utils.EncryptUtils
@@ -29,6 +28,11 @@ class MacosSecureStoreFactory(
             appPathProvider.resolve("secure.data", AppFileType.ENCRYPT),
         )
 
+    private val keyPersist =
+        FilePersist.createOneFilePersist(
+            appPathProvider.resolve("secure.key", AppFileType.ENCRYPT),
+        )
+
     override fun createSecureStore(): SecureStore =
         runBlocking {
             val service =
@@ -37,17 +41,13 @@ class MacosSecureStoreFactory(
             if (file.exists()) {
                 logger.info { "Found secureKeyPair encrypt file" }
                 val bytes = file.readBytes()
-                val password = MacosKeychainHelper.getPassword(service, appInfo.userName)
-                password?.let {
-                    logger.info { "Found password in keychain by $service ${appInfo.userName}" }
-                    runCatching {
-                        val secretKey = EncryptUtils.stringToSecretKey(it)
-                        val decryptData = EncryptUtils.decryptData(secretKey, bytes)
-                        val secureKeyPair = secureKeyPairSerializer.decodeSecureKeyPair(decryptData)
-                        return@runBlocking GeneralSecureStore(secureKeyPair, secureKeyPairSerializer, secureIO)
-                    }.onFailure { e ->
-                        logger.error(e) { "Decrypt secureKeyPair error" }
-                    }
+                val secretKey = getOrCreateLocalSecretKey(service)
+                runCatching {
+                    val decryptData = EncryptUtils.decryptData(secretKey, bytes)
+                    val secureKeyPair = secureKeyPairSerializer.decodeSecureKeyPair(decryptData)
+                    return@runBlocking GeneralSecureStore(secureKeyPair, secureKeyPairSerializer, secureIO)
+                }.onFailure { e ->
+                    logger.error(e) { "Decrypt secureKeyPair error" }
                 }
 
                 if (file.delete()) {
@@ -60,24 +60,20 @@ class MacosSecureStoreFactory(
             logger.info { "Generate secureKeyPair" }
             val secureKeyPair = CryptographyUtils.generateSecureKeyPair()
             val data = secureKeyPairSerializer.encodeSecureKeyPair(secureKeyPair)
-            val password = MacosKeychainHelper.getPassword(service, appInfo.userName)
-
-            val secretKey =
-                password?.let {
-                    logger.info { "Found password in keychain by $service ${appInfo.userName}" }
-                    EncryptUtils.stringToSecretKey(it)
-                } ?: run {
-                    logger.info { "Not found password in keychain by $service ${appInfo.userName}" }
-                    val secretKey = EncryptUtils.generateAESKey()
-                    MacosKeychainHelper.setPassword(
-                        service,
-                        appInfo.userName,
-                        EncryptUtils.secretKeyToString(secretKey),
-                    )
-                    secretKey
-                }
+            val secretKey = getOrCreateLocalSecretKey(service)
             val encryptData = EncryptUtils.encryptData(secretKey, data)
             filePersist.saveBytes(encryptData)
             GeneralSecureStore(secureKeyPair, secureKeyPairSerializer, secureIO)
+        }
+
+    private fun getOrCreateLocalSecretKey(service: String) =
+        keyPersist.readBytes()?.decodeToString()?.let {
+            logger.info { "Found local secure-store key for $service" }
+            EncryptUtils.stringToSecretKey(it)
+        } ?: run {
+            logger.info { "Generate local secure-store key for $service" }
+            EncryptUtils.generateAESKey().also {
+                keyPersist.saveBytes(EncryptUtils.secretKeyToString(it).encodeToByteArray())
+            }
         }
 }

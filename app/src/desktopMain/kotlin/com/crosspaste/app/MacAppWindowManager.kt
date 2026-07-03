@@ -141,13 +141,11 @@ class MacAppWindowManager(
         logger.info { "unActive search window" }
         val toPaste = preparePaste(0)
         val prevAppId = prevMacAppInfo.value?.bundleIdentifier ?: ""
+        hideSearchWindow()
         if (toPaste) {
-            val pair = macPasteUtils.getPasteMemory()
-            MacAppUtils.searchToBackAndPaste(
-                prevAppId,
-                pair.first,
-                pair.second,
-            )
+            MacAppUtils.searchToBack(prevAppId)
+            delay(700.milliseconds)
+            toPaste()
             for (i in 1 until size) {
                 delay(1000.milliseconds)
                 if (preparePaste(i)) {
@@ -157,7 +155,6 @@ class MacAppWindowManager(
         } else {
             MacAppUtils.searchToBack(prevAppId)
         }
-        hideSearchWindow()
     }
 
     override suspend fun toPaste() {

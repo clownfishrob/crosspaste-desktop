@@ -1,3 +1,64 @@
+# Session Handoff — macOS Reliability Pass (2026-07-03)
+
+This is the latest state before handing the repo to another agent or human.
+Work was focused on this Mac only; Windows/Linux reliability remains deferred
+until those machines are available.
+
+## What Changed
+
+- **Center overlay bubble placement**: the bubble now anchors to the vertical
+  center search list instead of the old horizontal strip geometry. The math is
+  isolated in `BubbleWindowPosition.kt` with a focused desktop test.
+- **Search Enter handling**: pressing Enter in the center search overlay now
+  pastes the selected item even when the search field has focus. A regression
+  was fixed where native key-code fallback could treat normal typing (for
+  example `google`) as a paste command; only Compose `Key.Enter` now submits.
+- **macOS paste-back timing**: the search window now hides first, returns focus
+  to the previous app, waits briefly, then sends the paste command through the
+  existing app-level paste path. The Swift bridge also now posts modifier key
+  events separately from the action key.
+- **Desktop screenshot/Skitch capture**: on macOS, recent image files created
+  on the Desktop (`png`, `jpg`, `jpeg`, `heic`) are watched and passed into
+  the existing file/image capture pipeline. This covers screenshot-key saves
+  and Skitch exports.
+- **Secure-store startup**: the macOS dev build now uses a local secure-store
+  key file for PasteFlow Dev instead of blocking on first-run Keychain access.
+  This keeps local MVP smoke tests from hanging before the UI appears.
+- **Local install/signing note**: the installed app at
+  `~/Applications/pasteflow-dev.app` must be signed after all bundled native
+  libraries exist. If the bundle seal changes, macOS Accessibility can show
+  the app as enabled while the runtime check still reports denied. Resetting
+  Accessibility for `com.robdev.pasteflow.dev`, re-enabling PasteFlow Dev, and
+  reopening the app fixed it on this Mac.
+- **Generated/local output hygiene**: `app/.pasteflow-dev/` and
+  `graphify-out/` are ignored so local runtime data and generated graph output
+  are not committed.
+
+## Verified on This Mac
+
+- Center search display stayed vertical/centered after reopening.
+- Search typing no longer triggers paste.
+- Enter paste works into Notes and TextEdit.
+- Paste still works after quitting and reopening PasteFlow Dev.
+- macOS screenshot key output and Skitch export both add items to PasteFlow.
+- App bundle validation passed after re-signing the local install:
+  `codesign -vvv --deep --strict ~/Applications/pasteflow-dev.app`.
+- Build/check command passed before this handoff:
+  `./gradlew -PappEnv=BETA :app:desktopTest --tests com.crosspaste.ui.search.center.CenterSearchKeyTest :app:ktlintDesktopMainSourceSetCheck :app:ktlintDesktopTestSourceSetCheck :app:packageDistributionForCurrentOS`.
+
+## Remaining Before MVP Complete
+
+- Second-machine sync/manual-add test remains blocked until another device is
+  available.
+- Windows/Linux Phase 4 reliability remains deferred.
+- Updater remains intentionally paused; manual macOS builds only until product
+  direction is clearer.
+- GitHub README still needs a product-facing refresh.
+- Share page, change log reset, about page, and remaining CrossPaste
+  references are still tracked as later cleanup items.
+
+---
+
 # Session Handoff — PasteFlow Dev MVP Verification + Phase 2 Start (2026-07-02)
 
 ## Two-Pane Center Search Overlay (Latest Work)
@@ -70,13 +131,16 @@ pill; flipping the settings listening toggle back on clears any pause
 `DesktopTransferableConsumer.consume` behind the new `enableSecretDetection`
 config (toggle in pasteboard settings); skipped items trigger a warning
 notification and never reach the DB. TestAppConfig.copy now handles
-`enablePasteboardListening`. Remaining Phase 3 items: excluded-apps
-improvements, optional encrypted DB, per-collection sync controls.
+`enablePasteboardListening`. Excluded-apps: item context menus gained
+"Stop capturing from <app>" (DesktopPasteMenuService +
+DesktopSourceExclusionService). Phase 3 closed 2026-07-03 with two recorded
+deferrals (encrypted local DB, per-collection sync controls) — see the
+roadmap in docs/clipboard-manager-mvp.md for the reasoning.
 
 Known follow-ups for the new layout:
-- `BubbleWindow.kt` anchors bubbles using the shared `searchListState`
-  assuming the old horizontal strip; positions will be off with the vertical
-  list. Not addressed yet.
+- Center overlay bubble positioning was fixed in the macOS Phase 4 pass:
+  `BubbleWindow.kt` now anchors to the vertical list column and the positioning
+  math lives in `BubbleWindowPosition.kt` with a focused desktop test.
 - Windows 11 blur still fills the square window rect behind the rounded
   panel (same corner bleed the macOS side had); needs a Windows machine to
   verify any change.

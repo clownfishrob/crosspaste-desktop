@@ -271,7 +271,7 @@ public func mainToBack(
     DispatchQueue.main.async {
         hideWindowAndActivateApp(hideTitle: "PasteFlow Dev", appName: appNameString)
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.45) {
             keyCodes.withUnsafeBufferPointer { buffer in
                 guard let baseAddress = buffer.baseAddress else { return }
                 simulatePasteCommand(keyCodesPointer: baseAddress, count: buffer.count)
@@ -301,7 +301,7 @@ public func searchToBackAndPaste(
     DispatchQueue.main.async {
         hideWindowAndActivateApp(hideTitle: "PasteFlow Dev Search", appName: appNameString)
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.45) {
             keyCodes.withUnsafeBufferPointer { buffer in
                 guard let baseAddress = buffer.baseAddress else { return }
                 simulatePasteCommand(keyCodesPointer: baseAddress, count: buffer.count)
@@ -479,31 +479,48 @@ public func simulatePasteCommand(keyCodesPointer: UnsafePointer<Int32>, count: I
     let keyCodes = UnsafeBufferPointer(start: keyCodesPointer, count: count)
 
     var flags = CGEventFlags()
+    var modifierCodes = [Int32]()
+    var actionCodes = [Int32]()
 
-    // Identify and set modifier flags
     for keyCode in keyCodes {
         switch keyCode {
         case 55:  // Command key
             flags.insert(.maskCommand)
+            modifierCodes.append(keyCode)
         case 56:  // Shift key
             flags.insert(.maskShift)
+            modifierCodes.append(keyCode)
         case 58:  // Option key
             flags.insert(.maskAlternate)
+            modifierCodes.append(keyCode)
         case 59:  // Control key
             flags.insert(.maskControl)
+            modifierCodes.append(keyCode)
         default:
+            actionCodes.append(keyCode)
             break
         }
     }
 
-    for keyCode in keyCodes {
+    for keyCode in modifierCodes {
         if let keyDown = CGEvent(keyboardEventSource: source, virtualKey: CGKeyCode(UInt16(keyCode)), keyDown: true) {
-            keyDown.flags = flags
+            keyDown.flags = []
             keyDown.post(tap: .cghidEventTap)
         }
     }
 
-    for keyCode in keyCodes.reversed() {
+    for keyCode in actionCodes {
+        if let keyDown = CGEvent(keyboardEventSource: source, virtualKey: CGKeyCode(UInt16(keyCode)), keyDown: true) {
+            keyDown.flags = flags
+            keyDown.post(tap: .cghidEventTap)
+        }
+        if let keyUp = CGEvent(keyboardEventSource: source, virtualKey: CGKeyCode(UInt16(keyCode)), keyDown: false) {
+            keyUp.flags = flags
+            keyUp.post(tap: .cghidEventTap)
+        }
+    }
+
+    for keyCode in modifierCodes.reversed() {
         if let keyUp = CGEvent(keyboardEventSource: source, virtualKey: CGKeyCode(UInt16(keyCode)), keyDown: false) {
             keyUp.flags = []
             keyUp.post(tap: .cghidEventTap)

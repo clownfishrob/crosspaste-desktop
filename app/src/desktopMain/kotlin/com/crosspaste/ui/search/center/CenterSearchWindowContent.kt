@@ -160,11 +160,11 @@ fun CenterSearchWindowContent() {
                     isCtrlPressed = event.isCtrlPressed
                     isShiftPressed = event.isShiftPressed
                     if (event.type != KeyEventType.KeyDown) return@onPreviewKeyEvent false
+                    if (CenterSearchKey.isPasteSubmitKey(event.key, event.key.nativeKeyCode)) {
+                        scope.launch { pasteSelectionViewModel.toPaste() }
+                        return@onPreviewKeyEvent true
+                    }
                     when (event.key) {
-                        Key.Enter -> {
-                            scope.launch { pasteSelectionViewModel.toPaste() }
-                            true
-                        }
                         Key.DirectionUp -> {
                             pasteSelectionViewModel.selectPrev()
                             true
@@ -775,6 +775,7 @@ private fun CenterSearchBottomBar() {
     val prevAppName by appWindowManager.getPrevAppName().collectAsState(null)
 
     val searchFocusRequester = remember { FocusRequester() }
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(searchWindowInfo.show) {
         if (searchWindowInfo.show) {
@@ -814,7 +815,16 @@ private fun CenterSearchBottomBar() {
                     .clip(tinyRoundedCornerShape)
                     .background(MaterialTheme.colorScheme.surfaceContainerHighest)
                     .focusRequester(searchFocusRequester)
-                    .onFocusEvent {
+                    .onPreviewKeyEvent { event ->
+                        if (event.type == KeyEventType.KeyDown &&
+                            CenterSearchKey.isPasteSubmitKey(event.key, event.key.nativeKeyCode)
+                        ) {
+                            scope.launch { pasteSelectionViewModel.toPaste() }
+                            true
+                        } else {
+                            false
+                        }
+                    }.onFocusEvent {
                         if (it.isFocused) {
                             pasteSelectionViewModel.setFocusedElement(FocusedElement.SEARCH_INPUT)
                         }

@@ -141,16 +141,44 @@ Phase 2 is complete.
   AWS/Google keys, high-entropy tokens, secret assignments), gated by a
   default-on setting; 2FA codes and recovery phrases deliberately excluded
   for false-positive risk (see SecretDetector)
-- Optional encrypted local database — open
-- Per-collection sync controls — open (sync is off by default in the MVP)
+- Optional encrypted local database
+  — deferred by decision (2026-07-03): a real architecture change (SQLCipher
+  under SQLDelight keyed from the existing keychain entry, plus data
+  migration and mobile-shared driver impact). Pick up as its own project if
+  the product direction calls for it.
+- Per-collection sync controls
+  — deferred by decision (2026-07-03): sync is off by default in the MVP and
+  untested across machines; building per-collection controls now would be
+  speculative UI on an unexercised feature.
+
+Phase 3 is complete for the MVP; the two deferrals above are recorded
+decisions, not open work.
 
 ### Phase 4 - Cross-platform reliability
 
 - OS-specific paste-back improvements for macOS, Windows, and Linux
+  - macOS pass started 2026-07-03: center overlay bubble positioning now uses
+    the new vertical list geometry instead of the old horizontal strip
+    calculation.
+  - Windows/Linux remain deferred until those platforms are available for
+    hands-on verification.
 - Better file/folder behaviour
+  - macOS verified 2026-07-03 with native pasteboard tests for single file,
+    multiple files, marker handling, and lazy file URL provisioning.
 - Improved screenshot detection per platform
+  - macOS verified 2026-07-03 against current screenshot/long-screenshot
+    label tests.
+  - macOS Desktop image capture added 2026-07-03: new recent image files
+    created on the Desktop, including screenshot-key saves and Skitch exports,
+    are fed into the existing image/file history pipeline.
 - Performance work for large histories
+  - Current search path already uses SQLite FTS, a 50-item query batch, and
+    throttled load-more; desktop tests covering the batch/limit behaviour
+    passed on 2026-07-03.
 - Packaging, signing, auto-update review
+  - Manual macOS builds only for now. Product update delivery remains paused
+    until direction is clearer; do not re-enable updater UI or release
+    automation without an explicit decision.
 
 ### Phase 5 - Advanced features
 

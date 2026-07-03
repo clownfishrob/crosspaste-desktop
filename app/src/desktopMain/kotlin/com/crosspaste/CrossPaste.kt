@@ -37,6 +37,7 @@ import com.crosspaste.net.ResourcesClient
 import com.crosspaste.net.Server
 import com.crosspaste.notification.NotificationManager
 import com.crosspaste.paste.GuidePasteDataService
+import com.crosspaste.paste.MacScreenshotFileMonitor
 import com.crosspaste.paste.PasteboardService
 import com.crosspaste.path.DesktopAppPathProvider
 import com.crosspaste.path.UserDataPathProvider
@@ -167,6 +168,9 @@ class CrossPaste {
                     if (configManager.getCurrentConfig().enablePasteboardListening) {
                         koin.get<PasteboardService>().start()
                     }
+                    if (platform.isMacos() && !headless) {
+                        koin.get<MacScreenshotFileMonitor>().start()
+                    }
                     koin.get<QRCodeGenerator>()
                     koin.get<SyncManager>().start()
                     koin.get<PastePullService>().init()
@@ -236,6 +240,13 @@ class CrossPaste {
                     val jobs =
                         buildList {
                             add(async { stopService<AppUpdateService>("AppUpdateService") { it.stop() } })
+                            add(
+                                async {
+                                    stopService<MacScreenshotFileMonitor>("MacScreenshotFileMonitor") {
+                                        it.stop()
+                                    }
+                                },
+                            )
                             add(async { stopService<TaskExecutor>("TaskExecutor") { it.shutdown() } })
                             add(
                                 async {

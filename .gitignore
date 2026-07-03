@@ -17,6 +17,7 @@ selenium-manager.exe
 build
 buildSrc/build/
 app/.marketing/
+app/.pasteflow-dev/
 app/.user*/
 app/DawnCache/
 app/GPUCache/
@@ -27,6 +28,7 @@ logs/
 kotlin-js-store/
 node_modules/
 output*/
+graphify-out/
 /.claude/commands/
 /.claude/skills/
 /.claude/worktrees/
