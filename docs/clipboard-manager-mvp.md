@@ -129,7 +129,10 @@ Phase 2 is complete.
 
 ### Phase 3 - Privacy and safety
 
-- Excluded apps list improvements — open
+- Excluded apps list improvements
+  — done: right-clicking any history item offers "Stop capturing from
+  <app>", adding the item's source app to the exclusion list in one click
+  (previously only reachable through the extension source-control screen)
 - Pause capture for 1 minute, 5 minutes, or until resumed
   — done: runtime pause service (never outlives a restart), overlay pause
   menu + resume pill, auto-resume for timed pauses
