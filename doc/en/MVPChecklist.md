@@ -11,7 +11,9 @@ called complete.
 - Development network port is separated from CrossPaste.
 - Native messaging identifiers are separated from CrossPaste.
 - macOS Accessibility prompt handling is adjusted for shortcut use.
-- Share and Check for updates entry points are hidden from the MVP app surface.
+- Check for updates entry points are hidden from the MVP app surface; the
+  Share page is now a minimal project-sharing surface (copy, email,
+  repository link) with social platforms still deferred.
 - Update delivery is paused and no public updater channel is advertised.
 - GitHub automation is reduced to manual CI, Dependabot, and issue templates.
 - README, changelog, roadmap, About, settings, extension, and contact copy are reset for MVP context.
@@ -22,13 +24,15 @@ called complete.
 - 2026-07-02 automated re-verification: all `docs/clipboard-manager-mvp.md` claims
   confirmed in code; ktlintCheck, 1287 desktop tests, 79 extension tests, extension
   production build, and `:app:createDistributable` all pass (see `docs/HANDOFF.md`).
+- 2026-07-04 full re-verification after phases 2-3 and the macOS stabilization
+  pass: lint, desktop tests, extension tests/build, and the distributable all
+  green, and `./smoke-test.sh` now PASSES non-interactively (the first-run
+  keychain hang was resolved by the secure-store rework).
 
 ## Required Before Calling MVP Complete
 
 - Run one final hands-on installed-app smoke test on this Mac
-  (note: 2026-07-02 automated `./smoke-test.sh` hung at first-run macOS
-  keychain authorization — expect and approve a keychain prompt on first
-  interactive launch; see `docs/HANDOFF.md`):
+  (the automated boot check passes; these interactive confirmations remain):
   - Launch installed `PasteFlow Dev`.
   - Confirm clipboard capture.
   - Confirm main shortcut.
@@ -44,7 +48,7 @@ called complete.
 
 These are intentionally deferred until product direction is clearer:
 
-- Share page and Share menu rework.
+- Public launch/social sharing (the basic Share page rework is done).
 - Public update/release delivery.
 - Signing, updater metadata, and public packaging.
 - Public positioning, screenshots, and polished release README.
