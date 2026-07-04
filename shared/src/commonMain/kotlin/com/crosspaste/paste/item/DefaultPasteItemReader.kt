@@ -27,7 +27,11 @@ class DefaultPasteItemReader : PasteItemReader {
             is UrlPasteItem -> pasteItem.url.lowercase()
             is ColorPasteItem -> pasteItem.toHexString()
             is FilesPasteItem -> pasteItem.fileInfoTreeMap.keys.joinToString(" ") { it.lowercase() }
-            is ImagesPasteItem -> pasteItem.fileInfoTreeMap.keys.joinToString(" ") { it.lowercase() }
+            is ImagesPasteItem ->
+                listOfNotNull(
+                    pasteItem.fileInfoTreeMap.keys.joinToString(" ") { it.lowercase() },
+                    pasteItem.getOcrText()?.lowercase(),
+                ).joinToString(" ")
         }
 
     override fun getSummary(pasteItem: PasteItem): String = getText(pasteItem)

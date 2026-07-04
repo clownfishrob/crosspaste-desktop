@@ -34,7 +34,7 @@ data class ImagesPasteItem(
     PasteImages {
 
     companion object {
-        val jsonUtils = getJsonUtils()
+        val jsonUtils by lazy { getJsonUtils() }
     }
 
     constructor(jsonObject: JsonObject) : this(

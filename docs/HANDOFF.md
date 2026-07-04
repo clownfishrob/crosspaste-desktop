@@ -53,9 +53,11 @@ until those machines are available.
 - Windows/Linux Phase 4 reliability remains deferred.
 - Updater remains intentionally paused; manual macOS builds only until product
   direction is clearer.
-- GitHub README still needs a product-facing refresh.
-- Share page, change log reset, about page, and remaining CrossPaste
-  references are still tracked as later cleanup items.
+- GitHub README, app-facing changelog notes, and About footer have had the
+  current PasteFlow Dev MVP refresh.
+- Share page has been reworked into a basic PasteFlow Dev project-sharing
+  surface; public launch/social sharing remains deferred.
+- Deeper inherited CrossPaste internal naming remains a later cleanup item.
 
 ---
 

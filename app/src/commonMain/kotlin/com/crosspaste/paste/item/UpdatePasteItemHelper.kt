@@ -88,6 +88,27 @@ class UpdatePasteItemHelper(
             }
     }
 
+    suspend fun updateImageOcrText(
+        pasteData: PasteData,
+        ocrText: String,
+        imagesPasteItem: ImagesPasteItem,
+    ): Result<ImagesPasteItem> {
+        val newPasteItem = imagesPasteItem.withOcrText(ocrText)
+        return pasteDao
+            .updatePasteAppearItem(
+                id = pasteData.id,
+                pasteItem = newPasteItem,
+                pasteSearchContent =
+                    searchContentService.createSearchContent(
+                        pasteData.source,
+                        pasteItemReader.getSearchContent(newPasteItem),
+                    ),
+                addedSize = ocrText.length.toLong(),
+            ).map {
+                newPasteItem
+            }
+    }
+
     suspend fun updateTitle(
         pasteData: PasteData,
         title: String,

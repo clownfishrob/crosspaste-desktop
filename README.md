@@ -1,60 +1,71 @@
 # PasteFlow Dev
 
-PasteFlow Dev is an experimental desktop clipboard manager based on the open-source
-[CrossPaste](https://github.com/CrossPaste/crosspaste-desktop) codebase.
+PasteFlow Dev is an experimental desktop clipboard manager forked from the
+open-source [CrossPaste](https://github.com/CrossPaste/crosspaste-desktop)
+project.
 
-The current goal is a practical macOS MVP that can run separately from CrossPaste while
-the product direction is refined.
+The current aim is a practical macOS-first MVP: a local clipboard history,
+fast search overlay, pinned collections, sensible privacy defaults, and a
+separate development identity so it can run alongside CrossPaste without
+sharing app data.
 
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](LICENSE)
 [![Kotlin](https://img.shields.io/badge/Kotlin-desktop-blue.svg)](https://kotlinlang.org/)
 [![Compose Multiplatform](https://img.shields.io/badge/UI-Compose%20Multiplatform-blue.svg)](https://www.jetbrains.com/lp/compose-multiplatform/)
 
-## Current MVP status
+## MVP Status
 
-PasteFlow Dev has been separated from CrossPaste enough to install and run side by side
-for local development:
+PasteFlow Dev is usable as a local macOS clipboard-manager MVP. The current
+build has been validated on the maintainer's Mac for:
 
-- App name: PasteFlow Dev
-- macOS bundle identity separated from CrossPaste
-- Local app data folder separated from CrossPaste
-- Development network port separated from CrossPaste
-- Shortcut defaults separated from CrossPaste
-- Native messaging identifiers separated from CrossPaste
-- macOS Accessibility prompt handling adjusted for shortcut use
+- Clipboard capture for text, links, HTML, RTF, images, files, folders, and colours
+- Centered search overlay and keyboard-driven paste
+- Pinned collections through the existing tag system
+- 10 quick paste slots for the active result list
+- Desktop screenshot and Skitch-export capture
+- macOS Accessibility onboarding for global shortcuts and paste-back
+- Local-only defaults with discovery and sync off by default
+- Secret detection for high-confidence keys and tokens
+- Import/export for pinned collections
+- Manual macOS package creation
 
-Validated locally on macOS:
+The app is still pre-release. There is no public update channel, signed public
+release, or automatic installer flow yet.
 
-- Clipboard capture
-- Main shortcut launch
-- Search shortcut launch
-- Restart behavior
-- macOS Accessibility authorization flow
+## Development Identity
 
-## Repository status
+This fork is intentionally isolated from CrossPaste during development:
 
-This fork currently keeps GitHub automation deliberately small:
+- App name: `PasteFlow Dev`
+- macOS bundle ID: `com.robdev.pasteflow.dev`
+- macOS app support folder: `~/Library/Application Support/PasteFlow Dev`
+- Development data folder: `.pasteflow-dev`
+- Bonjour service type: `_pasteflowDevService._tcp.local.`
+- Default local port: `13139`
+- Native messaging host: `com.robdev.pasteflow.dev.desktop`
+- Default main shortcut: `Meta/Win+Shift+0`
+- Default search shortcut: `Meta/Win+Shift+Minus`
 
-- CI is manual-only while product direction is being decided
-- Dependabot remains enabled for Gradle dependency visibility
-- Release publishing, beta publishing, sponsor updates, issue translation, and AI review workflows are disabled
+The Kotlin package names remain `com.crosspaste` to avoid a risky broad rename
+across the desktop, shared, CLI, extension, and mobile-oriented modules.
 
-There is no updater or public release channel until the product direction is clearer.
+## Current Gaps
 
-## Deferred for later
+These items are intentionally paused or still awaiting hardware/product
+decisions:
 
-These areas are intentionally hidden or still need a PasteFlow Dev pass:
+- Second-machine sync/manual-add testing
+- Windows and Linux reliability passes
+- Public release signing, notarization, and update delivery
+- Public launch/social sharing beyond the basic project Share page
+- GitHub/product screenshots and broader public positioning
+- Optional OCR, snippet templates, smart collections, and other advanced ideas
 
-- Share page and share menu
-- Check for updates / release delivery
-- Legacy updater implementation names still inherited from CrossPaste
-- Public positioning, screenshots, and release packaging
-- Multi-device testing on additional machines
+See [docs/clipboard-manager-mvp.md](docs/clipboard-manager-mvp.md) for the
+working roadmap and [doc/en/MVPChecklist.md](doc/en/MVPChecklist.md) for the
+remaining MVP checks.
 
-See [doc/en/Roadmap.md](doc/en/Roadmap.md) for the active follow-up list.
-See [doc/en/MVPChecklist.md](doc/en/MVPChecklist.md) for the remaining MVP completion checks.
-
-## Development setup
+## Build Locally
 
 Clone this fork:
 
@@ -63,58 +74,73 @@ git clone https://github.com/clownfishrob/crosspaste-desktop.git
 cd crosspaste-desktop
 ```
 
-Run the desktop app in development:
+Use JDK 21. On this development Mac, the repo uses the bundled JetBrains Runtime:
 
 ```bash
-./gradlew app:run -PappEnv=BETA
+export JAVA_HOME="$PWD/app/jbr/extracted/jbrsdk-21.0.9-osx-aarch64-b1163.94/Contents/Home"
+export PATH="$JAVA_HOME/bin:$PATH"
 ```
 
-Run desktop tests:
+Run the desktop app:
 
 ```bash
-./gradlew :app:desktopTest -PappEnv=BETA
+./gradlew -PappEnv=BETA :app:run
 ```
 
-Create the macOS desktop distributable:
+Run the focused desktop test suite:
 
 ```bash
-./gradlew :app:createDistributable -PappEnv=BETA
+./gradlew -PappEnv=BETA :app:desktopTest
 ```
 
-The generated app is written under:
+Create the macOS package:
+
+```bash
+./gradlew -PappEnv=BETA :app:packageDistributionForCurrentOS
+```
+
+The generated app and DMG are written under:
 
 ```text
-app/build/compose/binaries/main/app/
+app/build/compose/binaries/main/
 ```
 
-First builds may download Gradle, Kotlin, Compose, and JetBrains Runtime dependencies.
-JDK 21 is recommended for local development.
+## Local macOS Install
 
-## Local install on macOS
-
-After creating the distributable, the app bundle can be copied into the user
-Applications folder:
+For local manual testing:
 
 ```bash
 rm -rf "$HOME/Applications/pasteflow-dev.app"
 ditto "app/build/compose/binaries/main/app/pasteflow-dev.app" "$HOME/Applications/pasteflow-dev.app"
+codesign --force --deep --sign - "$HOME/Applications/pasteflow-dev.app"
 open -n "$HOME/Applications/pasteflow-dev.app"
 ```
 
-macOS global shortcuts require Accessibility permission. Open:
+macOS paste-back and global shortcuts require Accessibility permission:
 
 ```text
 System Settings -> Privacy & Security -> Accessibility
 ```
 
-Then enable `pasteflow-dev`.
+Enable `pasteflow-dev`. If macOS keeps prompting after a local rebuild, remove
+and re-add the app in Accessibility, then quit and reopen PasteFlow Dev.
+
+## Repository Automation
+
+GitHub automation is deliberately small while product direction is being
+decided:
+
+- Manual CI only
+- Dependabot for Gradle dependency visibility
+- Release publishing disabled
+- Sponsor updates disabled
+- Issue translation and AI review workflows disabled
 
 ## Attribution
 
 PasteFlow Dev is a fork of CrossPaste. The original project provides the core
-cross-platform clipboard, sync, storage, UI, and extension foundations.
-
-Original project:
+cross-platform clipboard, sync, storage, UI, extension, and shared-module
+foundations.
 
 - Upstream repository: [CrossPaste/crosspaste-desktop](https://github.com/CrossPaste/crosspaste-desktop)
 - Upstream website: [crosspaste.com](https://crosspaste.com)

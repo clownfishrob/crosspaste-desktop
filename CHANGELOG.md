@@ -8,6 +8,15 @@ to the upstream project and is available from:
 - [CrossPaste releases](https://github.com/CrossPaste/crosspaste-desktop/releases)
 - [CrossPaste changelog](https://github.com/CrossPaste/crosspaste-desktop/blob/main/CHANGELOG.md)
 
+## 2026-07-03 - GitHub and About refresh
+
+- Refreshed the GitHub README for the current macOS-first MVP state.
+- Updated the About page footer to describe PasteFlow Dev as a local-first clipboard MVP while keeping upstream attribution.
+- Reworked the Share page into a PasteFlow Dev project-sharing surface with copy, email, and repository actions.
+- Added the first OCR pass: image "Extract Text" now stores extracted text on the image item and refreshes search content.
+- Added the macOS reliability pass to the app-facing changelog notes.
+- Documented that Windows/Linux reliability, second-machine testing, updater work, and public launch/social sharing remain deferred.
+
 ## 2026-06-27 - MVP repo cleanup
 
 - Reset the GitHub-facing changelog for PasteFlow Dev.

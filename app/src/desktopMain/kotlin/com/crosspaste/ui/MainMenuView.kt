@@ -41,6 +41,7 @@ import com.composables.icons.materialsymbols.rounded.Info
 import com.composables.icons.materialsymbols.rounded.Keyboard
 import com.composables.icons.materialsymbols.rounded.Search
 import com.composables.icons.materialsymbols.rounded.Settings
+import com.composables.icons.materialsymbols.rounded.Share
 import com.composables.icons.materialsymbols.rounded.Upload
 import com.composables.icons.materialsymbols.rounded.Vpn_key
 import com.composables.icons.materialsymbols.rounded.Warning
@@ -96,6 +97,7 @@ fun MainMenuView() {
             listOf(
                 MainMenuItem("import", Import, MaterialSymbols.Rounded.Download),
                 MainMenuItem("export", Export, MaterialSymbols.Rounded.Upload),
+                MainMenuItem("share", Share, MaterialSymbols.Rounded.Share),
                 MainMenuItem("shortcut_keys", ShortcutKeys, MaterialSymbols.Rounded.Keyboard),
                 MainMenuItem("about", About, MaterialSymbols.Rounded.Info),
             )

@@ -19,7 +19,7 @@ sealed interface PasteItem {
 
         private val logger = KotlinLogging.logger { }
 
-        private val jsonUtils = getJsonUtils()
+        private val jsonUtils by lazy { getJsonUtils() }
 
         fun fromJson(json: String): PasteItem? =
             runCatching {

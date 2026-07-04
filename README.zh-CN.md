@@ -1,118 +1,123 @@
 # PasteFlow Dev
 
-PasteFlow Dev 是一个实验性的桌面剪贴板管理器，基于开源项目
-[CrossPaste](https://github.com/CrossPaste/crosspaste-desktop) 构建。
+PasteFlow Dev 是一个实验性的桌面剪贴板管理器，fork 自开源项目
+[CrossPaste](https://github.com/CrossPaste/crosspaste-desktop)。
 
-当前目标是做出一个可用的 macOS MVP，并让它能与 CrossPaste 分开安装、分开运行。
-
-[![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](LICENSE)
-[![Kotlin](https://img.shields.io/badge/Kotlin-desktop-blue.svg)](https://kotlinlang.org/)
-[![Compose Multiplatform](https://img.shields.io/badge/UI-Compose%20Multiplatform-blue.svg)](https://www.jetbrains.com/lp/compose-multiplatform/)
+当前目标是做出一个 macOS 优先的实用 MVP：本地剪贴板历史、快速搜索浮层、固定收藏、合理的隐私默认设置，以及与 CrossPaste 分开的开发身份。
 
 ## 当前 MVP 状态
 
-PasteFlow Dev 已经完成了基本的开发身份分离：
+当前构建已在维护者的 Mac 上验证：
 
-- 应用名称：PasteFlow Dev
-- macOS bundle identity 已与 CrossPaste 分离
-- 本地数据目录已与 CrossPaste 分离
-- 开发网络端口已与 CrossPaste 分离
-- 默认快捷键已与 CrossPaste 分离
-- Native messaging 标识已与 CrossPaste 分离
-- macOS Accessibility 权限提示已针对快捷键使用做过调整
+- 文本、链接、HTML、RTF、图片、文件、文件夹和颜色的剪贴板捕获
+- 居中的搜索浮层和键盘粘贴
+- 基于标签系统的固定收藏
+- 当前结果列表的 10 个快速粘贴位
+- 桌面截图和 Skitch 导出捕获
+- macOS Accessibility 权限引导
+- 默认本地优先，发现和同步默认关闭
+- 高置信度密钥和 token 的隐私检测
+- 固定收藏的导入/导出
+- 手动 macOS 打包
 
-已在本机 macOS 验证：
+这个项目仍处于预发布阶段。目前没有公共更新通道、签名公开发布包或自动安装流程。
 
-- 剪贴板捕获
-- 主快捷键启动
-- 搜索快捷键启动
-- 重启行为
-- macOS Accessibility 授权流程
+## 开发身份
 
-## 暂缓处理
+此 fork 在开发阶段与 CrossPaste 隔离：
 
-以下内容会在后续 PasteFlow Dev 阶段继续整理：
+- 应用名称：`PasteFlow Dev`
+- macOS bundle ID：`com.robdev.pasteflow.dev`
+- macOS 应用数据目录：`~/Library/Application Support/PasteFlow Dev`
+- 开发数据目录：`.pasteflow-dev`
+- Bonjour 服务类型：`_pasteflowDevService._tcp.local.`
+- 默认本地端口：`13139`
+- Native messaging host：`com.robdev.pasteflow.dev.desktop`
+- 默认主窗口快捷键：`Meta/Win+Shift+0`
+- 默认搜索快捷键：`Meta/Win+Shift+Minus`
 
-- Share 页面与 Share 菜单
-- Check for updates / 发布更新通道
-- 仍继承自 CrossPaste 的旧更新实现命名
-- 公开定位、截图和发布打包
-- 其他设备上的多机测试
+Kotlin package 名称仍保留为 `com.crosspaste`，以避免对 desktop、shared、CLI、扩展和移动端相关模块进行高风险的大规模重命名。
 
-更多后续事项见 [doc/zh/Roadmap.md](doc/zh/Roadmap.md)。
-剩余 MVP 完成检查见 [doc/zh/MVPChecklist.md](doc/zh/MVPChecklist.md)。
+## 当前缺口
 
-## 开发设置
+以下工作仍需后续设备或产品方向确认：
 
-克隆此 fork：
+- 第二台设备同步/手动添加测试
+- Windows 和 Linux 可靠性整理
+- 公开发布签名、公证和更新交付
+- 基础项目 Share 页面之外的公开发布/社交分享
+- GitHub/产品截图和更完整的公开定位
+- OCR、片段模板、智能收藏等高级功能
+
+更多路线图请查看 [docs/clipboard-manager-mvp.md](docs/clipboard-manager-mvp.md)。
+
+## 本地构建
 
 ```bash
 git clone https://github.com/clownfishrob/crosspaste-desktop.git
 cd crosspaste-desktop
 ```
 
+使用 JDK 21。在当前开发 Mac 上可使用仓库中的 JetBrains Runtime：
+
+```bash
+export JAVA_HOME="$PWD/app/jbr/extracted/jbrsdk-21.0.9-osx-aarch64-b1163.94/Contents/Home"
+export PATH="$JAVA_HOME/bin:$PATH"
+```
+
 运行桌面应用：
 
 ```bash
-./gradlew app:run -PappEnv=BETA
+./gradlew -PappEnv=BETA :app:run
 ```
 
 运行桌面测试：
 
 ```bash
-./gradlew :app:desktopTest -PappEnv=BETA
+./gradlew -PappEnv=BETA :app:desktopTest
 ```
 
-创建 macOS 桌面应用包：
+创建 macOS 包：
 
 ```bash
-./gradlew :app:createDistributable -PappEnv=BETA
+./gradlew -PappEnv=BETA :app:packageDistributionForCurrentOS
 ```
 
-生成的应用位于：
+生成文件位于：
 
 ```text
-app/build/compose/binaries/main/app/
+app/build/compose/binaries/main/
 ```
 
-首次构建可能会下载 Gradle、Kotlin、Compose 和 JetBrains Runtime 依赖。
-建议本地开发使用 JDK 21。
-
 ## macOS 本地安装
-
-创建应用包后，可以复制到用户 Applications 目录：
 
 ```bash
 rm -rf "$HOME/Applications/pasteflow-dev.app"
 ditto "app/build/compose/binaries/main/app/pasteflow-dev.app" "$HOME/Applications/pasteflow-dev.app"
+codesign --force --deep --sign - "$HOME/Applications/pasteflow-dev.app"
 open -n "$HOME/Applications/pasteflow-dev.app"
 ```
 
-全局快捷键需要 macOS Accessibility 权限。请打开：
+全局快捷键和粘贴回目标应用需要 macOS Accessibility 权限：
 
 ```text
 System Settings -> Privacy & Security -> Accessibility
 ```
 
-然后启用 `pasteflow-dev`。
+启用 `pasteflow-dev`。如果本地重新构建后 macOS 仍反复提示权限，请在 Accessibility 中移除并重新添加应用，然后退出并重新打开 PasteFlow Dev。
 
 ## 致谢
 
-PasteFlow Dev 是 CrossPaste 的 fork。原项目提供了跨平台剪贴板、同步、存储、UI 和扩展等核心基础。
-
-原项目：
+PasteFlow Dev 是 CrossPaste 的 fork。原项目提供了跨平台剪贴板、同步、存储、UI、扩展和 shared module 等核心基础。
 
 - 上游仓库：[CrossPaste/crosspaste-desktop](https://github.com/CrossPaste/crosspaste-desktop)
 - 上游网站：[crosspaste.com](https://crosspaste.com)
 
-## License
+## 许可证
 
-本仓库使用 GNU Affero General Public License v3.0。
-详见 [LICENSE](LICENSE)。
+本仓库使用 GNU Affero General Public License v3.0。详见 [LICENSE](LICENSE)。
 
-由于这是 AGPL-3.0 项目的 fork，衍生工作也需要继续遵守 AGPL-3.0 许可证条款。
-
-## Contact
+## 联系
 
 ```text
 rob@ngduk.co.uk

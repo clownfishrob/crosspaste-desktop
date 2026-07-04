@@ -9,6 +9,9 @@ object PasteItemProperties {
     // user edit name of the paste item
     const val NAME = "name"
 
+    // extracted text from an image paste item
+    const val OCR_TEXT = "ocrText"
+
     // title of the url paste item
     const val TITLE = "title"
 

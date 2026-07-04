@@ -26,6 +26,7 @@ import com.crosspaste.paste.item.CreatePasteItemHelper.createTextPasteItem
 import com.crosspaste.paste.item.ImagesPasteItem
 import com.crosspaste.paste.item.PasteFiles
 import com.crosspaste.paste.item.PasteItem
+import com.crosspaste.paste.item.UpdatePasteItemHelper
 import com.crosspaste.paste.item.getFilePaths
 import com.crosspaste.path.UserDataPathProvider
 import com.crosspaste.sync.SyncManager
@@ -62,6 +63,7 @@ class DesktopPasteMenuService(
     private val syncManager: SyncManager,
     private val taskSubmitter: TaskSubmitter,
     private val uiSupport: UISupport,
+    private val updatePasteItemHelper: UpdatePasteItemHelper,
     private val userDataPathProvider: UserDataPathProvider,
 ) : PasteMenuService {
 
@@ -326,15 +328,16 @@ class DesktopPasteMenuService(
     private fun createExtractTextContextMenuItem(pasteData: PasteData): ContextMenuItem =
         ContextMenuItem(copywriter.getText("extract_text")) {
             menuScope.launch {
+                val imagesPasteItem = pasteData.getPasteItem(ImagesPasteItem::class) ?: return@launch
                 val extractText =
-                    pasteData
-                        .getPasteItem(ImagesPasteItem::class)
-                        ?.getFilePaths(userDataPathProvider)
-                        ?.mapNotNull { path ->
+                    imagesPasteItem
+                        .getFilePaths(userDataPathProvider)
+                        .mapNotNull { path ->
                             ocrModule.extractText(path).getOrNull()
-                        }?.joinToString(separator = "\n")
+                        }.joinToString(separator = "\n")
 
-                if (!extractText.isNullOrEmpty()) {
+                if (extractText.isNotBlank()) {
+                    updatePasteItemHelper.updateImageOcrText(pasteData, extractText, imagesPasteItem)
                     pasteboardService.tryWritePasteboard(
                         pasteItem = createTextPasteItem(text = extractText),
                         localOnly = false,

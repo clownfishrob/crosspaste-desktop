@@ -231,7 +231,7 @@ fun AboutContentView() {
                 )
             }
             Text(
-                text = "AGPL-3.0 licensed fork of CrossPaste",
+                text = "Local-first clipboard MVP based on CrossPaste",
                 style =
                     MaterialTheme.typography.labelSmall.copy(
                         letterSpacing = 0.5.sp,

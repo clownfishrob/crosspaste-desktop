@@ -183,6 +183,9 @@ decisions, not open work.
 ### Phase 5 - Advanced features
 
 - Optional OCR for screenshots/images
+  - first pass done: running "Extract Text" on an image now stores the OCR
+    text on the image item and updates search content, so extracted screenshot
+    text becomes searchable after extraction.
 - Snippet variables/templates
 - Smart collections
 - Browser extension integration improvements

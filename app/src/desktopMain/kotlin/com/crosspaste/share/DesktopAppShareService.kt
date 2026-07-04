@@ -13,20 +13,20 @@ class DesktopAppShareService(
 ) : AppShareService {
     override val appSharePlatformList: List<AppSharePlatform> =
         listOf(
-            X(uiSupport),
-            Weibo(uiSupport),
-            Facebook(notificationManager, pasteboardService, uiSupport),
-            Reddit(uiSupport),
-            LinkedIn(notificationManager, pasteboardService, uiSupport),
-            Telegram(uiSupport),
-            Mail(notificationManager, pasteboardService, uiSupport),
             Clipboard(notificationManager, pasteboardService),
+            Mail(notificationManager, pasteboardService, uiSupport),
+            ProjectLink(uiSupport),
         )
     override val shareContentKey: String = "share_content"
 
     override val shareTitleKey: String = "share_title"
 
-    override fun getShareText(): String = "${copywriter.getText(shareContentKey)}\n${getShareUrl()}"
+    override fun getShareText(): String =
+        buildString {
+            appendLine(copywriter.getText(shareTitleKey))
+            appendLine(copywriter.getText(shareContentKey))
+            append(getShareUrl())
+        }
 
     override fun getShareTitle(): String = copywriter.getText(shareTitleKey)
 
