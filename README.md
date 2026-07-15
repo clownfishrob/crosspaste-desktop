@@ -108,6 +108,8 @@ app/build/compose/binaries/main/
 
 ## Local macOS Install
 
+PasteFlow Dev currently targets macOS 12.0 or newer.
+
 For local manual testing:
 
 ```bash

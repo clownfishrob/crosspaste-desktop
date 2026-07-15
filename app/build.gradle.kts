@@ -395,8 +395,8 @@ compose.desktop {
                         val currentArch = System.getProperty("os.arch")
                         val targetArch =
                             when {
-                                currentArch.contains("arm") || currentArch.contains("aarch64") -> "arm64-apple-macos11"
-                                else -> "x86_64-apple-macos10.15"
+                                currentArch.contains("arm") || currentArch.contains("aarch64") -> "arm64-apple-macos12"
+                                else -> "x86_64-apple-macos12"
                             }
 
                         val archDir =
@@ -554,7 +554,7 @@ compose.desktop {
                             <string>_pasteflowDevService._tcp</string>
                         </array>
                         <key>LSMinimumSystemVersion</key>
-                        <string>10.15.0</string>
+                        <string>12.0.0</string>
                     """
                     }
 
