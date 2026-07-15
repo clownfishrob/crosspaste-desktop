@@ -16,18 +16,22 @@ class DesktopAppInfoFactory(
 
     private val systemProperty = getSystemProperty()
 
-    private val properties: Properties? =
+    private val versionProperties: Properties? = loadProperties("crosspaste-version.properties")
+
+    private val buildProperties: Properties? = loadProperties("crosspaste-build.properties")
+
+    private fun loadProperties(resourceName: String): Properties? =
         runCatching {
             val properties = Properties()
-            properties.load(
-                Thread
-                    .currentThread()
-                    .contextClassLoader
-                    .getResourceAsStream("crosspaste-version.properties"),
-            )
+            Thread
+                .currentThread()
+                .contextClassLoader
+                .getResourceAsStream(resourceName)
+                ?.use { properties.load(it) }
+                ?: return@runCatching null
             properties
         }.onFailure { e ->
-            logger.error(e) { "Failed to read version" }
+            logger.warn(e) { "Failed to read $resourceName" }
         }.getOrNull()
 
     override fun createAppInfo(): AppInfo =
@@ -39,9 +43,12 @@ class DesktopAppInfoFactory(
             pairingVersion = SyncApi.PAIRING_VERSION,
         )
 
-    override fun getVersion(): String = getVersion(appEnvUtils.getCurrentAppEnv(), properties)
+    override fun getVersion(): String = getVersion(appEnvUtils.getCurrentAppEnv(), versionProperties)
 
-    override fun getRevision(): String = properties?.getProperty("revision", "Unknown") ?: "Unknown"
+    override fun getRevision(): String =
+        buildProperties?.getProperty("revision")
+            ?: versionProperties?.getProperty("revision", "Unknown")
+            ?: "Unknown"
 
     override fun getUserName(): String {
         val userHome = systemProperty.get("user.home")

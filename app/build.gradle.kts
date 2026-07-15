@@ -290,8 +290,38 @@ tasks.register("verifyChangelogVersion") {
     }
 }
 
-tasks.named("desktopProcessResources") {
-    dependsOn("copyDevProperties", "verifyChangelogVersion")
+val generateBuildInfo =
+    tasks.register("generateBuildInfo") {
+        group = "build"
+        description = "Generate packaged build identity from the current Git revision."
+
+        val outputDir = layout.buildDirectory.dir("generated/build-info")
+        outputs.dir(outputDir)
+
+        doLast {
+            val revision =
+                runCatching {
+                    ProcessBuilder("git", "rev-parse", "--short=12", "HEAD")
+                        .directory(rootDir)
+                        .redirectErrorStream(true)
+                        .start()
+                        .inputStream
+                        .bufferedReader()
+                        .use { it.readText().trim() }
+                }.getOrDefault("Unknown")
+
+            val outputFile = outputDir.get().file("crosspaste-build.properties").asFile
+            outputFile.parentFile.mkdirs()
+            outputFile.writeText("revision=$revision\n")
+        }
+    }
+
+tasks.named<ProcessResources>("desktopProcessResources") {
+    dependsOn("copyDevProperties", "verifyChangelogVersion", generateBuildInfo)
+
+    from(layout.buildDirectory.dir("generated/build-info")) {
+        include("crosspaste-build.properties")
+    }
 }
 
 private fun initJvmArgs(
