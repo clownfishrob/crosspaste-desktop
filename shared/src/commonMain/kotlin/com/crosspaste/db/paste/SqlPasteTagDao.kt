@@ -100,6 +100,24 @@ class SqlPasteTagDao(
         }
     }
 
+    override suspend fun updatePasteTagSyncEnabled(
+        id: Long,
+        syncEnabled: Boolean,
+    ) {
+        withContext(ioDispatcher) {
+            tagDatabaseQueries.updateTagSyncEnabled(syncEnabled, id)
+        }
+    }
+
+    override suspend fun updatePasteTagSmartRule(
+        id: Long,
+        smartRule: String?,
+    ) {
+        withContext(ioDispatcher) {
+            tagDatabaseQueries.updateTagSmartRule(smartRule, id)
+        }
+    }
+
     override fun switchPinPasteTagBlock(
         pasteDataId: Long,
         pasteTagId: Long,
@@ -116,6 +134,11 @@ class SqlPasteTagDao(
 
     override fun getPasteTagsBlock(pasteDataId: Long): List<Long> =
         tagDatabaseQueries.getPasteTags(pasteDataId).executeAsList()
+
+    override suspend fun hasDisabledSyncTag(pasteDataId: Long): Boolean =
+        withContext(ioDispatcher) {
+            tagDatabaseQueries.hasDisabledSyncTag(pasteDataId).executeAsOne()
+        }
 
     override suspend fun addTagsToPastes(
         pasteDataIds: List<Long>,

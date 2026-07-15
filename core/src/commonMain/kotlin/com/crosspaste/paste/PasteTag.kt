@@ -8,6 +8,8 @@ data class PasteTag(
     val name: String,
     val color: Long,
     val sortOrder: Long,
+    val syncEnabled: Boolean = true,
+    val smartRule: String? = null,
 ) {
     companion object {
 
@@ -41,12 +43,16 @@ data class PasteTag(
             name: String,
             color: Long,
             sortOrder: Long,
+            syncEnabled: Boolean,
+            smartRule: String?,
         ): PasteTag =
             PasteTag(
                 id = id,
                 name = name,
                 color = color,
                 sortOrder = sortOrder,
+                syncEnabled = syncEnabled,
+                smartRule = smartRule,
             )
     }
 }

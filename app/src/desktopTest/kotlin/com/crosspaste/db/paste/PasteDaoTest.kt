@@ -9,9 +9,10 @@ import com.crosspaste.paste.PasteData
 import com.crosspaste.paste.PasteState
 import com.crosspaste.paste.PasteType
 import com.crosspaste.paste.SearchContentService
+import com.crosspaste.paste.SmartCollectionRule
 import com.crosspaste.paste.item.CreatePasteItemHelper.createTextPasteItem
-import com.crosspaste.paste.item.DefaultPasteItemReader
 import com.crosspaste.paste.item.CreatePasteItemHelper.createUrlPasteItem
+import com.crosspaste.paste.item.DefaultPasteItemReader
 import com.crosspaste.paste.plugin.type.DesktopTextTypePlugin
 import com.crosspaste.task.TaskSubmitter
 import com.crosspaste.utils.DateUtils
@@ -20,6 +21,7 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
+import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -383,6 +385,26 @@ class PasteDaoTest {
             assertEquals(0x00FF00L, tag.color)
             cancelAndIgnoreRemainingEvents()
         }
+    }
+
+    @Test
+    fun `updatePasteTagSyncEnabled and smart rule store collection settings`() = runTest {
+        val tagId = pasteTagDao.createPasteTag("smart invoices", 0xFF0000L)
+        val rule =
+            Json.encodeToString(
+                SmartCollectionRule(
+                    searchQuery = "invoice",
+                    pasteTypes = listOf(PasteType.TEXT_TYPE.type),
+                    includeRemote = false,
+                ),
+            )
+
+        pasteTagDao.updatePasteTagSyncEnabled(tagId, false)
+        pasteTagDao.updatePasteTagSmartRule(tagId, rule)
+
+        val tag = pasteTagDao.getAllTagsBlock().first { it.id == tagId }
+        assertFalse(tag.syncEnabled)
+        assertEquals(rule, tag.smartRule)
     }
 
     @Test

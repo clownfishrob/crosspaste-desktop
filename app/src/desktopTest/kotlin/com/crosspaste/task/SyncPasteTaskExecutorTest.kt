@@ -5,6 +5,7 @@ import com.crosspaste.app.AppInfo
 import com.crosspaste.config.AppConfig
 import com.crosspaste.config.CommonConfigManager
 import com.crosspaste.db.paste.PasteDao
+import com.crosspaste.db.paste.PasteTagDao
 import com.crosspaste.db.task.PasteTask
 import com.crosspaste.db.task.SyncExtraInfo
 import com.crosspaste.db.task.TaskType
@@ -46,6 +47,7 @@ class SyncPasteTaskExecutorTest {
             )
         val configManager: CommonConfigManager = mockk(relaxed = true)
         val pasteDao: PasteDao = mockk(relaxed = true)
+        val pasteTagDao: PasteTagDao = mockk(relaxed = true)
         val pasteClientApi: PasteClientApi = mockk(relaxed = true)
         val secureStore: SecureStore = mockk(relaxed = true)
         val syncManager: SyncManager = mockk(relaxed = true)
@@ -66,6 +68,7 @@ class SyncPasteTaskExecutorTest {
             every { configManager.config } returns MutableStateFlow(config)
             every { configManager.getCurrentConfig() } returns config
             coEvery { appControl.isSendEnabled() } returns true
+            coEvery { pasteTagDao.hasDisabledSyncTag(any()) } returns false
         }
 
         fun createExecutor(): SyncPasteTaskExecutor =
@@ -74,6 +77,7 @@ class SyncPasteTaskExecutorTest {
                 appInfo = appInfo,
                 configManager = configManager,
                 pasteDao = pasteDao,
+                pasteTagDao = pasteTagDao,
                 pasteClientApi = pasteClientApi,
                 secureStore = secureStore,
                 syncManager = syncManager,
@@ -167,6 +171,23 @@ class SyncPasteTaskExecutorTest {
             val result = executor.doExecuteTask(task)
 
             assertTrue(result is SuccessPasteTaskResult)
+        }
+
+    @Test
+    fun doExecuteTask_syncDisabledByCollection_returnsSuccessWithoutSending() =
+        runTest {
+            val deps = TestDeps()
+            val executor = deps.createExecutor()
+            val task = createPasteTask()
+            val pasteData = createMockPasteData(PasteType.TEXT_TYPE)
+
+            coEvery { deps.pasteDao.getNoDeletePasteData(any()) } returns pasteData
+            coEvery { deps.pasteTagDao.hasDisabledSyncTag(any()) } returns true
+
+            val result = executor.doExecuteTask(task)
+
+            assertTrue(result is SuccessPasteTaskResult)
+            coVerify(exactly = 0) { deps.pasteClientApi.sendPaste(any(), any(), any()) }
         }
 
     @Test

@@ -1,8 +1,12 @@
+import kotlin.Boolean;
+
 CREATE TABLE IF NOT EXISTS TagEntity (
     id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     name TEXT NOT NULL,
     color INTEGER NOT NULL,
-    sortOrder INTEGER NOT NULL DEFAULT 0
+    sortOrder INTEGER NOT NULL DEFAULT 0,
+    syncEnabled INTEGER AS Boolean NOT NULL DEFAULT 1,
+    smartRule TEXT
 );
 
 CREATE TABLE IF NOT EXISTS PasteTagEntity (
@@ -45,6 +49,13 @@ ORDER BY te.sortOrder ASC;
 isPinnedPasteTag:
 SELECT EXISTS(SELECT 1 FROM PasteTagEntity WHERE pasteId = ? AND tagId = ?);
 
+hasDisabledSyncTag:
+SELECT EXISTS(
+    SELECT 1 FROM PasteTagEntity pte
+    JOIN TagEntity te ON te.id = pte.tagId
+    WHERE pte.pasteId = ? AND te.syncEnabled = 0
+);
+
 getAllTags:
 SELECT * FROM TagEntity ORDER BY sortOrder ASC;
 
@@ -56,6 +67,12 @@ UPDATE TagEntity SET color = ? WHERE id = ?;
 
 updateTagSortOrder:
 UPDATE TagEntity SET sortOrder = ? WHERE id = ?;
+
+updateTagSyncEnabled:
+UPDATE TagEntity SET syncEnabled = ? WHERE id = ?;
+
+updateTagSmartRule:
+UPDATE TagEntity SET smartRule = ? WHERE id = ?;
 
 deleteTag:
 DELETE FROM TagEntity WHERE id = ?;

@@ -5,6 +5,7 @@ import com.crosspaste.app.AppInfo
 import com.crosspaste.config.AppConfig
 import com.crosspaste.config.CommonConfigManager
 import com.crosspaste.db.paste.PasteDao
+import com.crosspaste.db.paste.PasteTagDao
 import com.crosspaste.db.task.PasteTask
 import com.crosspaste.db.task.SyncExtraInfo
 import com.crosspaste.db.task.TaskType
@@ -42,6 +43,7 @@ class SyncPasteTaskExecutor(
     private val appInfo: AppInfo,
     private val configManager: CommonConfigManager,
     private val pasteDao: PasteDao,
+    private val pasteTagDao: PasteTagDao,
     private val pasteClientApi: PasteClientApi,
     private val secureStore: SecureStore,
     private val syncManager: SyncManager,
@@ -67,6 +69,10 @@ class SyncPasteTaskExecutor(
             // Check if sync is enabled for this paste type
             if (!isSyncEnabledForPasteType(pasteData)) {
                 logger.debug { "Sync disabled for paste type: ${pasteData.getType().name}" }
+                return@let createEmptyResult(syncExtraInfo)
+            }
+            if (pasteTagDao.hasDisabledSyncTag(pasteData.id)) {
+                logger.debug { "Sync disabled by collection for pasteDataId: ${pasteData.id}" }
                 return@let createEmptyResult(syncExtraInfo)
             }
 

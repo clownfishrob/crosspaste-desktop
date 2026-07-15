@@ -29,10 +29,22 @@ interface PasteTagDao : QueryPasteTag {
 
     suspend fun updatePasteTagsSortOrder(orderedIds: List<Long>)
 
+    suspend fun updatePasteTagSyncEnabled(
+        id: Long,
+        syncEnabled: Boolean,
+    )
+
+    suspend fun updatePasteTagSmartRule(
+        id: Long,
+        smartRule: String?,
+    )
+
     fun switchPinPasteTagBlock(
         pasteDataId: Long,
         pasteTagId: Long,
     )
+
+    suspend fun hasDisabledSyncTag(pasteDataId: Long): Boolean
 
     fun getPasteTagsBlock(pasteDataId: Long): List<Long>
 

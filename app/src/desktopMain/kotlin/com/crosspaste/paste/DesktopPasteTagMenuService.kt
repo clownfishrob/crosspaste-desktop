@@ -27,6 +27,7 @@ import com.crosspaste.ui.paste.PasteTagScope
 import com.crosspaste.ui.theme.AppUISize.large2X
 import com.crosspaste.ui.theme.AppUISize.tiny
 import com.crosspaste.ui.theme.AppUISize.xLarge
+import com.crosspaste.utils.GlobalCoroutineScope.ioCoroutineDispatcher
 import kotlinx.coroutines.launch
 
 class DesktopPasteTagMenuService(
@@ -39,6 +40,22 @@ class DesktopPasteTagMenuService(
             listOf(
                 ContextMenuItem(copywriter.getText("rename")) {
                     tagScope.startEditing()
+                },
+                ContextMenuItem(
+                    copywriter.getText(
+                        if (tagScope.tag.syncEnabled) {
+                            "disable_collection_sync"
+                        } else {
+                            "enable_collection_sync"
+                        },
+                    ),
+                ) {
+                    ioCoroutineDispatcher.launch {
+                        pasteTagDao.updatePasteTagSyncEnabled(
+                            tagScope.tag.id,
+                            !tagScope.tag.syncEnabled,
+                        )
+                    }
                 },
                 TagColorsMenuItem(tagScope, pasteTagDao),
                 ContextMenuDivider,
