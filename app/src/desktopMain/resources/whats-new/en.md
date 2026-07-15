@@ -1,3 +1,14 @@
+# [2.1.7] - 2026-07-15
+
+## macOS 12 packaging
+The macOS package metadata now targets macOS 12.0 consistently across the Gradle and Conveyor package paths.
+
+## Collection sync controls
+Collections can now store sync settings, and disabling sync for a collection prevents its items from being sent automatically.
+
+## OCR and collection foundations
+Image OCR text is shown in preview, with initial foundations added for snippet templates and smart collections.
+
 # [2.1.6] - 2026-07-15
 
 ## Device pairing reliability
