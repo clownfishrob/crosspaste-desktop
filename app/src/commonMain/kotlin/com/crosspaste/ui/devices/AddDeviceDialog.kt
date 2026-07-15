@@ -16,6 +16,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,6 +28,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.window.DialogProperties
 import com.composables.icons.materialsymbols.MaterialSymbols
 import com.composables.icons.materialsymbols.rounded.Add
+import com.crosspaste.config.CommonConfigManager
 import com.crosspaste.dto.sync.SyncInfo
 import com.crosspaste.i18n.GlobalCopywriter
 import com.crosspaste.net.clientapi.SuccessResult
@@ -52,16 +54,18 @@ import org.koin.compose.koinInject
 fun AddDeviceDialog(onDismiss: () -> Unit) {
     val copywriter = koinInject<GlobalCopywriter>()
     val notificationManager = koinInject<NotificationManager>()
+    val configManager = koinInject<CommonConfigManager>()
     val syncClientApi = koinInject<SyncClientApi>()
     val syncManager = koinInject<SyncManager>()
 
     val appSizeValue = LocalAppSizeValueState.current
+    val config by configManager.config.collectAsState()
 
     val coroutineScope = rememberCoroutineScope()
 
-    var ip by remember { mutableStateOf("") }
+    var host by remember { mutableStateOf("") }
 
-    var port by remember { mutableStateOf("13129") }
+    var port by remember { mutableStateOf(config.port.toString()) }
 
     var isLoading by remember { mutableStateOf(false) }
 
@@ -69,8 +73,8 @@ fun AddDeviceDialog(onDismiss: () -> Unit) {
 
     // Determine if the confirm button should be enabled
     val isInputValid =
-        remember(ip, port) {
-            NetUtils.isValidIp(ip) && NetUtils.isValidPort(port)
+        remember(host, port) {
+            NetUtils.isValidHost(NetUtils.normalizeHostInput(host)) && NetUtils.isValidPort(port)
         }
 
     AlertDialog(
@@ -117,15 +121,9 @@ fun AddDeviceDialog(onDismiss: () -> Unit) {
 
                 Column(verticalArrangement = Arrangement.spacedBy(medium)) {
                     OutlinedTextField(
-                        value = ip,
-                        onValueChange = { newValue ->
-                            // Only update if it matches basic IP character patterns
-                            val formatted = NetUtils.formatIpInput(newValue)
-                            if (formatted.length <= 15) {
-                                ip = formatted
-                            }
-                        },
-                        label = { Text("IP") },
+                        value = host,
+                        onValueChange = { newValue -> host = newValue },
+                        label = { Text("IP / Host") },
                         placeholder = { Text("192.168.0.10") },
                         modifier = Modifier.fillMaxWidth(),
                         singleLine = true,
@@ -151,7 +149,7 @@ fun AddDeviceDialog(onDismiss: () -> Unit) {
             ) {
                 isLoading = true
                 coroutineScope.launch {
-                    val hostAndPort = HostAndPort(ip, port.toInt())
+                    val hostAndPort = HostAndPort(NetUtils.normalizeHostInput(host), port.toInt())
                     val result = syncClientApi.syncInfo { buildUrl(hostAndPort) }
 
                     if (result is SuccessResult) {

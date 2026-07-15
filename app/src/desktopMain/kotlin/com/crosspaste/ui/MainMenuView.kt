@@ -216,6 +216,14 @@ fun MainMenuView() {
             }
 
             MainMenuItemView(
+                title = "check_for_updates",
+                icon = MaterialSymbols.Rounded.Download,
+                selected = false,
+                onClick = { appUpdateService.tryTriggerUpdate() },
+                compact = true,
+            )
+
+            MainMenuItemView(
                 title = "change_log",
                 icon = MaterialSymbols.Rounded.Auto_awesome,
                 selected = rootRouteName == ChangeLog.NAME,

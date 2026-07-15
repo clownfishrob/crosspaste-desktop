@@ -51,6 +51,7 @@ import com.composables.icons.materialsymbols.rounded.Autorenew
 import com.composables.icons.materialsymbols.rounded.Qr_code_scanner
 import com.composables.icons.materialsymbols.rounded.Verified_user
 import com.crosspaste.app.AppTokenApi
+import com.crosspaste.app.AppTokenService
 import com.crosspaste.config.CommonConfigManager
 import com.crosspaste.i18n.GlobalCopywriter
 import com.crosspaste.sync.QRCodeGenerator
@@ -206,7 +207,13 @@ fun PairingCodeContentView() {
             Spacer(modifier = Modifier.height(tiny))
 
             Text(
-                text = copywriter.getText("qr_expiry_info", ((1 - refreshProgress) * 30).roundToInt().toString()),
+                text =
+                    copywriter.getText(
+                        "qr_expiry_info",
+                        ((1 - refreshProgress) * AppTokenService.TOKEN_REFRESH_DURATION_SECONDS)
+                            .roundToInt()
+                            .toString(),
+                    ),
                 style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.5.sp),
                 color = MaterialTheme.colorScheme.outline,
             )

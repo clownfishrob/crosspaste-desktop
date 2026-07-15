@@ -517,6 +517,12 @@ compose.desktop {
                         <string>true</string>
                         <key>NSAccessibilityUsageDescription</key>
                         <string>This application needs accessibility permissions to enhance your interaction with the system.</string>
+                        <key>NSLocalNetworkUsageDescription</key>
+                        <string>PasteFlow Dev uses the local network to find and connect to your other devices.</string>
+                        <key>NSBonjourServices</key>
+                        <array>
+                            <string>_pasteflowDevService._tcp</string>
+                        </array>
                         <key>LSMinimumSystemVersion</key>
                         <string>10.15.0</string>
                     """

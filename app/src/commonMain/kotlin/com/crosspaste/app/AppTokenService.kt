@@ -17,6 +17,10 @@ import kotlin.time.Duration.Companion.milliseconds
 
 abstract class AppTokenService : AppTokenApi {
 
+    companion object {
+        const val TOKEN_REFRESH_DURATION_SECONDS = 60
+    }
+
     private val scope = namedScope(ioDispatcher, "AppTokenService")
 
     private val lock = Mutex()
@@ -52,9 +56,10 @@ abstract class AppTokenService : AppTokenApi {
                     while (isActive) {
                         refreshToken()
                         val totalSteps = 100
+                        val stepDelay = TOKEN_REFRESH_DURATION_SECONDS * 1000 / totalSteps
                         for (i in 0..totalSteps) {
                             _refreshProgress.value = i / totalSteps.toFloat()
-                            delay(300.milliseconds)
+                            delay(stepDelay.milliseconds)
                         }
                     }
                 } else {

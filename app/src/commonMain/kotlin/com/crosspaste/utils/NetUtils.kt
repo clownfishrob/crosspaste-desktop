@@ -27,12 +27,38 @@ object NetUtils {
         return validatedParts.joinToString(".")
     }
 
+    fun normalizeHostInput(input: String): String {
+        val trimmed =
+            input
+                .trim()
+                .removePrefix("http://")
+                .removePrefix("https://")
+
+        val withoutPath = trimmed.substringBefore("/")
+        val colonCount = withoutPath.count { it == ':' }
+        return if (colonCount == 1 && withoutPath.substringAfterLast(":").all { it.isDigit() }) {
+            withoutPath.substringBeforeLast(":")
+        } else {
+            withoutPath
+        }
+    }
+
     /**
      * Strict check if the IP is a complete and valid IPv4 address
      */
     fun isValidIp(ip: String): Boolean {
         val ipv4Regex = """^((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(25[0-5]|2[0-4]\d|[01]?\d\d?)$""".toRegex()
         return ip.matches(ipv4Regex)
+    }
+
+    fun isValidHost(host: String): Boolean {
+        if (isValidIp(host)) {
+            return true
+        }
+
+        val hostLabel = """[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?"""
+        val hostRegex = """^(?=.{1,253}$)($hostLabel\.)*$hostLabel$""".toRegex()
+        return host.matches(hostRegex)
     }
 
     /**

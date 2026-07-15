@@ -51,8 +51,9 @@ until those machines are available.
 - Second-machine sync/manual-add test remains blocked until another device is
   available.
 - Windows/Linux Phase 4 reliability remains deferred.
-- Updater remains intentionally paused; manual macOS builds only until product
-  direction is clearer.
+- Update checking is re-enabled against the PasteFlow Dev metadata file and
+  opens GitHub releases. macOS installation remains manual until signing and
+  notarization are decided.
 - GitHub README, app-facing changelog notes, and About footer have had the
   current PasteFlow Dev MVP refresh.
 - Share page has been reworked into a basic PasteFlow Dev project-sharing
@@ -318,8 +319,8 @@ Deliberately left uncommitted (commit only on explicit request):
 
 ## Standing Constraints (Do Not Regress)
 
-- Do not re-enable the visible updater, Share entry points, or release
-  automation without explicit instruction.
+- Do not add automatic update installation or release automation without
+  explicit instruction. Manual update checking via GitHub releases is allowed.
 - User-facing copy says "PasteFlow Dev"; upstream attribution stays intact.
 - Contact email: `rob@ngduk.co.uk`.
 - `commonMain` code must stay mobile-compatible.

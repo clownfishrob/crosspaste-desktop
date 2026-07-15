@@ -29,8 +29,9 @@ build has been validated on the maintainer's Mac for:
 - Import/export for pinned collections
 - Manual macOS package creation
 
-The app is still pre-release. There is no public update channel, signed public
-release, or automatic installer flow yet.
+The app is still pre-release. It can check the PasteFlow Dev update metadata
+and open GitHub releases, but macOS installation is still manual until release
+signing/notarization is decided.
 
 ## Development Identity
 
@@ -56,7 +57,7 @@ decisions:
 
 - Second-machine sync/manual-add testing
 - Windows and Linux reliability passes
-- Public release signing, notarization, and update delivery
+- Public release signing, notarization, and automatic update installation
 - Public launch/social sharing beyond the basic project Share page
 - GitHub/product screenshots and broader public positioning
 - Optional OCR, snippet templates, smart collections, and other advanced ideas

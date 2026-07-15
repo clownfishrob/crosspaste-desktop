@@ -176,9 +176,9 @@ decisions, not open work.
     throttled load-more; desktop tests covering the batch/limit behaviour
     passed on 2026-07-03.
 - Packaging, signing, auto-update review
-  - Manual macOS builds only for now. Product update delivery remains paused
-    until direction is clearer; do not re-enable updater UI or release
-    automation without an explicit decision.
+  - Manual macOS installs only for now. PasteFlow Dev can check update metadata
+    and open GitHub releases, but automatic update installation and release
+    automation still require an explicit decision.
 
 ### Phase 5 - Advanced features
 

@@ -1,5 +1,6 @@
 package com.crosspaste.ui.base
 
+import com.crosspaste.app.AppUpdateService
 import com.crosspaste.app.DesktopAppWindowManager
 import com.crosspaste.app.ExitMode
 import com.crosspaste.app.WindowTrigger
@@ -25,6 +26,7 @@ private const val FAQ_URL =
     "https://github.com/clownfishrob/crosspaste-desktop/blob/pasteflow-dev-mvp/doc/en/FQA.md"
 
 class MenuHelper(
+    private val appUpdateService: AppUpdateService,
     private val appWindowManager: DesktopAppWindowManager,
     private val copywriter: GlobalCopywriter,
     private val navigationManager: NavigationManager,
@@ -52,6 +54,14 @@ class MenuHelper(
                 mainCoroutineDispatcher.launch(CoroutineName("Open about")) {
                     trayMenuAction(About)
                 }
+            },
+        )
+
+    val checkUpdate =
+        MenuItem(
+            title = { copywriter -> copywriter.getText("check_for_updates") },
+            action = {
+                appUpdateService.tryTriggerUpdate()
             },
         )
 
@@ -132,6 +142,7 @@ class MenuHelper(
             extension,
             shortcutKeys,
             about,
+            checkUpdate,
             faq,
         )
 

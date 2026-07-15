@@ -137,8 +137,6 @@ private fun UpdateAvailableBanner(
     windowsZipUpdater: WindowsZipUpdater,
     copywriter: GlobalCopywriter,
 ) {
-    if (windowsZipUpdater.channel != WindowsUpdateChannel.PORTABLE_ZIP) return
-
     val hasNewVersion by remember { appUpdateService.existNewVersion() }
         .collectAsState(initial = false)
     val lastVersion by appUpdateService.lastVersion.collectAsState()
@@ -165,53 +163,64 @@ private fun UpdateAvailableBanner(
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
             )
 
-            when (val state = updateState) {
-                is UpdateState.Idle -> {
-                    Button(onClick = { windowsZipUpdater.startDownload() }) {
-                        Text(copywriter.getText("update_download"))
-                    }
+            if (windowsZipUpdater.channel != WindowsUpdateChannel.PORTABLE_ZIP) {
+                Text(
+                    text = copywriter.getText("update_available_dialog_desc"),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                )
+                Button(onClick = { appUpdateService.tryTriggerUpdate() }) {
+                    Text(copywriter.getText("update_download"))
                 }
-                is UpdateState.Checking ->
-                    UpdateProgressRow(copywriter.getText("update_checking"))
-                is UpdateState.Downloading -> {
-                    val percent = state.percent
-                    UpdateStatusText(
-                        copywriter.getText("update_downloading") +
-                            if (percent >= 0) " $percent%" else "",
-                    )
-                    if (percent >= 0) {
-                        LinearProgressIndicator(
-                            progress = { percent / 100f },
-                            modifier = Modifier.fillMaxWidth(),
+            } else {
+                when (val state = updateState) {
+                    is UpdateState.Idle -> {
+                        Button(onClick = { windowsZipUpdater.startDownload() }) {
+                            Text(copywriter.getText("update_download"))
+                        }
+                    }
+                    is UpdateState.Checking ->
+                        UpdateProgressRow(copywriter.getText("update_checking"))
+                    is UpdateState.Downloading -> {
+                        val percent = state.percent
+                        UpdateStatusText(
+                            copywriter.getText("update_downloading") +
+                                if (percent >= 0) " $percent%" else "",
                         )
-                    } else {
-                        LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                        if (percent >= 0) {
+                            LinearProgressIndicator(
+                                progress = { percent / 100f },
+                                modifier = Modifier.fillMaxWidth(),
+                            )
+                        } else {
+                            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                        }
                     }
-                }
-                is UpdateState.Verifying ->
-                    UpdateProgressRow(copywriter.getText("update_verifying"))
-                is UpdateState.Extracting ->
-                    UpdateProgressRow(copywriter.getText("update_extracting"))
-                is UpdateState.ReadyToApply -> {
-                    UpdateStatusText(copywriter.getText("update_ready"))
-                    Button(
-                        onClick = {
-                            windowsZipUpdater.applyUpdate { exitApplication(ExitMode.EXIT) }
-                        },
-                    ) {
-                        Text(copywriter.getText("update_restart_now"))
+                    is UpdateState.Verifying ->
+                        UpdateProgressRow(copywriter.getText("update_verifying"))
+                    is UpdateState.Extracting ->
+                        UpdateProgressRow(copywriter.getText("update_extracting"))
+                    is UpdateState.ReadyToApply -> {
+                        UpdateStatusText(copywriter.getText("update_ready"))
+                        Button(
+                            onClick = {
+                                windowsZipUpdater.applyUpdate { exitApplication(ExitMode.EXIT) }
+                            },
+                        ) {
+                            Text(copywriter.getText("update_restart_now"))
+                        }
                     }
-                }
-                is UpdateState.Applying ->
-                    UpdateProgressRow(copywriter.getText("update_restarting"))
-                is UpdateState.Failed -> {
-                    Text(
-                        text = copywriter.getText(state.reasonKey),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.error,
-                    )
-                    Button(onClick = { windowsZipUpdater.startDownload() }) {
-                        Text(copywriter.getText("update_retry"))
+                    is UpdateState.Applying ->
+                        UpdateProgressRow(copywriter.getText("update_restarting"))
+                    is UpdateState.Failed -> {
+                        Text(
+                            text = copywriter.getText(state.reasonKey),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.error,
+                        )
+                        Button(onClick = { windowsZipUpdater.startDownload() }) {
+                            Text(copywriter.getText("update_retry"))
+                        }
                     }
                 }
             }

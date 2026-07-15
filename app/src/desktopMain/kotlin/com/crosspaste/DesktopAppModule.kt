@@ -104,7 +104,7 @@ fun desktopAppModule(
         single<AppLock> { get<DesktopAppLaunch>() }
         single<AppRestartService> { DesktopAppRestartService(get(), get()) }
         single<AppStartUpService> { DesktopAppStartUpService(get(), get(), get(), get()) }
-        single<AppUpdateService> { DesktopAppUpdateService(get()) }
+        single<AppUpdateService> { DesktopAppUpdateService(get(), get(), get(), get(), get(), get(), get()) }
         single<AppUrls> { DesktopAppUrls }
         single<ChangelogService> { ChangelogService(get()) }
         single<CrossPasteWebService> { CrossPasteWebService(get(), get()) }
