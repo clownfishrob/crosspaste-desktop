@@ -11,8 +11,13 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.crosspaste.sync.SyncManager
+import com.crosspaste.ui.devices.DeviceScopeFactory
 import com.crosspaste.ui.devices.NetworkWarningDialogHost
 import com.crosspaste.ui.settings.AccessibilityDialogHost
 import com.crosspaste.ui.theme.AppUIColors
@@ -82,8 +87,25 @@ fun CrossPasteMainWindowContent() {
 
         NetworkWarningDialogHost()
 
+        UnverifiedDeviceDialogHost()
+
         UpdateDialogHost()
 
         AccessibilityDialogHost()
+    }
+}
+
+@Composable
+private fun UnverifiedDeviceDialogHost() {
+    val deviceScopeFactory = koinInject<DeviceScopeFactory>()
+    val syncManager = koinInject<SyncManager>()
+    val unverifiedSyncRuntimeInfo by syncManager.unverifiedSyncRuntimeInfo.collectAsState()
+
+    unverifiedSyncRuntimeInfo?.let { syncRuntimeInfo ->
+        val scope =
+            remember(syncRuntimeInfo) {
+                deviceScopeFactory.createDeviceScope(syncRuntimeInfo)
+            }
+        scope.TrustDeviceView()
     }
 }

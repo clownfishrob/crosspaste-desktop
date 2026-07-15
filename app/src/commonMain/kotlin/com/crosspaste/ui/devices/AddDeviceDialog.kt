@@ -154,8 +154,9 @@ fun AddDeviceDialog(onDismiss: () -> Unit) {
 
                     if (result is SuccessResult) {
                         val syncInfo = result.getResult<SyncInfo>()
-                        syncManager.updateSyncInfo(syncInfo)
-                        onDismiss() // Close dialog after success
+                        syncManager.addManualSyncInfo(syncInfo, hostAndPort.host) {
+                            onDismiss()
+                        }
                     } else {
                         isLoading = false
                         // The proactive banner shown above already explains a likely-blocking

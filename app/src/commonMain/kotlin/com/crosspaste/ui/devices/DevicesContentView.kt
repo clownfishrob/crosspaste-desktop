@@ -66,22 +66,12 @@ fun DevicesContentView(guideContent: (@Composable () -> Unit)? = null) {
     val deviceGroups = rememberDeviceGroups()
     val hasDevices = deviceGroups.hasDevices
 
-    val unverifiedSyncRuntimeInfo by syncManager.unverifiedSyncRuntimeInfo.collectAsState()
-
     var showAddDeviceDialog by remember { mutableStateOf(false) }
     var showCurrentDeviceDialog by remember { mutableStateOf(false) }
     var offlineExpanded by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         syncManager.refresh { }
-    }
-
-    unverifiedSyncRuntimeInfo?.let {
-        val scope =
-            remember(it) {
-                deviceScopeFactory.createDeviceScope(it)
-            }
-        scope.TrustDeviceView()
     }
 
     InnerScaffold(

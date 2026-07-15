@@ -1,6 +1,7 @@
 package com.crosspaste.sync
 
 import com.crosspaste.db.sync.ConnectInfo
+import com.crosspaste.db.sync.HostInfo
 import com.crosspaste.db.sync.SyncRuntimeInfo
 import com.crosspaste.db.sync.SyncRuntimeInfoDao
 import com.crosspaste.db.sync.SyncState
@@ -263,6 +264,52 @@ class GeneralSyncManager(
     override fun updateSyncInfo(syncInfo: SyncInfo) {
         realTimeSyncScope.launch {
             syncRuntimeInfoDao.insertOrUpdateSyncInfo(syncInfo)
+        }
+    }
+
+    override fun addManualSyncInfo(
+        syncInfo: SyncInfo,
+        host: String,
+        callback: () -> Unit,
+    ) {
+        realTimeSyncScope.launch {
+            try {
+                val manualHostInfo = HostInfo(networkPrefixLength = 0, hostAddress = host)
+                val manualSyncInfo =
+                    syncInfo.copy(
+                        endpointInfo =
+                            syncInfo.endpointInfo.copy(
+                                hostInfoList =
+                                    listOf(manualHostInfo) +
+                                        syncInfo.endpointInfo.hostInfoList.filterNot {
+                                            it.hostAddress == host
+                                        },
+                            ),
+                    )
+
+                syncRuntimeInfoDao.insertOrUpdateSyncInfo(manualSyncInfo)
+
+                syncRuntimeInfoDao
+                    .getSyncRuntimeInfo(syncInfo.appInfo.appInstanceId)
+                    ?.let { syncRuntimeInfo ->
+                        syncResolver.emitEvent(
+                            SyncEvent.ForceResolve(
+                                syncRuntimeInfo,
+                                ResolveCallback(
+                                    updateVersionRelation = {},
+                                    markPollFailure = {},
+                                    onComplete = {},
+                                ),
+                            ),
+                        )
+                    }
+            } catch (e: Exception) {
+                logger.error(e) { "Exception while adding manual sync info" }
+            } finally {
+                withContext(mainDispatcher) {
+                    callback()
+                }
+            }
         }
     }
 

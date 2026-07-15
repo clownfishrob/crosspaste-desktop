@@ -1,6 +1,7 @@
 package com.crosspaste.sync
 
 import com.crosspaste.db.sync.SyncRuntimeInfo
+import com.crosspaste.dto.sync.SyncInfo
 import com.crosspaste.net.routing.SyncRoutingApi
 import kotlinx.coroutines.flow.StateFlow
 
@@ -39,6 +40,12 @@ interface SyncManager : SyncRoutingApi {
         appInstanceId: String,
         token: Int,
         callback: (Boolean) -> Unit,
+    )
+
+    fun addManualSyncInfo(
+        syncInfo: SyncInfo,
+        host: String,
+        callback: () -> Unit = {},
     )
 
     fun refresh(

@@ -1,3 +1,11 @@
+# [2.1.6] - 2026-07-15
+
+## Device pairing reliability
+Verification prompts now appear globally instead of only inside the Devices screen, so a newly discovered device can be trusted wherever you are in the app.
+
+## Manual network pairing
+Manual device add now preserves the exact address you enter, including LAN IPs, Tailscale IPs, and MagicDNS hostnames, then immediately checks that route for verification.
+
 # [2.1.5] - 2026-06-26
 
 ## PasteFlow Dev MVP

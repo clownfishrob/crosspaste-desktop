@@ -105,6 +105,14 @@ class MarketingSyncManager : SyncManager {
     ) {
     }
 
+    override fun addManualSyncInfo(
+        syncInfo: SyncInfo,
+        host: String,
+        callback: () -> Unit,
+    ) {
+        callback()
+    }
+
     override fun refresh(
         ids: List<String>,
         callback: () -> Unit,

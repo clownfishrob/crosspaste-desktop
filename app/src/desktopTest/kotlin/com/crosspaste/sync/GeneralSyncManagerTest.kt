@@ -1,5 +1,6 @@
 package com.crosspaste.sync
 
+import com.crosspaste.db.sync.HostInfo
 import com.crosspaste.db.sync.SyncRuntimeInfo
 import com.crosspaste.db.sync.SyncRuntimeInfoDao
 import com.crosspaste.db.sync.SyncState
@@ -9,10 +10,12 @@ import com.crosspaste.platform.Platform
 import com.crosspaste.ui.devices.DeviceScopeFactory
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.coVerifySequence
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
+import io.mockk.slot
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -179,6 +182,48 @@ class GeneralSyncManagerTest {
             advanceUntilIdle()
 
             coVerify { mocks.syncRuntimeInfoDao.insertOrUpdateSyncInfo(syncInfo) }
+        }
+
+    @Test
+    fun testAddManualSyncInfoKeepsTypedHostAndForcesResolve() =
+        runTest {
+            val mocks = createMocks()
+            val syncInfo = SyncTestFixtures.createSyncInfo(hostInfoList = emptyList())
+            val syncRuntimeInfo =
+                SyncTestFixtures.createSyncRuntimeInfo(
+                    hostInfoList = listOf(HostInfo(0, "office-mac.tailnet.ts.net")),
+                )
+            val inserted = slot<SyncInfo>()
+
+            coEvery { mocks.syncRuntimeInfoDao.insertOrUpdateSyncInfo(capture(inserted)) } just runs
+            coEvery {
+                mocks.syncRuntimeInfoDao.getSyncRuntimeInfo(syncInfo.appInfo.appInstanceId)
+            } returns syncRuntimeInfo
+            coEvery { mocks.syncResolver.emitEvent(any()) } just runs
+
+            val childScope = CoroutineScope(coroutineContext + Job())
+            val syncManager = createSyncManager(mocks, childScope)
+
+            syncManager.addManualSyncInfo(syncInfo, "office-mac.tailnet.ts.net")
+            advanceUntilIdle()
+
+            assertEquals(
+                "office-mac.tailnet.ts.net",
+                inserted.captured.endpointInfo.hostInfoList
+                    .first()
+                    .hostAddress,
+            )
+            assertEquals(
+                0,
+                inserted.captured.endpointInfo.hostInfoList
+                    .first()
+                    .networkPrefixLength,
+            )
+            coVerifySequence {
+                mocks.syncRuntimeInfoDao.insertOrUpdateSyncInfo(any())
+                mocks.syncRuntimeInfoDao.getSyncRuntimeInfo(syncInfo.appInfo.appInstanceId)
+                mocks.syncResolver.emitEvent(any<SyncEvent.ForceResolve>())
+            }
         }
 
     @Test
